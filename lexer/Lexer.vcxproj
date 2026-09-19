@@ -24,6 +24,9 @@
   <ItemGroup>
     <ClInclude Include="yylex.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="yylex.l" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

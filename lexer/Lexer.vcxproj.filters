@@ -24,4 +24,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="yylex.l">
+      <Filter>Исходные файлы</Filter>
+    </None>
+  </ItemGroup>
 </Project>
