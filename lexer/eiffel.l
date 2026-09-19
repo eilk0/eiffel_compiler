@@ -4,6 +4,7 @@
 
 %option noyywrap
 %option never-interactive
+%option stack
 
 %x STRING
 %x CHARACTER
