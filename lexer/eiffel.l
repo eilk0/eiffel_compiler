@@ -16,8 +16,10 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
     // Local variables
     int stringLength;
     char[4096] stringBuffer;
+    int yylineno = 0;
 
-[ \t\r\n]+    {}
+[ \t\r]+    {}
+[\n]    {yylineno++;}
 
 "--"[^\r\n]* {/*idk if commentary should be mentioned; 
                 Eiffel does not support multiline comments*/}
