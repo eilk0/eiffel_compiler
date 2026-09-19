@@ -1,6 +1,5 @@
 %{
     #include <stdio.h>
-    #include <string.h>
 %}
 
 %option noyywrap
@@ -132,28 +131,28 @@ xor {printf("KEYWORD DETECTED: xor\n");}
     /* STRINGS */
 
 \"  {printf("STRING BEGIN DETECTED\n"); yy_push_state(STRING); stringLength = 0;}
-<STRING>\%\% {strcpy(stringBuffer + stringLength, "%"); stringLength++;}
-<STRING>\%A {strcpy(stringBuffer + stringLength, "@"); stringLength++;}
-<STRING>\%B {strcpy(stringBuffer + stringLength, "\и"); stringLength++;}
-<STRING>\%С {strcpy(stringBuffer + stringLength, "^"); stringLength++;}
-<STRING>\%D {strcpy(stringBuffer + stringLength, "$"); stringLength++;}
-<STRING>\%F {strcpy(stringBuffer + stringLength, "\f"); stringLength++;}
-<STRING>\%H {strcpy(stringBuffer + stringLength, "\\"); stringLength++;}
-<STRING>\%L {strcpy(stringBuffer + stringLength, "~"); stringLength++;}
-<STRING>\%N {strcpy(stringBuffer + stringLength, "\n"); stringLength++;}
-<STRING>\%Q {strcpy(stringBuffer + stringLength, "`"); stringLength++;}
-<STRING>\%R {strcpy(stringBuffer + stringLength, "\r"); stringLength++;}
-<STRING>\%S {strcpy(stringBuffer + stringLength, "#"); stringLength++;}
-<STRING>\%T {strcpy(stringBuffer + stringLength, "\t"); stringLength++;}
-<STRING>\%U {strcpy(stringBuffer + stringLength, "\0"); stringLength++;}
-<STRING>\%V {strcpy(stringBuffer + stringLength, "|"); stringLength++;}
-<STRING>\%\' {strcpy(stringBuffer + stringLength, "'"); stringLength++;}
-<STRING>\%\" {strcpy(stringBuffer + stringLength, "\""); stringLength++;}
-<STRING>\%\( {strcpy(stringBuffer + stringLength, "("); stringLength++;}
-<STRING>\%\) {strcpy(stringBuffer + stringLength, ")"); stringLength++;}
-<STRING>\%\< {strcpy(stringBuffer + stringLength, "<"); stringLength++;}
-<STRING>\%\> {strcpy(stringBuffer + stringLength, ">"); stringLength++;}
-<STRING>[^\"] {strncpy(stringBuffer + stringLength, yytext, yyleng); stringLength++;}
+<STRING>\%\% {stringBuffer[stringLength++] = '%';}
+<STRING>\%A {stringBuffer[stringLength++] = '@';}
+<STRING>\%B {stringBuffer[stringLength++] = '\b';}
+<STRING>\%С {stringBuffer[stringLength++] = '^';}
+<STRING>\%D {stringBuffer[stringLength++] = '$';}
+<STRING>\%F {stringBuffer[stringLength++] = '\f';}
+<STRING>\%H {stringBuffer[stringLength++] = '\\';}
+<STRING>\%L {stringBuffer[stringLength++] = '~';}
+<STRING>\%N {stringBuffer[stringLength++] = '\n';}
+<STRING>\%Q {stringBuffer[stringLength++] = '`';}
+<STRING>\%R {stringBuffer[stringLength++] = '\r';}
+<STRING>\%S {stringBuffer[stringLength++] = '#';}
+<STRING>\%T {stringBuffer[stringLength++] = '\t';}
+<STRING>\%U {stringBuffer[stringLength++] = '\0';}
+<STRING>\%V {stringBuffer[stringLength++] = '|';}
+<STRING>\%\' {stringBuffer[stringLength++] = '\'';}
+<STRING>\%\" {stringBuffer[stringLength++] = '"';}
+<STRING>\%\( {stringBuffer[stringLength++] = '(';}
+<STRING>\%\) {stringBuffer[stringLength++] = ')';}
+<STRING>\%\< {stringBuffer[stringLength++] = '<';}
+<STRING>\%\> {stringBuffer[stringLength++] =  '>';}
+<STRING>[^\"] {stringBuffer[stringLength++] =  yytext[0];}
 <STRING>\" {yy_pop_state(); stringBuffer[stringLength] = 0; printf("STRING FOUND: %s", stringBuffer);}
 
 
