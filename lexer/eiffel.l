@@ -1,14 +1,21 @@
 %{
     #include <stdio.h>
+    #include <string.h>
 %}
 
 %option noyywrap
 %option never-interactive
 
+%x STRING
+
 DIGIT   [0-9]
 ID  [a-zA-Z][a-zA-Z0-9_]*
 
 %%
+    // Local variables
+    int stringLength;
+    char[4096] stringBuffer;
+
 [ \t\r\n]+    {}
 
 "--"[^\r\n]* {/*idk if commentary should be mentioned; 
@@ -118,6 +125,34 @@ xor {printf("KEYWORD DETECTED: xor\n");}
 {DIGIT}+    {printf("INTEGER DETECTED: %s\n", yytext);}
 ({DIGIT}+.{DIGIT}+)([eE][+-]?{DIGIT}+)? {printf("REAL DETECTED: %s\n", yytext);}
     /*TODO: a rule for strings*/
+
+
+    /* STRINGS */
+
+\"  {printf("STRING BEGIN DETECTED\n"); yy_push_state(STRING); stringLength = 0;}
+<STRING>\%\% {strcpy(stringBuffer + stringLength, "%"); stringLength++;}
+<STRING>\%A {strcpy(stringBuffer + stringLength, "@"); stringLength++;}
+<STRING>\%B {strcpy(stringBuffer + stringLength, "\и"); stringLength++;}
+<STRING>\%С {strcpy(stringBuffer + stringLength, "^"); stringLength++;}
+<STRING>\%D {strcpy(stringBuffer + stringLength, "$"); stringLength++;}
+<STRING>\%F {strcpy(stringBuffer + stringLength, "\f"); stringLength++;}
+<STRING>\%H {strcpy(stringBuffer + stringLength, "\\"); stringLength++;}
+<STRING>\%L {strcpy(stringBuffer + stringLength, "~"); stringLength++;}
+<STRING>\%N {strcpy(stringBuffer + stringLength, "\n"); stringLength++;}
+<STRING>\%Q {strcpy(stringBuffer + stringLength, "`"); stringLength++;}
+<STRING>\%R {strcpy(stringBuffer + stringLength, "\r"); stringLength++;}
+<STRING>\%S {strcpy(stringBuffer + stringLength, "#"); stringLength++;}
+<STRING>\%T {strcpy(stringBuffer + stringLength, "\t"); stringLength++;}
+<STRING>\%U {strcpy(stringBuffer + stringLength, "\0"); stringLength++;}
+<STRING>\%V {strcpy(stringBuffer + stringLength, "|"); stringLength++;}
+<STRING>\%\' {strcpy(stringBuffer + stringLength, "'"); stringLength++;}
+<STRING>\%\" {strcpy(stringBuffer + stringLength, "\""); stringLength++;}
+<STRING>\%\( {strcpy(stringBuffer + stringLength, "("); stringLength++;}
+<STRING>\%\) {strcpy(stringBuffer + stringLength, ")"); stringLength++;}
+<STRING>\%\< {strcpy(stringBuffer + stringLength, "<"); stringLength++;}
+<STRING>\%\> {strcpy(stringBuffer + stringLength, ">"); stringLength++;}
+<STRING>[^\"] {strncpy(stringBuffer + stringLength, yytext, yyleng); stringLength++;}
+<STRING>\" {yy_pop_state(); stringBuffer[stringLength] = 0; printf("STRING FOUND: %s", stringBuffer);}
 
 
     /*For any exceptions*/
