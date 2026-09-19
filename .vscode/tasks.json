@@ -1,0 +1,11 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Compile", // You can run compilation wia CTRL+SHIFT+B
+            "command": "\".\\compile.bat\" < nul",
+            "type": "shell",
+            "group": "build"
+        }
+    ]
+}
