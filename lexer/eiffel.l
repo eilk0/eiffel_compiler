@@ -7,6 +7,8 @@
 %option never-interactive
 
 %x STRING
+%x CHARACTER
+%x CHARACTER_END
 
 DIGIT   [0-9]
 ID  [a-zA-Z][a-zA-Z0-9_]*
@@ -153,6 +155,36 @@ xor {printf("KEYWORD DETECTED: xor\n");}
 <STRING>\%\> {strcpy(stringBuffer + stringLength, ">"); stringLength++;}
 <STRING>[^\"] {strncpy(stringBuffer + stringLength, yytext, yyleng); stringLength++;}
 <STRING>\" {yy_pop_state(); stringBuffer[stringLength] = 0; printf("STRING FOUND: %s", stringBuffer);}
+
+
+    /* CHARACTERS */
+    
+\'  {printf("CHARACTER BEGIN DETECTED\n"); yy_push_state(CHARACTER); stringLength = 0;}
+<CHARACTER>\%\% {stringBuffer[0] = '%'; BEGIN(CHARACTER_END);}
+<CHARACTER>\%A {stringBuffer[0] = '@'; BEGIN(CHARACTER_END);}
+<CHARACTER>\%B {stringBuffer[0] = '\b'; BEGIN(CHARACTER_END);}
+<CHARACTER>\%С {stringBuffer[0] = '^'; BEGIN(CHARACTER_END);}
+<CHARACTER>\%D {stringBuffer[0] = '$'; BEGIN(CHARACTER_END);}
+<CHARACTER>\%F {stringBuffer[0] = '\f'; BEGIN(CHARACTER_END);}
+<CHARACTER>\%H {stringBuffer[0] = '\\'; BEGIN(CHARACTER_END);}
+<CHARACTER>\%L {stringBuffer[0] = '~'; BEGIN(CHARACTER_END);}
+<CHARACTER>\%N {stringBuffer[0] = '\n'; BEGIN(CHARACTER_END);}
+<CHARACTER>\%Q {stringBuffer[0] = '`'; BEGIN(CHARACTER_END);}
+<CHARACTER>\%R {stringBuffer[0] = '\r'; BEGIN(CHARACTER_END);}
+<CHARACTER>\%S {stringBuffer[0] = '#'; BEGIN(CHARACTER_END);}
+<CHARACTER>\%T {stringBuffer[0] = '\t'; BEGIN(CHARACTER_END);}
+<CHARACTER>\%U {stringBuffer[0] = '\0'; BEGIN(CHARACTER_END);}
+<CHARACTER>\%V {stringBuffer[0] = '|'; BEGIN(CHARACTER_END);}
+<CHARACTER>\%\' {stringBuffer[0] = '\''; BEGIN(CHARACTER_END);}
+<CHARACTER>\%\" {stringBuffer[0] = '"'; BEGIN(CHARACTER_END);}
+<CHARACTER>\%\( {stringBuffer[0] = '('; BEGIN(CHARACTER_END);}
+<CHARACTER>\%\) {stringBuffer[0] = ')'; BEGIN(CHARACTER_END);}
+<CHARACTER>\%\< {stringBuffer[0] = '<'; BEGIN(CHARACTER_END);}
+<CHARACTER>\%\> {stringBuffer[0] =  '>'; BEGIN(CHARACTER_END);}
+<CHARACTER>\'   {fprintf(stderr, "Empty CHARACTER: '%s' at line %d\n",yytext, yylineno); yy_pop_state();}
+<CHARACTER>.    {stringBuffer[0] = yytext[0]; BEGIN(CHARACTER_END);}
+<CHARACTER_END>\'   {printf("CHARACTER DETECTED: %c", stringBuffer)}
+<CHARACTER_END>.    {fprintf(stderr, "Invalid CHARACTER: '%s' at line %d\n",yytext, yylineno); yy_pop_state();}
 
 
     /*For any exceptions*/
