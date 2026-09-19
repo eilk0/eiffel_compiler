@@ -1,1 +1,3 @@
-lex.yy.c
+**/x64
+/.vs
+/lexer/x64

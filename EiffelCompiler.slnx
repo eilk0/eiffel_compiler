@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="Lexer/Lexer.vcxproj" Id="ed480f97-253b-4c0e-905d-16dddd072206" />
+</Solution>
