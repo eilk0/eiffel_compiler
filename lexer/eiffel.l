@@ -13,13 +13,13 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 "--"[^\r\n]* {/*idk if commentary should be mentioned; 
                 Eiffel does not support multiline comments*/}
 
-/*Reserved words*/
+    /* Reserved words */
 across  {printf("KEYWORD DETECTED: across\n");}
 agent   {printf("KEYWORD DETECTED: feature\n");}
 alias   {printf("KEYWORD DETECTED: alias\n");}
 all {printf("KEYWORD DETECTED: all\n");}
 and {printf("KEYWORD DETECTED: and\n");}
-/*возможно стоит выделить and, or, и т.п. в отдельную категорию логических операторов?*/
+    /*возможно стоит выделить and, or, и т.п. в отдельную категорию логических операторов?*/
 as  {printf("KEYWORD DETECTED: as\n");}
 assign  {printf("KEYWORD DETECTED: assign\n");}
 attribute   {printf("KEYWORD DETECTED: attribute\n");}
@@ -90,7 +90,7 @@ when    {printf("KEYWORD DETECTED: when\n");}
 
 xor {printf("KEYWORD DETECTED: xor\n");}
 
-/*Operators*/
+    /*Operators*/
 ":="    {printf("OPERATOR DETECTED: %s\n", yytext);}
 "/="    {printf("OPERATOR DETECTED: %s\n", yytext)}
 "<="    {printf("OPERATOR DETECTED: %s\n", yytext)}
@@ -111,15 +111,15 @@ xor {printf("KEYWORD DETECTED: xor\n");}
 ";" {printf("OPERATOR DETECTED: %s\n", yytext)}
 "." {printf("OPERATOR DETECTED: %s\n", yytext)}
 
-/**/
+    /**/
 
 {ID}    {printf("IDENTIFIER DETECTED: %s\n", yytext);}
 {DIGIT}+    {printf("INTEGER DETECTED: %s\n", yytext);}
 ({DIGIT}+.{DIGIT}+)([eE][+-]?{DIGIT}+)? {printf("REAL DETECTED: %s\n", yytext);}
-/*TODO: a rule for strings*/
+    /*TODO: a rule for strings*/
 
 
-/*For any exceptions*/
+    /*For any exceptions*/
 .                   {fprintf(stderr, "Unknown character: '%s' at line %d\n",yytext, yylineno);}
 
 %%
