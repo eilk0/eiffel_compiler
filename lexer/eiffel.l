@@ -15,7 +15,7 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 %%
     // Local variables
     int stringLength;
-    char[4096] stringBuffer;
+    char stringBuffer[4096];
     int yylineno = 0;
 
 [ \t\r]+    {}
@@ -103,24 +103,24 @@ xor {printf("KEYWORD DETECTED: xor\n");}
 
     /*Operators*/
 ":="    {printf("OPERATOR DETECTED: %s\n", yytext);}
-"/="    {printf("OPERATOR DETECTED: %s\n", yytext)}
-"<="    {printf("OPERATOR DETECTED: %s\n", yytext)}
-">="    {printf("OPERATOR DETECTED: %s\n", yytext)}
+"/="    {printf("OPERATOR DETECTED: %s\n", yytext);}
+"<="    {printf("OPERATOR DETECTED: %s\n", yytext);}
+">="    {printf("OPERATOR DETECTED: %s\n", yytext);}
 
-"=" {printf("OPERATOR DETECTED: %s\n", yytext)}
-"+" {printf("OPERATOR DETECTED: %s\n", yytext)}
-"-" {printf("OPERATOR DETECTED: %s\n", yytext)}
-"*" {printf("OPERATOR DETECTED: %s\n", yytext)}
-"/" {printf("OPERATOR DETECTED: %s\n", yytext)}
+"=" {printf("OPERATOR DETECTED: %s\n", yytext);}
+"+" {printf("OPERATOR DETECTED: %s\n", yytext);}
+"-" {printf("OPERATOR DETECTED: %s\n", yytext);}
+"*" {printf("OPERATOR DETECTED: %s\n", yytext);}
+"/" {printf("OPERATOR DETECTED: %s\n", yytext);}
 
-"(" {printf("OPERATOR DETECTED: %s\n", yytext)}
-")" {printf("OPERATOR DETECTED: %s\n", yytext)}
-"[" printf("OPERATOR DETECTED: %s\n", yytext){}
-"]" {printf("OPERATOR DETECTED: %s\n", yytext)}
-"," {printf("OPERATOR DETECTED: %s\n", yytext)}
-":" {printf("OPERATOR DETECTED: %s\n", yytext)}
-";" {printf("OPERATOR DETECTED: %s\n", yytext)}
-"." {printf("OPERATOR DETECTED: %s\n", yytext)}
+"(" {printf("OPERATOR DETECTED: %s\n", yytext);}
+")" {printf("OPERATOR DETECTED: %s\n", yytext);}
+"[" {printf("OPERATOR DETECTED: %s\n", yytext);}
+"]" {printf("OPERATOR DETECTED: %s\n", yytext);}
+"," {printf("OPERATOR DETECTED: %s\n", yytext);}
+":" {printf("OPERATOR DETECTED: %s\n", yytext);}
+";" {printf("OPERATOR DETECTED: %s\n", yytext);}
+"." {printf("OPERATOR DETECTED: %s\n", yytext);}
 
     /**/
 
@@ -184,7 +184,7 @@ xor {printf("KEYWORD DETECTED: xor\n");}
 <CHARACTER>\%\> {stringBuffer[0] =  '>'; BEGIN(CHARACTER_END);}
 <CHARACTER>\'   {fprintf(stderr, "Empty CHARACTER: '%s' at line %d\n",yytext, yylineno); yy_pop_state();}
 <CHARACTER>.    {stringBuffer[0] = yytext[0]; BEGIN(CHARACTER_END);}
-<CHARACTER_END>\'   {printf("CHARACTER DETECTED: %c", stringBuffer)}
+<CHARACTER_END>\'   {printf("CHARACTER DETECTED: %c", stringBuffer);}
 <CHARACTER_END>.    {fprintf(stderr, "Invalid CHARACTER: '%s' at line %d\n",yytext, yylineno); yy_pop_state();}
 
 
