@@ -3,6 +3,7 @@
 %}
 
 %option noyywrap
+%option never-interactive
 
 DIGIT   [0-9]
 ID  [a-zA-Z][a-zA-Z0-9_]*
