@@ -156,7 +156,7 @@ xor {printf("KEYWORD DETECTED: xor\n");}
 <STRING>\%\< {stringBuffer[stringLength++] = '<';}
 <STRING>\%\> {stringBuffer[stringLength++] =  '>';}
 <STRING>[^\"] {stringBuffer[stringLength++] =  yytext[0];}
-<STRING>\" {yy_pop_state(); stringBuffer[stringLength] = 0; printf("STRING FOUND: %s", stringBuffer);}
+<STRING>\" {yy_pop_state(); stringBuffer[stringLength] = 0; printf("STRING FOUND: %s\n", stringBuffer);}
 
 
     /* CHARACTERS */
