@@ -103,25 +103,26 @@ when    {printf("KEYWORD DETECTED: when\n");}
 xor {printf("KEYWORD DETECTED: xor\n");}
 
     /*Operators*/
-":="    {printf("OPERATOR DETECTED: %s\n", yytext);}
-"/="    {printf("OPERATOR DETECTED: %s\n", yytext);}
-"<="    {printf("OPERATOR DETECTED: %s\n", yytext);}
-">="    {printf("OPERATOR DETECTED: %s\n", yytext);}
+:=    {printf("OPERATOR DETECTED: %s\n", yytext);}
+/=    {printf("OPERATOR DETECTED: %s\n", yytext);}
+<=    {printf("OPERATOR DETECTED: %s\n", yytext);}
+>=    {printf("OPERATOR DETECTED: %s\n", yytext);}
+>   {printf("OPERATOR DETECTED: %s\n", yytext);}
+<   {printf("OPERATOR DETECTED: %s\n", yytext);}
+= {printf("OPERATOR DETECTED: %s\n", yytext);}
+\+ {printf("OPERATOR DETECTED: %s\n", yytext);}
+- {printf("OPERATOR DETECTED: %s\n", yytext);}
+\* {printf("OPERATOR DETECTED: %s\n", yytext);}
+\/ {printf("OPERATOR DETECTED: %s\n", yytext);}
 
-"=" {printf("OPERATOR DETECTED: %s\n", yytext);}
-"+" {printf("OPERATOR DETECTED: %s\n", yytext);}
-"-" {printf("OPERATOR DETECTED: %s\n", yytext);}
-"*" {printf("OPERATOR DETECTED: %s\n", yytext);}
-"/" {printf("OPERATOR DETECTED: %s\n", yytext);}
-
-"(" {printf("OPERATOR DETECTED: %s\n", yytext);}
-")" {printf("OPERATOR DETECTED: %s\n", yytext);}
-"[" {printf("OPERATOR DETECTED: %s\n", yytext);}
-"]" {printf("OPERATOR DETECTED: %s\n", yytext);}
-"," {printf("OPERATOR DETECTED: %s\n", yytext);}
-":" {printf("OPERATOR DETECTED: %s\n", yytext);}
-";" {printf("OPERATOR DETECTED: %s\n", yytext);}
-"." {printf("OPERATOR DETECTED: %s\n", yytext);}
+\( {printf("OPERATOR DETECTED: %s\n", yytext);}
+\) {printf("OPERATOR DETECTED: %s\n", yytext);}
+\[ {printf("OPERATOR DETECTED: %s\n", yytext);}
+\] {printf("OPERATOR DETECTED: %s\n", yytext);}
+, {printf("OPERATOR DETECTED: %s\n", yytext);}
+: {printf("OPERATOR DETECTED: %s\n", yytext);}
+; {printf("OPERATOR DETECTED: %s\n", yytext);}
+\. {printf("OPERATOR DETECTED: %s\n", yytext);}
 
     /**/
 
@@ -190,6 +191,6 @@ xor {printf("KEYWORD DETECTED: xor\n");}
 
 
     /*For any exceptions*/
-.                   {fprintf(stderr, "Unknown character: '%s' at line %d\n",yytext, yylineno); return 0;}
+.                   {fprintf(stderr, "Unknown character: '%s' at line %d\n",yytext, yylineno);}
 
 %%
