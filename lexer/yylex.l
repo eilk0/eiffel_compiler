@@ -190,6 +190,6 @@ xor {printf("KEYWORD DETECTED: xor\n");}
 
 
     /*For any exceptions*/
-.                   {fprintf(stderr, "Unknown character: '%s' at line %d\n",yytext, yylineno);}
+.                   {fprintf(stderr, "Unknown character: '%s' at line %d\n",yytext, yylineno); return 0;}
 
 %%
