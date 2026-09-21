@@ -1,5 +1,6 @@
 %{
     #include <stdio.h>
+    #define YY_NO_UNISTD_H
 %}
 
 %option noyywrap
