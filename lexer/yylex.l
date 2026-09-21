@@ -41,7 +41,7 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 (?i:create)  |
 (?i:Current) |
 (?i:debug)   |
-(?i:deffered)    |
+(?i:deferred)    |
 (?i:do)  |
 (?i:else)    |
 (?i:elseif)  |
@@ -49,7 +49,7 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 (?i:ensure)  |
 (?i:expanded)    |
 (?i:export)  |
-(?i:external) 
+(?i:external)  |
 (?i:feature) |
 (?i:from)    |
 (?i:frozen)  |
