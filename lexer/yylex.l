@@ -104,7 +104,9 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 ":" |
 ";" |
 "." |
+(?i:and)\s+(?i:then)   |
 (?i:and) |
+(?i:or)\s+(?i:else)   |
 (?i:or)  |
 (?i:xor) {printf("OPERATOR DETECTED: %s\n", yytext);}
 
