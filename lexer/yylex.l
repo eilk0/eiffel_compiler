@@ -103,26 +103,27 @@ when    {printf("KEYWORD DETECTED: when\n");}
 xor {printf("KEYWORD DETECTED: xor\n");}
 
     /*Operators*/
-:=    {printf("OPERATOR DETECTED: %s\n", yytext);}
-/=    {printf("OPERATOR DETECTED: %s\n", yytext);}
-<=    {printf("OPERATOR DETECTED: %s\n", yytext);}
->=    {printf("OPERATOR DETECTED: %s\n", yytext);}
->   {printf("OPERATOR DETECTED: %s\n", yytext);}
-<   {printf("OPERATOR DETECTED: %s\n", yytext);}
-= {printf("OPERATOR DETECTED: %s\n", yytext);}
-\+ {printf("OPERATOR DETECTED: %s\n", yytext);}
-- {printf("OPERATOR DETECTED: %s\n", yytext);}
-\* {printf("OPERATOR DETECTED: %s\n", yytext);}
-\/ {printf("OPERATOR DETECTED: %s\n", yytext);}
+">"   {printf("OPERATOR DETECTED: %s\n", yytext);}
+"<"   {printf("OPERATOR DETECTED: %s\n", yytext);}
+":="    {printf("OPERATOR DETECTED: %s\n", yytext);}
+"/="    {printf("OPERATOR DETECTED: %s\n", yytext);}
+"<="    {printf("OPERATOR DETECTED: %s\n", yytext);}
+">="    {printf("OPERATOR DETECTED: %s\n", yytext);}
 
-\( {printf("OPERATOR DETECTED: %s\n", yytext);}
-\) {printf("OPERATOR DETECTED: %s\n", yytext);}
-\[ {printf("OPERATOR DETECTED: %s\n", yytext);}
-\] {printf("OPERATOR DETECTED: %s\n", yytext);}
-, {printf("OPERATOR DETECTED: %s\n", yytext);}
-: {printf("OPERATOR DETECTED: %s\n", yytext);}
-; {printf("OPERATOR DETECTED: %s\n", yytext);}
-\. {printf("OPERATOR DETECTED: %s\n", yytext);}
+"=" {printf("OPERATOR DETECTED: %s\n", yytext);}
+"+" {printf("OPERATOR DETECTED: %s\n", yytext);}
+"-" {printf("OPERATOR DETECTED: %s\n", yytext);}
+"*" {printf("OPERATOR DETECTED: %s\n", yytext);}
+"/" {printf("OPERATOR DETECTED: %s\n", yytext);}
+
+"(" {printf("OPERATOR DETECTED: %s\n", yytext);}
+")" {printf("OPERATOR DETECTED: %s\n", yytext);}
+"[" {printf("OPERATOR DETECTED: %s\n", yytext);}
+"]" {printf("OPERATOR DETECTED: %s\n", yytext);}
+"," {printf("OPERATOR DETECTED: %s\n", yytext);}
+":" {printf("OPERATOR DETECTED: %s\n", yytext);}
+";" {printf("OPERATOR DETECTED: %s\n", yytext);}
+"." {printf("OPERATOR DETECTED: %s\n", yytext);}
 
     /**/
 
