@@ -13,6 +13,7 @@
 %x CHARACTER_END
 
 DIGIT   [0-9]
+INT_DIGIT_SEQUENCE [0-9a-fA-F_]+
 ID  [a-zA-Z][a-zA-Z0-9_]*
 
 %%
@@ -133,17 +134,33 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 {ID}    {printf("IDENTIFIER DETECTED: %s\n", upper(yytext));}
 (({DIGIT}+(\.{DIGIT}*)?)|(\.{DIGIT}+))([eE][+-]?{DIGIT}+)? {printf("REAL DETECTED: %s\n", yytext);}
 
+    /*integer v2*/
+
+    /*Binary base*/
+0[bB]{INT_DIGIT_SEQUENCE} {printf("INTEGER_2 DETECTED: %s\n", yytext);}
+
+    /*Octal base*/
+0[cC]{INT_DIGIT_SEQUENCE} {printf("INTEGER_8 DETECTED: %s\n", yytext);}
+
+    /*Hexadecimal base*/
+0[xX]{INT_DIGIT_SEQUENCE} {printf("INTEGER_16 DETECTED: %s\n", yytext);}
+
+    /*Integer without base*/
+{INT_DIGIT_SEQUENCE} {printf("INTEGER DETECTED: %s\n", yytext);}
+
+    /*integer v1*/
+
     /*Binary*/
-0[bB][0-1_]+ {printf("INTEGER_2 DETECTED: %s\n", yytext);}
+//0[bB][0-1_]+ {printf("INTEGER_2 DETECTED: %s\n", yytext);}
 
     /*Octal*/
-0[cC][0-7_]+ {printf("INTEGER_8 DETECTED: %s\n", yytext);}
+//0[cC][0-7_]+ {printf("INTEGER_8 DETECTED: %s\n", yytext);}
 
     /*Hexadecimal*/
-0[xX][0-9a-fA-F_]+ {printf("INTEGER_16 DETECTED: %s\n", yytext);}
+//0[xX][0-9a-fA-F_]+ {printf("INTEGER_16 DETECTED: %s\n", yytext);}
 
     /*Decimal*/
-{DIGIT}([0-9_]*{DIGIT})? {printf("INTEGER_10 DETECTED: %s\n", yytext);}
+//{DIGIT}([0-9_]*{DIGIT})? {printf("INTEGER_10 DETECTED: %s\n", yytext);}
     /*TODO: a rule for strings*/
 
     /*Universal Integer*/
