@@ -1,5 +1,6 @@
 %{
     #include <stdio.h>
+    #include "upper_lower.h"
     #define YY_NO_UNISTD_H
 %}
 
@@ -81,7 +82,7 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 (?i:until)   |
 (?i:variant) |
 (?i:Void)    |
-(?i:when) {printf("KEYWORD DETECTED: xor\n");}
+(?i:when) {printf("KEYWORD DETECTED: %s\n", lower(yytext));}
 
 
     /*Operators*/
@@ -112,7 +113,7 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 
     /**/
 
-{ID}    {printf("IDENTIFIER DETECTED: %s\n", yytext);}
+{ID}    {printf("IDENTIFIER DETECTED: %s\n", upper(yytext));}
 {DIGIT}+    {printf("INTEGER DETECTED: %s\n", yytext);}
 ({DIGIT}+.{DIGIT}+)([eE][+-]?{DIGIT}+)? {printf("REAL DETECTED: %s\n", yytext);}
     /*TODO: a rule for strings*/

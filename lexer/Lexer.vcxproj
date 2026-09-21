@@ -20,8 +20,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c" />
+    <ClCompile Include="upper_lower.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="upper_lower.h" />
     <ClInclude Include="yylex.h" />
   </ItemGroup>
   <ItemGroup>
