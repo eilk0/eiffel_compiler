@@ -131,8 +131,8 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
     /**/
 
 {ID}    {printf("IDENTIFIER DETECTED: %s\n", upper(yytext));}
+(({DIGIT}+(\.{DIGIT}*)?)|(\.{DIGIT}+))([eE][+-]?{DIGIT}+)? {printf("REAL DETECTED: %s\n", yytext);}
 {DIGIT}+    {printf("INTEGER DETECTED: %s\n", yytext);}
-({DIGIT}+.{DIGIT}+)([eE][+-]?{DIGIT}+)? {printf("REAL DETECTED: %s\n", yytext);}
     /*TODO: a rule for strings*/
 
 
