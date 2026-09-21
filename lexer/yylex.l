@@ -132,7 +132,23 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 
 {ID}    {printf("IDENTIFIER DETECTED: %s\n", upper(yytext));}
 (({DIGIT}+(\.{DIGIT}*)?)|(\.{DIGIT}+))([eE][+-]?{DIGIT}+)? {printf("REAL DETECTED: %s\n", yytext);}
-{DIGIT}+    {printf("INTEGER DETECTED: %s\n", yytext);}
+
+    /*Binary*/
+0[bB][0-1_]+ {printf("INTEGER_2 DETECTED: %s\n", yytext);}
+
+    /*Octal*/
+0[cC][0-7_]+ {printf("INTEGER_8 DETECTED: %s\n", yytext);}
+
+    /*Hexadecimal*/
+0[xX][0-9a-fA-F_]+ {printf("INTEGER_16 DETECTED: %s\n", yytext);}
+
+    /*Decimal*/
+{DIGIT}([0-9_]*{DIGIT})? {printf("INTEGER_10 DETECTED: %s\n", yytext);}
+    /*TODO: a rule for strings*/
+
+    /*Universal Integer*/
+//(?:0[bBcCxX])?[0-9a-fA-F_]+ {printf("INTEGER DETECTED: %s\n", yytext);}
+
     /*TODO: a rule for strings*/
 
 
