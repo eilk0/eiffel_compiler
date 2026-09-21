@@ -85,6 +85,11 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 (?i:when) {printf("KEYWORD DETECTED: %s\n", lower(yytext));}
 
 
+    /*Boolean constants*/
+(?i:true)  |
+(?i:false) {printf("BOOLEAN DETECTED: %s\n", lower(yytext));}
+
+
     /*Operators*/
 ">" |
 "<" |
