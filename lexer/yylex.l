@@ -31,7 +31,6 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 (?i:agent)   |
 (?i:alias)   |
 (?i:all) |
-(?i:and) |
 (?i:as)  |
 (?i:assign)  |
 (?i:attribute)   |
@@ -49,8 +48,7 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 (?i:ensure)  |
 (?i:expanded)    |
 (?i:export)  |
-(?i:external)    |
-(?i:False)   |
+(?i:external) 
 (?i:feature) |
 (?i:from)    |
 (?i:frozen)  |
@@ -68,7 +66,6 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 (?i:old) |
 (?i:once)    |
 (?i:only)    |
-(?i:or)  |
 (?i:Precursor)   |
 (?i:redefine)    |
 (?i:rename)  |
@@ -79,15 +76,12 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 (?i:select)  |
 (?i:separate)    |
 (?i:then)    |
-(?i:True)    |
 (?i:TUPLE)   |
 (?i:undefine)    |
 (?i:until)   |
 (?i:variant) |
 (?i:Void)    |
-(?i:when)    |
-(?i:xor) {printf("KEYWORD DETECTED: xor\n");}
-
+(?i:when) {printf("KEYWORD DETECTED: xor\n");}
 
 
     /*Operators*/
@@ -109,7 +103,10 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 "," |
 ":" |
 ";" |
-"." {printf("OPERATOR DETECTED: %s\n", yytext);}
+"." |
+(?i:and) |
+(?i:or)  |
+(?i:xor) {printf("OPERATOR DETECTED: %s\n", yytext);}
 
     /**/
 
