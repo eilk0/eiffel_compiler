@@ -23,6 +23,7 @@
     <ClCompile Include="upper_lower.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="colors.h" />
     <ClInclude Include="upper_lower.h" />
     <ClInclude Include="yylex.h" />
   </ItemGroup>

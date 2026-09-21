@@ -1,5 +1,6 @@
 %{
     #include <stdio.h>
+    #include "colors.h"
     #include "upper_lower.h"
     #define YY_NO_UNISTD_H
 %}
@@ -21,11 +22,10 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
     char stringBuffer[4096];
     int yylineno = 0;
 
-[ \t\r]+    {}
-[\n]    {yylineno++;}
+[ \t\r]+    {printf("%s", yytext);}
+[\n]    {yylineno++; printf("\n%5d\t", yylineno);}
 
-"--"[^\r\n]* {/*idk if commentary should be mentioned; 
-                Eiffel does not support multiline comments*/}
+"--"[^\r\n]* {printf(GRAY "%s" RESET, yytext);}
 
     /* Reserved words */
 (?i:across)  |
@@ -82,7 +82,7 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 (?i:until)   |
 (?i:variant) |
 (?i:Void)    |
-(?i:when) {printf("KEYWORD DETECTED: %s\n", lower(yytext));}
+(?i:when) {printf(CYAN "%s" RESET, lower(yytext));}
 
 
     /*Operators*/
@@ -121,19 +121,19 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 (?i:and) |
 (?i:or)\s+(?i:else)   |
 (?i:or)  |
-(?i:xor) {printf("OPERATOR DETECTED: %s\n", yytext);}
+(?i:xor) {printf(BRIGHT_RED "%s" RESET, lower(yytext));}
 
     /**/
 
-{ID}    {printf("IDENTIFIER DETECTED: %s\n", upper(yytext));}
-{DIGIT}+    {printf("INTEGER DETECTED: %s\n", yytext);}
-({DIGIT}+.{DIGIT}+)([eE][+-]?{DIGIT}+)? {printf("REAL DETECTED: %s\n", yytext);}
+{ID}    {printf(WHITE "%s" RESET, upper(yytext));}
+{DIGIT}+    {printf(BRIGHT_MAGENTA "%s" RESET, yytext);}
+({DIGIT}+.{DIGIT}+)([eE][+-]?{DIGIT}+)? {printf(BRIGHT_MAGENTA "%s" RESET, yytext);}
     /*TODO: a rule for strings*/
 
 
     /* STRINGS */
 
-\"  {printf("STRING BEGIN DETECTED\n"); yy_push_state(STRING); stringLength = 0;}
+\"  {yy_push_state(STRING); stringLength = 0;}
 <STRING>\%\% {stringBuffer[stringLength++] = '%';}
 <STRING>\%A {stringBuffer[stringLength++] = '@';}
 <STRING>\%B {stringBuffer[stringLength++] = '\b';}
@@ -156,12 +156,12 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 <STRING>\%\< {stringBuffer[stringLength++] = '<';}
 <STRING>\%\> {stringBuffer[stringLength++] =  '>';}
 <STRING>[^\"] {stringBuffer[stringLength++] =  yytext[0];}
-<STRING>\" {yy_pop_state(); stringBuffer[stringLength] = 0; printf("STRING FOUND: %s\n", stringBuffer);}
+<STRING>\" {yy_pop_state(); stringBuffer[stringLength] = 0; printf(BRIGHT_GREEN "\"%s\"" RESET, stringBuffer);}
 
 
     /* CHARACTERS */
     
-\'  {printf("CHARACTER BEGIN DETECTED\n"); yy_push_state(CHARACTER); stringLength = 0;}
+\'  {yy_push_state(CHARACTER); stringLength = 0;}
 <CHARACTER>\%\% {stringBuffer[0] = '%'; BEGIN(CHARACTER_END);}
 <CHARACTER>\%A {stringBuffer[0] = '@'; BEGIN(CHARACTER_END);}
 <CHARACTER>\%B {stringBuffer[0] = '\b'; BEGIN(CHARACTER_END);}
@@ -185,11 +185,11 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 <CHARACTER>\%\> {stringBuffer[0] =  '>'; BEGIN(CHARACTER_END);}
 <CHARACTER>\'   {fprintf(stderr, "Empty CHARACTER: '%s' at line %d\n",yytext, yylineno); yy_pop_state();}
 <CHARACTER>.    {stringBuffer[0] = yytext[0]; BEGIN(CHARACTER_END);}
-<CHARACTER_END>\'   {printf("CHARACTER DETECTED: %c", stringBuffer);}
-<CHARACTER_END>.    {fprintf(stderr, "Invalid CHARACTER: '%s' at line %d\n",yytext, yylineno); yy_pop_state();}
+<CHARACTER_END>\'   {printf(YELLOW "\'%c\'" RESET, stringBuffer);}
+<CHARACTER_END>.    {printf(ERROR "'%s%s" RESET, stringBuffer, yytext);}
 
 
     /*For any exceptions*/
-.                   {fprintf(stderr, "Unknown character: '%s' at line %d\n",yytext, yylineno); return 0;}
+.                   {printf(ERROR "%s" RESET, yytext);}
 
 %%
