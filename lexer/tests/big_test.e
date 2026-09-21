@@ -255,7 +255,6 @@ valid_index (i: INTEGER): BOOLEAN
     do
         Result := i >= 1 and i <= count
     end
-```
 
 invariant
 non_negative_count: count >= 0
