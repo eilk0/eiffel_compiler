@@ -136,16 +136,20 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
     /*integer v2*/
 
     /*Binary base*/
-0[bB][0-1][0-1_]* {printf("INTEGER_2 DETECTED: %s\n", yytext);}
+0[bB][0-1][0-1]? |
+0[bB][0-1][0-1_]+[0-1] {printf("INTEGER_2 DETECTED: %s\n", yytext);}
 
     /*Octal base*/
-0[cC][0-7][0-7_]* {printf("INTEGER_8 DETECTED: %s\n", yytext);}
+0[cC][0-7][0-7]? |
+0[cC][0-7][0-7_]+[0-7] {printf("INTEGER_8 DETECTED: %s\n", yytext);}
 
     /*Hexadecimal base*/
-0[xX][0-9a-fA-F][0-9a-fA-F_]* {printf("INTEGER_16 DETECTED: %s\n", yytext);}
+0[xX][0-9a-fA-F][0-9a-fA-F]? |
+0[xX][0-9a-fA-F][0-9a-fA-F_]+[0-9a-fA-F] {printf("INTEGER_16 DETECTED: %s\n", yytext);}
 
     /*Integer without base*/
-[0-9][0-9_]* {printf("INTEGER DETECTED: %s\n", yytext);}
+[0-9][0-9]? |
+[0-9][0-9_]+[0-9] {printf("INTEGER DETECTED: %s\n", yytext);}
 
     /* STRINGS */
 
