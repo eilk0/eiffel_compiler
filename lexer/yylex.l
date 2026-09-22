@@ -22,7 +22,7 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
     int yylineno = 0;
 
 [ \t\r]+    {}
-[\n]    {yylineno++;}
+\n(--[^\n]*|[\t \n\r]*)*    {yylineno++;printf("LINE BREAK DETECTED\n");}
 
 "--"[^\r\n]* {/*idk if commentary should be mentioned; 
                 Eiffel does not support multiline comments*/}
