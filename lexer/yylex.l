@@ -13,7 +13,6 @@
 %x CHARACTER_END
 
 DIGIT   [0-9]
-INT_DIGIT_SEQUENCE [0-9a-fA-F_]+
 ID  [a-zA-Z][a-zA-Z0-9_]*
 
 %%
@@ -137,16 +136,16 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
     /*integer v2*/
 
     /*Binary base*/
-0[bB]{INT_DIGIT_SEQUENCE} {printf("INTEGER_2 DETECTED: %s\n", yytext);}
+0[bB][0-1_]+ {printf("INTEGER_2 DETECTED: %s\n", yytext);}
 
     /*Octal base*/
-0[cC]{INT_DIGIT_SEQUENCE} {printf("INTEGER_8 DETECTED: %s\n", yytext);}
+0[cC][0-7_]+ {printf("INTEGER_8 DETECTED: %s\n", yytext);}
 
     /*Hexadecimal base*/
-0[xX]{INT_DIGIT_SEQUENCE} {printf("INTEGER_16 DETECTED: %s\n", yytext);}
+0[xX][0-9a-fA-F_]+ {printf("INTEGER_16 DETECTED: %s\n", yytext);}
 
     /*Integer without base*/
-{INT_DIGIT_SEQUENCE} {printf("INTEGER DETECTED: %s\n", yytext);}
+[0-9_]+ {printf("INTEGER DETECTED: %s\n", yytext);}
 
     /*integer v1*/
 
