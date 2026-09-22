@@ -41,7 +41,7 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 (?i:create)  |
 (?i:Current) |
 (?i:debug)   |
-(?i:deffered)    |
+(?i:deferred)    |
 (?i:do)  |
 (?i:else)    |
 (?i:elseif)  |
@@ -49,7 +49,7 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 (?i:ensure)  |
 (?i:expanded)    |
 (?i:export)  |
-(?i:external) 
+(?i:external)  |
 (?i:feature) |
 (?i:from)    |
 (?i:frozen)  |
@@ -83,6 +83,11 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 (?i:variant) |
 (?i:Void)    |
 (?i:when) {printf(CYAN "%s" RESET, lower(yytext));}
+
+
+    /*Boolean constants*/
+(?i:true)  |
+(?i:false) {printf(YELLOW "%s" RESET, lower(yytext));}
 
 
     /*Operators*/
@@ -126,10 +131,25 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
     /**/
 
 {ID}    {printf(WHITE "%s" RESET, upper(yytext));}
-{DIGIT}+    {printf(BRIGHT_MAGENTA "%s" RESET, yytext);}
-({DIGIT}+.{DIGIT}+)([eE][+-]?{DIGIT}+)? {printf(BRIGHT_MAGENTA "%s" RESET, yytext);}
-    /*TODO: a rule for strings*/
+(({DIGIT}+(\.{DIGIT}*)?)|(\.{DIGIT}+))([eE][+-]?{DIGIT}+)? {printf(BRIGHT_MAGENTA "%s" RESET, yytext);}
 
+    /*integer v2*/
+
+    /*Binary base*/
+0[bB][0-1][0-1]? |
+0[bB][0-1][0-1_]+[0-1] {printf(BRIGHT_MAGENTA "%s" RESET, yytext);}
+
+    /*Octal base*/
+0[cC][0-7][0-7]? |
+0[cC][0-7][0-7_]+[0-7] {printf(BRIGHT_MAGENTA "%s" RESET, yytext);}
+
+    /*Hexadecimal base*/
+0[xX][0-9a-fA-F][0-9a-fA-F]? |
+0[xX][0-9a-fA-F][0-9a-fA-F_]+[0-9a-fA-F] {printf(BRIGHT_MAGENTA "%s" RESET, yytext);}
+
+    /*Integer without base*/
+[0-9][0-9]? |
+[0-9][0-9_]+[0-9] {printf(BRIGHT_MAGENTA "%s" RESET, yytext);}
 
     /* STRINGS */
 
