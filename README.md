@@ -8,7 +8,7 @@ A simple compiler for Eiffel programming language. Made as a part of Formal Lang
 
 *Visual Studio* can be used for development of *any* module of the compiler, but `*.l` files has no highlights or suggestions.
 
-*Everyting is configured, just open `EiffelCompiler.slnx`.*
+*Everyting is configured, just open `EiffelCompiler.sln`.*
 
 ## VSCode + Bison/Flex Language Support (optional)
 
