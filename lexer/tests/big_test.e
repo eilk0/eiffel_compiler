@@ -1,9 +1,14 @@
 class
 SORTED_CONTAINER [G -> COMPARABLE create default_create end]
 
-inherit
+
+        --aaaaaaaa --aaaa
+
+--------------------------------
+
+    inherit -- fdgfdg
     ITERABLE [G]
-redefine
+ redefine
  new_cursor
 end
 
