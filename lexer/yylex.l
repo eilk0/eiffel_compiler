@@ -16,6 +16,11 @@
 DIGIT   [0-9]
 ID  [a-zA-Z][a-zA-Z0-9_]*
 
+UTF8_1 [\000-\011\013-\177]
+UTF8_2 [\300-\337][\200-\277]
+UTF8_3 [\340-\357][\200-\277][\200-\277]
+UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
+
 %{
     #include "tokens.h"
     void printToken(char* token, char* str);
@@ -26,6 +31,7 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 %%
     // Local variables
     int stringLength;
+    int characterLength;
     char stringBuffer[4096];
 
 [ \t\r]+    {/* do nothing */}
@@ -221,7 +227,7 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 
     /* CHARACTERS */
     
-\'  {printf("CHARACTER BEGIN DETECTED\n"); yy_push_state(CHARACTER); stringLength = 0;}
+\'  {printf("CHARACTER BEGIN DETECTED\n"); yy_push_state(CHARACTER); stringLength = 0; characterLength=0;}
 <CHARACTER>\%\% {stringBuffer[0] = '%'; BEGIN(CHARACTER_END);}
 <CHARACTER>\%A {stringBuffer[0] = '@'; BEGIN(CHARACTER_END);}
 <CHARACTER>\%B {stringBuffer[0] = '\b'; BEGIN(CHARACTER_END);}
@@ -243,9 +249,26 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 <CHARACTER>\%\) {stringBuffer[0] = ')'; BEGIN(CHARACTER_END);}
 <CHARACTER>\%\< {stringBuffer[0] = '<'; BEGIN(CHARACTER_END);}
 <CHARACTER>\%\> {stringBuffer[0] =  '>'; BEGIN(CHARACTER_END);}
+
+    /*UTF-8 characters*/
+
+<CHARACTER>{UTF8_2} |
+<CHARACTER>{UTF8_3} |
+<CHARACTER>{UTF8_4} {
+    characterLength = yyleng;
+    for(int i = 0; i < yyleng ; i++){stringBuffer[i] = yytext[i];}
+    BEGIN(CHARACTER_END);
+}
+
+    /*ASCII character*/
+
+<CHARACTER>.    { characterLength = 1; stringBuffer[0] = yytext[0]; BEGIN(CHARACTER_END);}
+
 <CHARACTER>\'   {fprintf(stderr, "Empty CHARACTER: '%s' at line %d\n",yytext, yylineno); yy_pop_state();}
-<CHARACTER>.    {stringBuffer[0] = yytext[0]; BEGIN(CHARACTER_END);}
-<CHARACTER_END>\'   {printf("CHARACTER DETECTED: %c", stringBuffer[0]);}
+<CHARACTER_END>\'   {printf("CHARACTER DETECTED:"); 
+                        for(int i = 0; i < characterLength; i++){printf("%02X",(unsigned char)stringBuffer[i]);}
+                        printf("\n");
+                        yy_pop_state();}
 <CHARACTER_END>.    {fprintf(stderr, "Invalid CHARACTER: '%s' at line %d\n",yytext, yylineno); yy_pop_state();}
 
 
