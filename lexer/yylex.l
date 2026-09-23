@@ -145,6 +145,27 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 
 {ID}    {printToken("TYPE_ID", yytext); return TYPE_ID;}
 
+
+    /* REAL */
+
+[0-9]+\.[0-9]+([eE]\-?[0-9]+)? |
+[0-9]+\.([eE]\-?[0-9]+)? |
+\.[0-9]+([eE]\-?[0-9]+)? |
+(([0-9]{1,3}(_[0-9]{3})+))\.(([0-9]{3}_)*[0-9]{1,3})([eE]\-?[0-9]+)? |
+(([0-9]{1,3}(_[0-9]{3})+))\.([eE]\-?[0-9]+)? |
+\.(([0-9]{3}_)*[0-9]{1,3})([eE]\-?[0-9]+)? { 
+        strcpy(stringBuffer, yytext);
+        removeUnderscores(stringBuffer);
+        double num;
+        char state = sscanf(stringBuffer, "%lf", &num); 
+        if(state != 1) {
+            printf("FAILED TO PARSE REAL: %s", stringBuffer);
+            return 0;
+        }
+        printf("DETECTED TYPE_REAL: %lf\n", num); 
+        return TYPE_REAL;
+    }
+
     /*integer v2*/
 
     /*Binary base*/
@@ -191,11 +212,6 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     return TYPE_INT;
 }
 
-    /* Real numbers */
-(({DIGIT}+(\.{DIGIT}*)?)|(\.{DIGIT}+))([eE][+-]?{DIGIT}+)? {
-    printToken("TYPE_REAL", yytext); 
-    return TYPE_REAL;
-    }
 
     /* STRINGS */
 
