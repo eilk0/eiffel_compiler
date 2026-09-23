@@ -19,6 +19,8 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 %{
     #include "tokens.h"
     void printToken(char* token, char* str);
+    void removeUnderscores(char* str);
+    int removeCharFromString(char* str, int pos);
 %}
 
 %%
@@ -136,25 +138,58 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
     /**/
 
 {ID}    {printToken("TYPE_ID", yytext); return TYPE_ID;}
-(({DIGIT}+(\.{DIGIT}*)?)|(\.{DIGIT}+))([eE][+-]?{DIGIT}+)? {return TYPE_REAL;}
 
     /*integer v2*/
 
     /*Binary base*/
 0[bB][0-1][0-1]? |
-0[bB][0-1][0-1_]+[0-1] {return TYPE_INT2;}
+0[bB][0-1][0-1_]+[0-1] {
+    stringBuffer[0] = 0;
+    strcpy(stringBuffer, yytext);
+    removeUnderscores(stringBuffer);
+    int num =  strtol(stringBuffer + 2, NULL, 2);
+    printf("DETECTED TYPE_INT2: %d\n", num);
+    return TYPE_INT2; // не уверена, нужны ли прям такие отдельные токены или просто TYPE_INT
+    }
 
     /*Octal base*/
 0[cC][0-7][0-7]? |
-0[cC][0-7][0-7_]+[0-7] {return TYPE_INT8;}
+0[cC][0-7][0-7_]+[0-7] {
+    stringBuffer[0] = 0;
+    strcpy(stringBuffer, yytext);
+    removeUnderscores(stringBuffer);
+    int num =  strtol(stringBuffer + 2, NULL, 8);
+    printf("DETECTED TYPE_INT8: %d\n", num);
+    return TYPE_INT8;
+    }
 
     /*Hexadecimal base*/
 0[xX][0-9a-fA-F][0-9a-fA-F]? |
-0[xX][0-9a-fA-F][0-9a-fA-F_]+[0-9a-fA-F] {return TYPE_INT16;}
+0[xX][0-9a-fA-F][0-9a-fA-F_]+[0-9a-fA-F] {
+    stringBuffer[0] = 0;
+    strcpy(stringBuffer, yytext);
+    removeUnderscores(stringBuffer);
+    int num =  strtol(stringBuffer + 2, NULL, 16);
+    printf("DETECTED TYPE_INT16: %d\n", num);
+    return TYPE_INT16;
+    }
 
     /*Integer without base*/
 [0-9][0-9]? |
-[0-9][0-9_]+[0-9] {return TYPE_INT;}
+[0-9][0-9_]+[0-9] {
+    stringBuffer[0] = 0;
+    strcpy(stringBuffer, yytext);
+    removeUnderscores(stringBuffer);
+    int num = atoi(stringBuffer);
+    printf("DETECTED TYPE_INT: %d\n", num);
+    return TYPE_INT;
+}
+
+    /* Real numbers */
+(({DIGIT}+(\.{DIGIT}*)?)|(\.{DIGIT}+))([eE][+-]?{DIGIT}+)? {
+    printToken("TYPE_REAL", yytext); 
+    return TYPE_REAL;
+    }
 
     /* STRINGS */
 
@@ -221,4 +256,19 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 
 void printToken(char* token, char* str) {
     printf("DETECTED %s: %s\n", token, str);
+}
+
+void removeUnderscores(char* str){
+    char* underscore = strchr(str, '_');
+    while ((underscore = strchr(str, '_')) != NULL) {
+        memmove(underscore, underscore + 1, strlen(underscore));
+    }
+}
+
+int removeCharFromString(char* str, int pos) {
+    int length = strlen(str);
+    if (pos >= length || pos < 0) { return 0; }
+    for (int i = pos; i < pos; i++)
+    str[i] = str[i + 1];
+    return 1;
 }
