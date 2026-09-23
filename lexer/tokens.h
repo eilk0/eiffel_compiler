@@ -53,7 +53,8 @@ enum KeywordToken {
     KW_UNTIL,
     KW_VARIANT,
     KW_VOID,
-    KW_WHEN
+    KW_WHEN,
+    ENDL
 };
 
 enum OperatorToken {
@@ -103,5 +104,8 @@ enum TypeToken {
     TYPE_REAL,
     TYPE_CHAR,
     TYPE_STRING,
-    TYPE_BOOLEAN
+    TYPE_BOOLEAN, // наверное не пригодится, хз
+    TYPE_ID,
+    TYPE_TRUE,
+    TYPE_FALSE
 };

@@ -25,8 +25,8 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
     int stringLength;
     char stringBuffer[4096];
 
-[ \t\r]+    {}
-\n(--[^\n]*|[\t \n\r]*)*    {printf("LINE BREAK DETECTED\n");}
+[ \t\r]+    {/* do nothing */}
+\n(--[^\n]*|[\t \n\r]*)*    {return ENDL;}
 
 "--"[^\r\n]* {/*idk if commentary should be mentioned; 
                 Eiffel does not support multiline comments*/}
@@ -90,8 +90,8 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 
 
     /*Boolean constants*/
-(?i:true)  {return TYPE_BOOLEAN;}
-(?i:false) {return TYPE_BOOLEAN;}
+(?i:true)  {return TYPE_TRUE;}
+(?i:false) {return TYPE_FALSE;}
 
 
     /*Operators*/
@@ -134,26 +134,26 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 
     /**/
 
-{ID}    {printf("IDENTIFIER DETECTED: %s\n", upper(yytext));}
-(({DIGIT}+(\.{DIGIT}*)?)|(\.{DIGIT}+))([eE][+-]?{DIGIT}+)? {printf("REAL DETECTED: %s\n", yytext);}
+{ID}    {return LIT_ID;}
+(({DIGIT}+(\.{DIGIT}*)?)|(\.{DIGIT}+))([eE][+-]?{DIGIT}+)? {return TYPE_REAL;}
 
     /*integer v2*/
 
     /*Binary base*/
 0[bB][0-1][0-1]? |
-0[bB][0-1][0-1_]+[0-1] {printf("INTEGER_2 DETECTED: %s\n", yytext);}
+0[bB][0-1][0-1_]+[0-1] {return TYPE_INT2;}
 
     /*Octal base*/
 0[cC][0-7][0-7]? |
-0[cC][0-7][0-7_]+[0-7] {printf("INTEGER_8 DETECTED: %s\n", yytext);}
+0[cC][0-7][0-7_]+[0-7] {return TYPE_INT8;}
 
     /*Hexadecimal base*/
 0[xX][0-9a-fA-F][0-9a-fA-F]? |
-0[xX][0-9a-fA-F][0-9a-fA-F_]+[0-9a-fA-F] {printf("INTEGER_16 DETECTED: %s\n", yytext);}
+0[xX][0-9a-fA-F][0-9a-fA-F_]+[0-9a-fA-F] {return TYPE_INT16;}
 
     /*Integer without base*/
 [0-9][0-9]? |
-[0-9][0-9_]+[0-9] {printf("INTEGER DETECTED: %s\n", yytext);}
+[0-9][0-9_]+[0-9] {return TYPE_INT;}
 
     /* STRINGS */
 
