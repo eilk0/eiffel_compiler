@@ -238,6 +238,28 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 <STRING>\%\) {stringBuffer[stringLength++] = ')';}
 <STRING>\%\< {stringBuffer[stringLength++] = '<';}
 <STRING>\%\> {stringBuffer[stringLength++] =  '>';}
+
+<STRING>\%\/{BIN}\/ {
+    char strbuf[64];
+    strcpy(strbuf, yytext+4);
+    strbuf[yyleng-5] = 0;
+    stringBuffer[stringLength++] = strtol(strbuf, NULL, 2);}
+<STRING>\%\/{OCT}\/ {
+    char strbuf[64];
+    strcpy(strbuf, yytext+4);
+    strbuf[yyleng-5] = 0;
+    stringBuffer[stringLength++] = strtol(strbuf, NULL, 8);}
+<STRING>\%\/{HEX}\/ {
+    char strbuf[64];
+    strcpy(strbuf, yytext+4);
+    strbuf[yyleng-5] = 0;
+    stringBuffer[stringLength++] = strtol(strbuf, NULL, 16);}
+<STRING>\%\/{INTWB}\/ {
+    char strbuf[64];
+    strcpy(strbuf, yytext+4);
+    strbuf[yyleng-5] = 0;
+    stringBuffer[stringLength++] = strtol(strbuf, NULL, 10);}
+
 <STRING>[^\"] {stringBuffer[stringLength++] =  yytext[0];}
 <STRING>\" {yy_pop_state(); 
         stringBuffer[stringLength] = 0;
