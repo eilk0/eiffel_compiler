@@ -247,7 +247,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 
     /* CHARACTERS */
     
-\'  {printf("CHARACTER BEGIN DETECTED\n"); yy_push_state(CHARACTER); stringLength = 0; characterLength=0;}
+\'  {printf("CHARACTER BEGIN DETECTED\n"); yy_push_state(CHARACTER); characterLength=0; stringBuffer[0] = stringBuffer[1] = stringBuffer[2] = stringBuffer[3] = 0;}
 <CHARACTER>\%\% {stringBuffer[0] = '%'; BEGIN(CHARACTER_END);}
 <CHARACTER>\%A {stringBuffer[0] = '@'; BEGIN(CHARACTER_END);}
 <CHARACTER>\%B {stringBuffer[0] = '\b'; BEGIN(CHARACTER_END);}
@@ -269,6 +269,30 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 <CHARACTER>\%\) {stringBuffer[0] = ')'; BEGIN(CHARACTER_END);}
 <CHARACTER>\%\< {stringBuffer[0] = '<'; BEGIN(CHARACTER_END);}
 <CHARACTER>\%\> {stringBuffer[0] =  '>'; BEGIN(CHARACTER_END);}
+<CHARACTER>\%\/{BIN}\/ {
+    char strbuf[64];
+    strcpy(strbuf, yytext+4);
+    strbuf[yyleng-5] = 0;
+    stringBuffer[0] = strtol(strbuf, NULL, 2); 
+    BEGIN(CHARACTER_END);}
+<CHARACTER>\%\/{OCT}\/ {
+    char strbuf[64];
+    strcpy(strbuf, yytext+4);
+    strbuf[yyleng-5] = 0;
+    stringBuffer[0] = strtol(strbuf, NULL, 8); 
+    BEGIN(CHARACTER_END);}
+<CHARACTER>\%\/{HEX}\/ {
+    char strbuf[64];
+    strcpy(strbuf, yytext+4);
+    strbuf[yyleng-5] = 0;
+    stringBuffer[0] = strtol(strbuf, NULL, 16); 
+    BEGIN(CHARACTER_END);}
+<CHARACTER>\%\/{INTWB}\/ {
+    char strbuf[64];
+    strcpy(strbuf, yytext+4);
+    strbuf[yyleng-5] = 0;
+    stringBuffer[0] = strtol(strbuf, NULL, 10); 
+    BEGIN(CHARACTER_END);}
 
     /*UTF-8 characters*/
 
@@ -286,8 +310,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 
 <CHARACTER>\'   {fprintf(stderr, "Empty CHARACTER: '%s' at line %d\n",yytext, yylineno); yy_pop_state();}
 <CHARACTER_END>\'   {printf("CHARACTER DETECTED:"); 
-                        for(int i = 0; i < characterLength; i++){printf("%02X",(unsigned char)stringBuffer[i]);}
-                        printf("\n");
+                        printf("%s\n", stringBuffer);
                         yy_pop_state();
                         return TYPE_CHAR;}
 <CHARACTER_END>.    {fprintf(stderr, "Invalid CHARACTER: '%s' at line %d\n",yytext, yylineno); yy_pop_state();}
