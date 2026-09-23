@@ -35,7 +35,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     char stringBuffer[4096];
 
 [ \t\r]+    {/* do nothing */}
-\n(--[^\n]*|[\t \n\r]*)*    {return ENDL;}
+\n(--[^\n]*|[\t \n\r]*)*    {printf("NEWLINE\n"); return ENDL;}
 
 "--"[^\r\n]* {/*idk if commentary should be mentioned; 
                 Eiffel does not support multiline comments*/}
@@ -222,7 +222,10 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 <STRING>\%\< {stringBuffer[stringLength++] = '<';}
 <STRING>\%\> {stringBuffer[stringLength++] =  '>';}
 <STRING>[^\"] {stringBuffer[stringLength++] =  yytext[0];}
-<STRING>\" {yy_pop_state(); stringBuffer[stringLength] = 0; printf("STRING FOUND: %s\n", stringBuffer);}
+<STRING>\" {yy_pop_state(); 
+        stringBuffer[stringLength] = 0;
+        printf("STRING FOUND: %s\n", stringBuffer);
+        return TYPE_STRING;}
 
 
     /* CHARACTERS */
@@ -268,7 +271,8 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 <CHARACTER_END>\'   {printf("CHARACTER DETECTED:"); 
                         for(int i = 0; i < characterLength; i++){printf("%02X",(unsigned char)stringBuffer[i]);}
                         printf("\n");
-                        yy_pop_state();}
+                        yy_pop_state();
+                        return TYPE_CHAR;}
 <CHARACTER_END>.    {fprintf(stderr, "Invalid CHARACTER: '%s' at line %d\n",yytext, yylineno); yy_pop_state();}
 
 
