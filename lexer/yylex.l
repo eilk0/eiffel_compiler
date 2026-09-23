@@ -7,6 +7,7 @@
 %option noyywrap
 %option never-interactive
 %option stack
+%option yylineno
 
 %x STRING
 %x CHARACTER
@@ -23,10 +24,9 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
     // Local variables
     int stringLength;
     char stringBuffer[4096];
-    int yylineno = 0;
 
 [ \t\r]+    {}
-\n(--[^\n]*|[\t \n\r]*)*    {yylineno++;printf("LINE BREAK DETECTED\n");}
+\n(--[^\n]*|[\t \n\r]*)*    {printf("LINE BREAK DETECTED\n");}
 
 "--"[^\r\n]* {/*idk if commentary should be mentioned; 
                 Eiffel does not support multiline comments*/}
