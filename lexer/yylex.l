@@ -243,22 +243,42 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     char strbuf[64];
     strcpy(strbuf, yytext+4);
     strbuf[yyleng-5] = 0;
-    stringBuffer[stringLength++] = strtol(strbuf, NULL, 2);}
+        long decoded = strtol(strbuf, NULL, 2);
+    if(LONG_MAX == decoded || LONG_MIN == decoded) {
+        fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
+        return 0;
+    }
+    stringBuffer[stringLength++] = decoded; }
 <STRING>\%\/{OCT}\/ {
     char strbuf[64];
     strcpy(strbuf, yytext+4);
     strbuf[yyleng-5] = 0;
-    stringBuffer[stringLength++] = strtol(strbuf, NULL, 8);}
+        long decoded = strtol(strbuf, NULL, 8);
+    if(LONG_MAX == decoded || LONG_MIN == decoded) {
+        fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
+        return 0;
+    }
+    stringBuffer[stringLength++] = decoded; }
 <STRING>\%\/{HEX}\/ {
     char strbuf[64];
     strcpy(strbuf, yytext+4);
     strbuf[yyleng-5] = 0;
-    stringBuffer[stringLength++] = strtol(strbuf, NULL, 16);}
+        long decoded = strtol(strbuf, NULL, 16);
+    if(LONG_MAX == decoded || LONG_MIN == decoded) {
+        fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
+        return 0;
+    }
+    stringBuffer[stringLength++] = decoded; }
 <STRING>\%\/{INTWB}\/ {
     char strbuf[64];
     strcpy(strbuf, yytext+4);
     strbuf[yyleng-5] = 0;
-    stringBuffer[stringLength++] = strtol(strbuf, NULL, 10);}
+       long decoded = strtol(strbuf, NULL, 10);
+    if(LONG_MAX == decoded || LONG_MIN == decoded) {
+        fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
+        return 0;
+    }
+    stringBuffer[stringLength++] = decoded; }
 
 <STRING>[^\"] {stringBuffer[stringLength++] =  yytext[0];}
 <STRING>\" {yy_pop_state(); 
@@ -295,25 +315,44 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     char strbuf[64];
     strcpy(strbuf, yytext+4);
     strbuf[yyleng-5] = 0;
-    stringBuffer[0] = strtol(strbuf, NULL, 2); 
+    long decoded = strtol(strbuf, NULL, 2);
+    if(LONG_MAX == decoded || LONG_MIN == decoded) {
+        fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
+        return 0;
+    }
+    stringBuffer[0] = decoded; 
     BEGIN(CHARACTER_END);}
 <CHARACTER>\%\/{OCT}\/ {
     char strbuf[64];
     strcpy(strbuf, yytext+4);
     strbuf[yyleng-5] = 0;
-    stringBuffer[0] = strtol(strbuf, NULL, 8); 
+    long decoded = strtol(strbuf, NULL, 8);
+    if(LONG_MAX == decoded || LONG_MIN == decoded) {
+        fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
+        return 0;
+    }
+    stringBuffer[0] = decoded; 
     BEGIN(CHARACTER_END);}
 <CHARACTER>\%\/{HEX}\/ {
     char strbuf[64];
     strcpy(strbuf, yytext+4);
     strbuf[yyleng-5] = 0;
-    stringBuffer[0] = strtol(strbuf, NULL, 16); 
+        long decoded = strtol(strbuf, NULL, 16);
+    if(LONG_MAX == decoded || LONG_MIN == decoded) {
+        fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
+        return 0;
+    }
+    stringBuffer[0] = decoded; 
     BEGIN(CHARACTER_END);}
 <CHARACTER>\%\/{INTWB}\/ {
     char strbuf[64];
     strcpy(strbuf, yytext+4);
-    strbuf[yyleng-5] = 0;
-    stringBuffer[0] = strtol(strbuf, NULL, 10); 
+    strbuf[yyleng-5] = 0;    long decoded = strtol(strbuf, NULL, 10);
+    if(LONG_MAX == decoded || LONG_MIN == decoded) {
+        fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
+        return 0;
+    }
+    stringBuffer[0] = decoded; 
     BEGIN(CHARACTER_END);}
 
     /*UTF-8 characters*/
