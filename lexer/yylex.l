@@ -209,7 +209,7 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 <CHARACTER>\%\> {stringBuffer[0] =  '>'; BEGIN(CHARACTER_END);}
 <CHARACTER>\'   {fprintf(stderr, "Empty CHARACTER: '%s' at line %d\n",yytext, yylineno); yy_pop_state();}
 <CHARACTER>.    {stringBuffer[0] = yytext[0]; BEGIN(CHARACTER_END);}
-<CHARACTER_END>\'   {printf("CHARACTER DETECTED: %c", stringBuffer);}
+<CHARACTER_END>\'   {printf("CHARACTER DETECTED: %c", stringBuffer[0]);}
 <CHARACTER_END>.    {fprintf(stderr, "Invalid CHARACTER: '%s' at line %d\n",yytext, yylineno); yy_pop_state();}
 
 
