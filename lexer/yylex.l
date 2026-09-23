@@ -262,7 +262,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 
     /*ASCII character*/
 
-<CHARACTER>.    { characterLength = 1; stringBuffer[0] = yytext[0]; BEGIN(CHARACTER_END);}
+<CHARACTER>[^\']    { characterLength = 1; stringBuffer[0] = yytext[0]; BEGIN(CHARACTER_END);}
 
 <CHARACTER>\'   {fprintf(stderr, "Empty CHARACTER: '%s' at line %d\n",yytext, yylineno); yy_pop_state();}
 <CHARACTER_END>\'   {printf("CHARACTER DETECTED:"); 
