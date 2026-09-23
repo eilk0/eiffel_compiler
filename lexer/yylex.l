@@ -178,7 +178,11 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     stringBuffer[0] = 0;
     strcpy(stringBuffer, yytext);
     removeUnderscores(stringBuffer);
-    int num =  strtol(stringBuffer + 2, NULL, 2);
+    long num =  strtol(stringBuffer + 2, NULL, 2);
+    if(LONG_MAX == num || LONG_MIN == num) {
+        fprintf(stderr, "Failed to parse integer: '%s' at line %d\n",yytext, yylineno);
+        return 0;
+    }
     printf("DETECTED TYPE_INT2: %d\n", num);
     return TYPE_INT2; // не уверена, нужны ли прям такие отдельные токены или просто TYPE_INT
     }
@@ -188,7 +192,11 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     stringBuffer[0] = 0;
     strcpy(stringBuffer, yytext);
     removeUnderscores(stringBuffer);
-    int num =  strtol(stringBuffer + 2, NULL, 8);
+    long num =  strtol(stringBuffer + 2, NULL, 8);
+    if(LONG_MAX == num || LONG_MIN == num) {
+        fprintf(stderr, "Failed to parse integer: '%s' at line %d\n",yytext, yylineno);
+        return 0;
+    }
     printf("DETECTED TYPE_INT8: %d\n", num);
     return TYPE_INT8;
     }
@@ -198,7 +206,11 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     stringBuffer[0] = 0;
     strcpy(stringBuffer, yytext);
     removeUnderscores(stringBuffer);
-    int num =  strtol(stringBuffer + 2, NULL, 16);
+    long num =  strtol(stringBuffer + 2, NULL, 16);
+    if(LONG_MAX == num || LONG_MIN == num) {
+        fprintf(stderr, "Failed to parse integer: '%s' at line %d\n",yytext, yylineno);
+        return 0;
+    }
     printf("DETECTED TYPE_INT16: %d\n", num);
     return TYPE_INT16;
     }
@@ -208,7 +220,11 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     stringBuffer[0] = 0;
     strcpy(stringBuffer, yytext);
     removeUnderscores(stringBuffer);
-    int num = atoi(stringBuffer);
+    long num =  strtol(stringBuffer + 2, NULL, 10);
+    if(LONG_MAX == num || LONG_MIN == num) {
+        fprintf(stderr, "Failed to parse integer: '%s' at line %d\n",yytext, yylineno);
+        return 0;
+    }
     printf("DETECTED TYPE_INT: %d\n", num);
     return TYPE_INT;
 }
