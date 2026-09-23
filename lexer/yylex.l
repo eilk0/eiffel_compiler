@@ -15,6 +15,10 @@
 DIGIT   [0-9]
 ID  [a-zA-Z][a-zA-Z0-9_]*
 
+%{
+    #include "tokens.h"
+%}
+
 %%
     // Local variables
     int stringLength;
@@ -28,105 +32,105 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
                 Eiffel does not support multiline comments*/}
 
     /* Reserved words */
-(?i:across)  |
-(?i:agent)   |
-(?i:alias)   |
-(?i:all) |
-(?i:as)  |
-(?i:assign)  |
-(?i:attribute)   |
-(?i:check)   |
-(?i:class)   |
-(?i:convert) |
-(?i:create)  |
-(?i:Current) |
-(?i:debug)   |
-(?i:deferred)    |
-(?i:do)  |
-(?i:else)    |
-(?i:elseif)  |
-(?i:end) |
-(?i:ensure)  |
-(?i:expanded)    |
-(?i:export)  |
-(?i:external)  |
-(?i:feature) |
-(?i:from)    |
-(?i:frozen)  |
-(?i:if)  |
-(?i:implies) |
-(?i:inherit) |
-(?i:inspect) |
-(?i:invariant)   |
-(?i:like)    |
-(?i:local)   |
-(?i:loop)    |
-(?i:not) |
-(?i:note)    |
-(?i:obsolete)    |
-(?i:old) |
-(?i:once)    |
-(?i:only)    |
-(?i:Precursor)   |
-(?i:redefine)    |
-(?i:rename)  |
-(?i:require) |
-(?i:rescue)  |
-(?i:Result)  |
-(?i:retry)   |
-(?i:select)  |
-(?i:separate)    |
-(?i:then)    |
-(?i:TUPLE)   |
-(?i:undefine)    |
-(?i:until)   |
-(?i:variant) |
-(?i:Void)    |
-(?i:when) {printf("KEYWORD DETECTED: %s\n", lower(yytext));}
+(?i:across)  {return KW_ACROSS;}
+(?i:agent)   {return KW_AGENT;}
+(?i:alias)   {return KW_ALIAS;}
+(?i:all) {return KW_ALL;}
+(?i:as)  {return KW_AS;}
+(?i:assign)  {return KW_ASSIGN;}
+(?i:attribute)   {return KW_ATTRIBUTE;}
+(?i:check)   {return KW_CHECK;}
+(?i:class)   {return KW_CLASS;}
+(?i:convert) {return KW_CONVERT;}
+(?i:create)  {return KW_CREATE;}
+(?i:Current) {return KW_CURRENT;}
+(?i:debug)   {return KW_DEBUG;}
+(?i:deferred)    {return KW_DEFERRED;}
+(?i:do)  {return KW_DO;}
+(?i:else)    {return KW_ELSE;}
+(?i:elseif)  {return KW_ELSEIF;}
+(?i:end) {return KW_END;}
+(?i:ensure)  {return KW_ENSURE;}
+(?i:expanded)    {return KW_EXPANDED;}
+(?i:export)  {return KW_EXPORT;}
+(?i:external)  {return KW_EXTERNAL;}
+(?i:feature) {return KW_FEATURE;}
+(?i:from)    {return KW_FROM;}
+(?i:frozen)  {return KW_FROZEN;}
+(?i:if)  {return KW_IF;}
+(?i:implies) {return KW_IMPLIES;}
+(?i:inherit) {return KW_INHERIT;}
+(?i:inspect) {return KW_INSPECT;}
+(?i:invariant)   {return KW_INVARIANT;}
+(?i:like)    {return KW_LIKE;}
+(?i:local)   {return KW_LOCAL;}
+(?i:loop)    {return KW_LOOP;}
+(?i:not) {return KW_NOT;}
+(?i:note)    {return KW_NOTE;}
+(?i:obsolete)    {return KW_OBSOLETE;}
+(?i:old) {return KW_OLD;}
+(?i:once)    {return KW_ONCE;}
+(?i:only)    {return KW_ONLY;}
+(?i:Precursor)   {return KW_PRECURSOR;}
+(?i:redefine)    {return KW_REDEFINE;}
+(?i:rename)  {return KW_RENAME;}
+(?i:require) {return KW_REQUIRE;}
+(?i:rescue)  {return KW_RESCUE;}
+(?i:Result)  {return KW_RESULT;}
+(?i:retry)   {return KW_RETRY;}
+(?i:select)  {return KW_SELECT;}
+(?i:separate)    {return KW_SEPARATE;}
+(?i:then)    {return KW_THEN;}
+(?i:TUPLE)   {return KW_TUPLE;}
+(?i:undefine)    {return KW_UNDEFINE;}
+(?i:until)   {return KW_UNTIL;}
+(?i:variant) {return KW_VARIANT;}
+(?i:Void)    {return KW_VOID;}
+(?i:when) {return KW_WHEN;}
 
 
     /*Boolean constants*/
-(?i:true)  |
-(?i:false) {printf("BOOLEAN DETECTED: %s\n", lower(yytext));}
+(?i:true)  {return TYPE_BOOLEAN;}
+(?i:false) {return TYPE_BOOLEAN;}
 
 
     /*Operators*/
-">" |
-"<" |
-":="    |
-"/="    |
-"<="    |
-">="    |
-"=" |
-"+" |
-"-" |
-"*" |
-"/" |
-"(" |
-")" |
-"[" |
-"]" |
-"{" |
-"}" |
-"," |
-":" |
-";" |
-"." |
-"@" |
-"?" |
-"~" |
-"!" |
-"#" |
-"$" |
-"%" |
-"&" |
-"|" |
-"^" |
-(?i:and)\s+(?i:then)   |
-(?i:and) |
-(?i:or)\s+(?i:else)   |
-(?i:or)  |
-(?i:xor) {printf("OPERATOR DETECTED: %s\n", yytext);}
+">"	{return OP_GREATER;}
+"<"	{return OP_LESS;}
+":="	{return OP_ASSIGN;}
+"/="	{return OP_NE;}
+"<="	{return OP_LE;}
+">="	{return OP_GE;}
+"="	{return OP_EQUAL;}
+"+"	{return OP_PLUS;}
+"-"	{return OP_MINUS;}
+"*"	{return OP_MULT;}
+"/"	{return OP_DIV;}
+"("	{return OP_LPARENTHESIS;}
+")"	{return OP_RPARENTHESIS;}
+"["	{return OP_LSQBRACKET;}
+"]"	{return OP_RSQBRACKET;}
+"{"	{return OP_LBRACE;}
+"}"	{return OP_RBRACE;}
+","	{return OP_COMMA;}
+":"	{return OP_COLON;}
+";"	{return OP_SEMICOLON;}
+"."	{return OP_POINT;}
+"@"	{return OP_ATSIGN;}
+"?"	{return OP_QUESTION;}
+"~"	{return OP_TILDE;}
+"!"	{return OP_EXCLAMATION;}
+"#"	{return OP_HASH;}
+"$"	{return OP_DOLLAR;}
+"%"	{return OP_PERCENT;}
+"&"	{return OP_AMPERSAND;}
+"|"	{return OP_VBAR;}
+"^"	{return OP_CARET;}
+(?i:and)\s+(?i:then)	{return OP_ANDTHEN;}
+(?i:and)	{return OP_AND;}
+(?i:or)\s+(?i:else)	{return OP_ORELSE;}
+(?i:or)	{return OP_OR;}
+(?i:xor) {return OP_XOR;}
 
     /**/
 
