@@ -14,6 +14,7 @@ int main(int argc, char** argv) {
         printf("File is not specified!");
         return -1;
     }
-    yylex();
+    int token;
+    while ((token = yylex())) {}
     return 0;
 }

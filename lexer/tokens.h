@@ -1,5 +1,5 @@
-enum KeywordToken {
-    KW_ACROSS,
+enum Token {
+    KW_ACROSS = 256,
     KW_AGENT,
     KW_ALIAS,
     KW_ALL,
@@ -54,10 +54,6 @@ enum KeywordToken {
     KW_VARIANT,
     KW_VOID,
     KW_WHEN,
-    ENDL
-};
-
-enum OperatorToken {
     OP_GREATER,
     OP_LESS,
     OP_ASSIGN,
@@ -93,10 +89,7 @@ enum OperatorToken {
     OP_ANDTHEN,
     OP_OR,
     OP_ORELSE,
-    OP_XOR
-};
-
-enum TypeToken {
+    OP_XOR,
     TYPE_INT,
     TYPE_INT2,
     TYPE_INT8,
@@ -107,5 +100,6 @@ enum TypeToken {
     TYPE_BOOLEAN, // наверное не пригодится, хз
     TYPE_ID,
     TYPE_TRUE,
-    TYPE_FALSE
+    TYPE_FALSE,
+    ENDL
 };
