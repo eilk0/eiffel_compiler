@@ -18,6 +18,7 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 
 %{
     #include "tokens.h"
+    void printToken(char* token, char* str);
 %}
 
 %%
@@ -32,109 +33,109 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
                 Eiffel does not support multiline comments*/}
 
     /* Reserved words */
-(?i:across)  {return KW_ACROSS;}
-(?i:agent)   {return KW_AGENT;}
-(?i:alias)   {return KW_ALIAS;}
-(?i:all) {return KW_ALL;}
-(?i:as)  {return KW_AS;}
-(?i:assign)  {return KW_ASSIGN;}
-(?i:attribute)   {return KW_ATTRIBUTE;}
-(?i:check)   {return KW_CHECK;}
-(?i:class)   {return KW_CLASS;}
-(?i:convert) {return KW_CONVERT;}
-(?i:create)  {return KW_CREATE;}
-(?i:Current) {return KW_CURRENT;}
-(?i:debug)   {return KW_DEBUG;}
-(?i:deferred)    {return KW_DEFERRED;}
-(?i:do)  {return KW_DO;}
-(?i:else)    {return KW_ELSE;}
-(?i:elseif)  {return KW_ELSEIF;}
-(?i:end) {return KW_END;}
-(?i:ensure)  {return KW_ENSURE;}
-(?i:expanded)    {return KW_EXPANDED;}
-(?i:export)  {return KW_EXPORT;}
-(?i:external)  {return KW_EXTERNAL;}
-(?i:feature) {return KW_FEATURE;}
-(?i:from)    {return KW_FROM;}
-(?i:frozen)  {return KW_FROZEN;}
-(?i:if)  {return KW_IF;}
-(?i:implies) {return KW_IMPLIES;}
-(?i:inherit) {return KW_INHERIT;}
-(?i:inspect) {return KW_INSPECT;}
-(?i:invariant)   {return KW_INVARIANT;}
-(?i:like)    {return KW_LIKE;}
-(?i:local)   {return KW_LOCAL;}
-(?i:loop)    {return KW_LOOP;}
-(?i:not) {return KW_NOT;}
-(?i:note)    {return KW_NOTE;}
-(?i:obsolete)    {return KW_OBSOLETE;}
-(?i:old) {return KW_OLD;}
-(?i:once)    {return KW_ONCE;}
-(?i:only)    {return KW_ONLY;}
-(?i:Precursor)   {return KW_PRECURSOR;}
-(?i:redefine)    {return KW_REDEFINE;}
-(?i:rename)  {return KW_RENAME;}
-(?i:require) {return KW_REQUIRE;}
-(?i:rescue)  {return KW_RESCUE;}
-(?i:Result)  {return KW_RESULT;}
-(?i:retry)   {return KW_RETRY;}
-(?i:select)  {return KW_SELECT;}
-(?i:separate)    {return KW_SEPARATE;}
-(?i:then)    {return KW_THEN;}
-(?i:TUPLE)   {return KW_TUPLE;}
-(?i:undefine)    {return KW_UNDEFINE;}
-(?i:until)   {return KW_UNTIL;}
-(?i:variant) {return KW_VARIANT;}
-(?i:Void)    {return KW_VOID;}
-(?i:when) {return KW_WHEN;}
+(?i:across)  {printToken("KW_ACROSS", yytext); return KW_ACROSS;}
+(?i:agent)   {printToken("KW_AGENT", yytext); return KW_AGENT;}
+(?i:alias)   {printToken("KW_ALIAS", yytext); return KW_ALIAS;}
+(?i:all) {printToken("KW_ALL", yytext); return KW_ALL;}
+(?i:as)  {printToken("KW_AS", yytext); return KW_AS;}
+(?i:assign)  {printToken("KW_ASSIGN", yytext); return KW_ASSIGN;}
+(?i:attribute)   {printToken("KW_ATTRIBUTE", yytext); return KW_ATTRIBUTE;}
+(?i:check)   {printToken("KW_CHECK", yytext); return KW_CHECK;}
+(?i:class)   {printToken("KW_CLASS", yytext); return KW_CLASS;}
+(?i:convert) {printToken("KW_CONVERT", yytext); return KW_CONVERT;}
+(?i:create)  {printToken("KW_CREATE", yytext); return KW_CREATE;}
+(?i:Current) {printToken("KW_CURRENT", yytext); return KW_CURRENT;}
+(?i:debug)   {printToken("KW_DEBUG", yytext); return KW_DEBUG;}
+(?i:deferred)    {printToken("KW_DEFERRED", yytext); return KW_DEFERRED;}
+(?i:do)  {printToken("KW_DO", yytext); return KW_DO;}
+(?i:else)    {printToken("KW_ELSE", yytext); return KW_ELSE;}
+(?i:elseif)  {printToken("KW_ELSEIF", yytext); return KW_ELSEIF;}
+(?i:end) {printToken("KW_END", yytext); return KW_END;}
+(?i:ensure)  {printToken("KW_ENSURE", yytext); return KW_ENSURE;}
+(?i:expanded)    {printToken("KW_EXPANDED", yytext); return KW_EXPANDED;}
+(?i:export)  {printToken("KW_EXPANDED", yytext); return KW_EXPORT;}
+(?i:external)  {printToken("KW_EXTERNAL", yytext); return KW_EXTERNAL;}
+(?i:feature) {printToken("KW_FEATURE", yytext); return KW_FEATURE;}
+(?i:from)    {printToken("KW_FROM", yytext); return KW_FROM;}
+(?i:frozen)  {printToken("KW_FROZEN", yytext); return KW_FROZEN;}
+(?i:if)  {printToken("KW_IF", yytext); return KW_IF;}
+(?i:implies) {printToken("KW_IMPLIES", yytext); return KW_IMPLIES;}
+(?i:inherit) {printToken("KW_INHERIT", yytext); return KW_INHERIT;}
+(?i:inspect) {printToken("KW_INSPECT", yytext); return KW_INSPECT;}
+(?i:invariant)   {printToken("KW_INVARIANT", yytext); return KW_INVARIANT;}
+(?i:like)    {printToken("KW_LIKE", yytext); return KW_LIKE;}
+(?i:local)   {printToken("KW_LOCAL", yytext); return KW_LOCAL;}
+(?i:loop)    {printToken("KW_LOOP", yytext); return KW_LOOP;}
+(?i:not) {printToken("KW_NOT", yytext); return KW_NOT;}
+(?i:note)    {printToken("KW_NOTE", yytext); return KW_NOTE;}
+(?i:obsolete)    {printToken("KW_OBSOLETE", yytext); return KW_OBSOLETE;}
+(?i:old) {printToken("KW_OLD", yytext); return KW_OLD;}
+(?i:once)    {printToken("KW_ONCE", yytext); return KW_ONCE;}
+(?i:only)    {printToken("KW_ONLY", yytext); return KW_ONLY;}
+(?i:Precursor)   {printToken("KW_PRECURSOR", yytext); return KW_PRECURSOR;}
+(?i:redefine)    {printToken("KW_REDEFINE", yytext); return KW_REDEFINE;}
+(?i:rename)  {printToken("KW_RENAME", yytext); return KW_RENAME;}
+(?i:require) {printToken("KW_REQUIRE", yytext); return KW_REQUIRE;}
+(?i:rescue)  {printToken("KW_RESCUE", yytext); return KW_RESCUE;}
+(?i:Result)  {printToken("KW_RESULT", yytext); return KW_RESULT;}
+(?i:retry)   {printToken("KW_RETRY", yytext); return KW_RETRY;}
+(?i:select)  {printToken("KW_SELECT", yytext); return KW_SELECT;}
+(?i:separate)    {printToken("KW_SEPARATE", yytext); return KW_SEPARATE;}
+(?i:then)    {printToken("KW_THEN", yytext); return KW_THEN;}
+(?i:TUPLE)   {printToken("KW_TUPLE", yytext); return KW_TUPLE;}
+(?i:undefine)    {printToken("KW_UNDEFINE", yytext); return KW_UNDEFINE;}
+(?i:until)   {printToken("KW_UNTIL", yytext); return KW_UNTIL;}
+(?i:variant) {printToken("KW_VARIANT", yytext); return KW_VARIANT;}
+(?i:Void)    {printToken("KW_VOID", yytext); return KW_VOID;}
+(?i:when) {printToken("KW_WHEN", yytext); return KW_WHEN;}
 
 
     /*Boolean constants*/
-(?i:true)  {return TYPE_TRUE;}
-(?i:false) {return TYPE_FALSE;}
+(?i:true)  {printToken("TYPE_TRUE", yytext); return TYPE_TRUE;}
+(?i:false) {printToken("TYPE_FALSE", yytext); return TYPE_FALSE;}
 
 
     /*Operators*/
-">"	{return OP_GREATER;}
-"<"	{return OP_LESS;}
-":="	{return OP_ASSIGN;}
-"/="	{return OP_NE;}
-"<="	{return OP_LE;}
-">="	{return OP_GE;}
-"="	{return OP_EQUAL;}
-"+"	{return OP_PLUS;}
-"-"	{return OP_MINUS;}
-"*"	{return OP_MULT;}
-"/"	{return OP_DIV;}
-"("	{return OP_LPARENTHESIS;}
-")"	{return OP_RPARENTHESIS;}
-"["	{return OP_LSQBRACKET;}
-"]"	{return OP_RSQBRACKET;}
-"{"	{return OP_LBRACE;}
-"}"	{return OP_RBRACE;}
-","	{return OP_COMMA;}
-":"	{return OP_COLON;}
-";"	{return OP_SEMICOLON;}
-"."	{return OP_POINT;}
-"@"	{return OP_ATSIGN;}
-"?"	{return OP_QUESTION;}
-"~"	{return OP_TILDE;}
-"!"	{return OP_EXCLAMATION;}
-"#"	{return OP_HASH;}
-"$"	{return OP_DOLLAR;}
-"%"	{return OP_PERCENT;}
-"&"	{return OP_AMPERSAND;}
-"|"	{return OP_VBAR;}
-"^"	{return OP_CARET;}
-(?i:and)\s+(?i:then)	{return OP_ANDTHEN;}
-(?i:and)	{return OP_AND;}
-(?i:or)\s+(?i:else)	{return OP_ORELSE;}
-(?i:or)	{return OP_OR;}
-(?i:xor) {return OP_XOR;}
+">"	{printToken("OP_GREATER", yytext); return OP_GREATER;}
+"<"	{printToken("OP_LESS", yytext); return OP_LESS;}
+":="	{printToken("OP_ASSIGN", yytext); return OP_ASSIGN;}
+"/="	{printToken("OP_NE", yytext); return OP_NE;}
+"<="	{printToken("OP_LE", yytext); return OP_LE;}
+">="	{printToken("OP_GE", yytext); return OP_GE;}
+"="	{printToken("OP_EQUAL", yytext); return OP_EQUAL;}
+"+"	{printToken("OP_PLUS", yytext); return OP_PLUS;}
+"-"	{printToken("OP_MINUS", yytext); return OP_MINUS;}
+"*"	{printToken("OP_MULT", yytext); return OP_MULT;}
+"/"	{printToken("OP_DIV", yytext); return OP_DIV;}
+"("	{printToken("OP_LPARENTHESIS", yytext); return OP_LPARENTHESIS;}
+")"	{printToken("OP_RPARENTHESIS", yytext); return OP_RPARENTHESIS;}
+"["	{printToken("OP_LSQBRACKET", yytext); return OP_LSQBRACKET;}
+"]"	{printToken("OP_RSQBRACKET", yytext); return OP_RSQBRACKET;}
+"{"	{printToken("OP_LBRACE", yytext); return OP_LBRACE;}
+"}"	{printToken("OP_RBRACE", yytext); return OP_RBRACE;}
+","	{printToken("OP_COMMA", yytext); return OP_COMMA;}
+":"	{printToken("OP_COLON", yytext); return OP_COLON;}
+";"	{printToken("OP_SEMICOLON", yytext); return OP_SEMICOLON;}
+"."	{printToken("OP_POINT", yytext); return OP_POINT;}
+"@"	{printToken("OP_ATSIGN", yytext); return OP_ATSIGN;}
+"?"	{printToken("OP_QUESTION", yytext); return OP_QUESTION;}
+"~"	{printToken("OP_TILDE", yytext); return OP_TILDE;}
+"!"	{printToken("OP_EXCLAMATION", yytext); return OP_EXCLAMATION;}
+"#"	{printToken("OP_HASH", yytext); return OP_HASH;}
+"$"	{printToken("OP_DOLLAR", yytext); return OP_DOLLAR;}
+"%"	{printToken("OP_PERCENT", yytext); return OP_PERCENT;}
+"&"	{printToken("OP_AMPERSAND", yytext); return OP_AMPERSAND;}
+"|"	{printToken("OP_VBAR", yytext); return OP_VBAR;}
+"^"	{printToken("OP_CARET", yytext); return OP_CARET;}
+(?i:and)\s+(?i:then)	{printToken("OP_ANDTHEN", yytext); return OP_ANDTHEN;}
+(?i:and)	{printToken("OP_AND", yytext); return OP_AND;}
+(?i:or)\s+(?i:else)	{printToken("OP_ORELSE", yytext); return OP_ORELSE;}
+(?i:or)	{printToken("OP_OR", yytext); return OP_OR;}
+(?i:xor) {printToken("OP_XOR", yytext); return OP_XOR;}
 
     /**/
 
-{ID}    {return LIT_ID;}
+{ID}    {printToken("TYPE_ID", yytext); return TYPE_ID;}
 (({DIGIT}+(\.{DIGIT}*)?)|(\.{DIGIT}+))([eE][+-]?{DIGIT}+)? {return TYPE_REAL;}
 
     /*integer v2*/
@@ -217,3 +218,7 @@ ID  [a-zA-Z][a-zA-Z0-9_]*
 .                   {fprintf(stderr, "Unknown character: '%s' at line %d\n",yytext, yylineno); return 0;}
 
 %%
+
+void printToken(char* token, char* str) {
+    printf("DETECTED %s: %s\n", token, str);
+}
