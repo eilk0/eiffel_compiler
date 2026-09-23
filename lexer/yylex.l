@@ -14,6 +14,11 @@
 %x CHARACTER_END
 
 DIGIT   [0-9]
+BIN (0[bB][0-1][0-1_]+[0-1])|(0[bB][0-1][0-1]?)
+OCT (0[cC][0-7][0-7_]+[0-7])|(0[cC][0-7][0-7]?)
+HEX (0[xX][0-9a-fA-F][0-9a-fA-F_]+[0-9a-fA-F])|(0[xX][0-9a-fA-F][0-9a-fA-F]?)
+INTWB ([0-9][0-9_]+[0-9]|[0-9][0-9]?)
+
 ID  [a-zA-Z][a-zA-Z0-9_]*
 
 UTF8_1 [\000-\011\013-\177]
@@ -148,8 +153,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     /*integer v2*/
 
     /*Binary base*/
-0[bB][0-1][0-1]? |
-0[bB][0-1][0-1_]+[0-1] {
+{BIN} {
     stringBuffer[0] = 0;
     strcpy(stringBuffer, yytext);
     removeUnderscores(stringBuffer);
@@ -159,8 +163,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     }
 
     /*Octal base*/
-0[cC][0-7][0-7]? |
-0[cC][0-7][0-7_]+[0-7] {
+{OCT} {
     stringBuffer[0] = 0;
     strcpy(stringBuffer, yytext);
     removeUnderscores(stringBuffer);
@@ -170,8 +173,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     }
 
     /*Hexadecimal base*/
-0[xX][0-9a-fA-F][0-9a-fA-F]? |
-0[xX][0-9a-fA-F][0-9a-fA-F_]+[0-9a-fA-F] {
+{HEX} {
     stringBuffer[0] = 0;
     strcpy(stringBuffer, yytext);
     removeUnderscores(stringBuffer);
@@ -181,8 +183,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     }
 
     /*Integer without base*/
-[0-9][0-9]? |
-[0-9][0-9_]+[0-9] {
+{INTWB} {
     stringBuffer[0] = 0;
     strcpy(stringBuffer, yytext);
     removeUnderscores(stringBuffer);
