@@ -292,6 +292,11 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
         printf("STRING FOUND: %s\n", stringBuffer);
         return TYPE_STRING;}
 
+<STRING><<EOF>> {
+    fprintf(stderr, "Unterminated STRING at line %d\n", yylineno);
+    yy_pop_state();
+    return 0;
+}
 
     /* CHARACTERS */
 
@@ -370,6 +375,12 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     stringBuffer[stringLength] = 0;
     printf("CHARACTER DETECTED:%s\n", stringBuffer);
     return TYPE_CHAR;
+}
+
+<CHARACTER><<EOF>> {
+    fprintf(stderr, "Unterminated CHARACTER at line %d\n", yylineno);
+    yy_pop_state();
+    return 0;
 }
 
     /*For any exceptions*/
