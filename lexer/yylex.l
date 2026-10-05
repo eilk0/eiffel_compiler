@@ -12,7 +12,6 @@
 
 %x STRING
 %x CHARACTER
-%x CHARACTER_END
 
 DIGIT   [0-9]
 BIN (0[bB][0-1][0-1_]+[0-1])|(0[bB][0-1][0-1]?)
@@ -295,94 +294,83 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 
 
     /* CHARACTERS */
-    
-\'  {printf("CHARACTER BEGIN DETECTED\n"); yy_push_state(CHARACTER); characterLength=0; stringBuffer[0] = stringBuffer[1] = stringBuffer[2] = stringBuffer[3] = 0;}
-<CHARACTER>\%\% {stringBuffer[0] = '%'; BEGIN(CHARACTER_END);}
-<CHARACTER>\%A {stringBuffer[0] = '@'; BEGIN(CHARACTER_END);}
-<CHARACTER>\%B {stringBuffer[0] = '\b'; BEGIN(CHARACTER_END);}
-<CHARACTER>\%С {stringBuffer[0] = '^'; BEGIN(CHARACTER_END);}
-<CHARACTER>\%D {stringBuffer[0] = '$'; BEGIN(CHARACTER_END);}
-<CHARACTER>\%F {stringBuffer[0] = '\f'; BEGIN(CHARACTER_END);}
-<CHARACTER>\%H {stringBuffer[0] = '\\'; BEGIN(CHARACTER_END);}
-<CHARACTER>\%L {stringBuffer[0] = '~'; BEGIN(CHARACTER_END);}
-<CHARACTER>\%N {stringBuffer[0] = '\n'; BEGIN(CHARACTER_END);}
-<CHARACTER>\%Q {stringBuffer[0] = '`'; BEGIN(CHARACTER_END);}
-<CHARACTER>\%R {stringBuffer[0] = '\r'; BEGIN(CHARACTER_END);}
-<CHARACTER>\%S {stringBuffer[0] = '#'; BEGIN(CHARACTER_END);}
-<CHARACTER>\%T {stringBuffer[0] = '\t'; BEGIN(CHARACTER_END);}
-<CHARACTER>\%U {stringBuffer[0] = '\0'; BEGIN(CHARACTER_END);}
-<CHARACTER>\%V {stringBuffer[0] = '|'; BEGIN(CHARACTER_END);}
-<CHARACTER>\%\' {stringBuffer[0] = '\''; BEGIN(CHARACTER_END);}
-<CHARACTER>\%\" {stringBuffer[0] = '"'; BEGIN(CHARACTER_END);}
-<CHARACTER>\%\( {stringBuffer[0] = '('; BEGIN(CHARACTER_END);}
-<CHARACTER>\%\) {stringBuffer[0] = ')'; BEGIN(CHARACTER_END);}
-<CHARACTER>\%\< {stringBuffer[0] = '<'; BEGIN(CHARACTER_END);}
-<CHARACTER>\%\> {stringBuffer[0] =  '>'; BEGIN(CHARACTER_END);}
-<CHARACTER>\%\/{BIN}\/ {
-    char strbuf[64];
-    strcpy(strbuf, yytext+4);
-    strbuf[yyleng-5] = 0;
-    long decoded = strtol(strbuf, NULL, 2);
-    if(LONG_MAX == decoded || LONG_MIN == decoded) {
-        fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
-        return 0;
-    }
-    stringBuffer[0] = decoded; 
-    BEGIN(CHARACTER_END);}
-<CHARACTER>\%\/{OCT}\/ {
-    char strbuf[64];
-    strcpy(strbuf, yytext+4);
-    strbuf[yyleng-5] = 0;
-    long decoded = strtol(strbuf, NULL, 8);
-    if(LONG_MAX == decoded || LONG_MIN == decoded) {
-        fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
-        return 0;
-    }
-    stringBuffer[0] = decoded; 
-    BEGIN(CHARACTER_END);}
-<CHARACTER>\%\/{HEX}\/ {
-    char strbuf[64];
-    strcpy(strbuf, yytext+4);
-    strbuf[yyleng-5] = 0;
-        long decoded = strtol(strbuf, NULL, 16);
-    if(LONG_MAX == decoded || LONG_MIN == decoded) {
-        fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
-        return 0;
-    }
-    stringBuffer[0] = decoded; 
-    BEGIN(CHARACTER_END);}
-<CHARACTER>\%\/{INTWB}\/ {
-    char strbuf[64];
-    strcpy(strbuf, yytext+4);
-    strbuf[yyleng-5] = 0;    long decoded = strtol(strbuf, NULL, 10);
-    if(LONG_MAX == decoded || LONG_MIN == decoded) {
-        fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
-        return 0;
-    }
-    stringBuffer[0] = decoded; 
-    BEGIN(CHARACTER_END);}
 
-    /*UTF-8 characters*/
+\'  {printf("CHARACTER BEGIN DETECTED\n"); yy_push_state(CHARACTER); stringLength = 0; characterLength = 0;}
+<CHARACTER>\%\% {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '%';}
+<CHARACTER>\%A {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '@';}
+<CHARACTER>\%B {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '\b';}
+<CHARACTER>\%С {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '^';}
+<CHARACTER>\%D {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '$';}
+<CHARACTER>\%F {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '\f';}
+<CHARACTER>\%H {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '\\';}
+<CHARACTER>\%L {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '~';}
+<CHARACTER>\%N {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '\n';}
+<CHARACTER>\%Q {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '`';}
+<CHARACTER>\%R {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '\r';}
+<CHARACTER>\%S {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '#';}
+<CHARACTER>\%T {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '\t';}
+<CHARACTER>\%U {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '\0';}
+<CHARACTER>\%V {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '|';}
+<CHARACTER>\%\' {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '\'';}
+<CHARACTER>\%\" {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '"';}
+<CHARACTER>\%\( {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '(';}
+<CHARACTER>\%\) {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = ')';}
+<CHARACTER>\%\< {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '<';}
+<CHARACTER>\%\> {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] =  '>';}
+
+<CHARACTER>\%\/{BIN}\/ {
+    c = parseUnicode(yytext, yyleng, 2);
+    if(!c.success) {
+        fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
+        return 0;
+    }
+    characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = c.character; }
+<CHARACTER>\%\/{OCT}\/ {
+    c = parseUnicode(yytext, yyleng, 8);
+    if(!c.success) {
+        fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
+        return 0;
+    }
+    characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = c.character;}
+<CHARACTER>\%\/{HEX}\/ {
+    c = parseUnicode(yytext, yyleng, 16);
+    if(!c.success) {
+        fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
+        return 0;
+    }
+    characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = c.character; }
+<CHARACTER>\%\/{INTWB}\/ {
+    c = parseUnicode(yytext, yyleng, 10);
+    if(!c.success) {
+        fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
+        return 0;
+    }
+    characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = c.character; }
 
 <CHARACTER>{UTF8_2} |
 <CHARACTER>{UTF8_3} |
-<CHARACTER>{UTF8_4} {
-    characterLength = yyleng;
-    for(int i = 0; i < yyleng ; i++){stringBuffer[i] = yytext[i];}
-    BEGIN(CHARACTER_END);
+<CHARACTER>{UTF8_4} { characterLength++;
+    if (characterLength == 1) {
+        for (int i = 0; i < yyleng; i++) {
+            stringBuffer[stringLength++] = yytext[i];
+        }
+    }
 }
 
-    /*ASCII character*/
-
-<CHARACTER>[^\']    { characterLength = 1; stringBuffer[0] = yytext[0]; BEGIN(CHARACTER_END);}
-
-<CHARACTER>\'   {fprintf(stderr, "Empty CHARACTER: '%s' at line %d\n",yytext, yylineno); yy_pop_state();}
-<CHARACTER_END>\'   {printf("CHARACTER DETECTED:"); 
-                        printf("%s\n", stringBuffer);
-                        yy_pop_state();
-                        return TYPE_CHAR;}
-<CHARACTER_END>.    {fprintf(stderr, "Invalid CHARACTER: '%s' at line %d\n",yytext, yylineno); yy_pop_state();}
-
+<CHARACTER>[^\'] {
+    characterLength++;
+    if (characterLength == 1) stringBuffer[stringLength++] = yytext[0];
+}
+<CHARACTER>\' {
+    yy_pop_state();
+    if (characterLength != 1) {
+        fprintf(stderr, "Invalid CHARACTER length: %d (expected 1) at line %d\n", characterLength, yylineno);
+        return 0;
+    }
+    stringBuffer[stringLength] = 0;
+    printf("CHARACTER DETECTED:%s\n", stringBuffer);
+    return TYPE_CHAR;
+}
 
     /*For any exceptions*/
 .                   {fprintf(stderr, "Unknown character: '%s' at line %d\n",yytext, yylineno); return 0;}
