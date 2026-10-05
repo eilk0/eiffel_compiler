@@ -20,6 +20,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c" />
+    <ClCompile Include="unicode_parser.c" />
+    <ClCompile Include="unicode_parser.h" />
     <ClCompile Include="upper_lower.c" />
   </ItemGroup>
   <ItemGroup>

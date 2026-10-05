@@ -21,6 +21,12 @@
     <ClCompile Include="upper_lower.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="unicode_parser.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClCompile>
+    <ClCompile Include="unicode_parser.c">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="yylex.h">

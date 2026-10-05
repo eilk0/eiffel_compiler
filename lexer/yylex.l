@@ -1,6 +1,7 @@
 %{
     #include <stdio.h>
     #include "upper_lower.h"
+    #include "unicode_parser.h"
     #define YY_NO_UNISTD_H
 %}
 
@@ -34,10 +35,12 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 %}
 
 %%
+
     // Local variables
     int stringLength;
     int characterLength;
     char stringBuffer[4096];
+    struct ParsedChar c;
 
 [ \t\r]+    {/* do nothing */}
 \n(--[^\n]*|[\t \n\r]*)*    {printf("NEWLINE\n"); return ENDL;}
@@ -256,45 +259,33 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 <STRING>\%\> {stringBuffer[stringLength++] =  '>';}
 
 <STRING>\%\/{BIN}\/ {
-    char strbuf[64];
-    strcpy(strbuf, yytext+4);
-    strbuf[yyleng-5] = 0;
-        long decoded = strtol(strbuf, NULL, 2);
-    if(LONG_MAX == decoded || LONG_MIN == decoded) {
+    c = parseUnicode(yytext, yyleng, 2);
+    if(!c.success) {
         fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
         return 0;
     }
-    stringBuffer[stringLength++] = decoded; }
+    stringBuffer[stringLength++] = c.character; }
 <STRING>\%\/{OCT}\/ {
-    char strbuf[64];
-    strcpy(strbuf, yytext+4);
-    strbuf[yyleng-5] = 0;
-        long decoded = strtol(strbuf, NULL, 8);
-    if(LONG_MAX == decoded || LONG_MIN == decoded) {
+    c = parseUnicode(yytext, yyleng, 8);
+    if(!c.success) {
         fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
         return 0;
     }
-    stringBuffer[stringLength++] = decoded; }
+    stringBuffer[stringLength++] = c.character;}
 <STRING>\%\/{HEX}\/ {
-    char strbuf[64];
-    strcpy(strbuf, yytext+4);
-    strbuf[yyleng-5] = 0;
-        long decoded = strtol(strbuf, NULL, 16);
-    if(LONG_MAX == decoded || LONG_MIN == decoded) {
+    c = parseUnicode(yytext, yyleng, 16);
+    if(!c.success) {
         fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
         return 0;
     }
-    stringBuffer[stringLength++] = decoded; }
+    stringBuffer[stringLength++] = c.character; }
 <STRING>\%\/{INTWB}\/ {
-    char strbuf[64];
-    strcpy(strbuf, yytext+4);
-    strbuf[yyleng-5] = 0;
-       long decoded = strtol(strbuf, NULL, 10);
-    if(LONG_MAX == decoded || LONG_MIN == decoded) {
+    c = parseUnicode(yytext, yyleng, 10);
+    if(!c.success) {
         fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
         return 0;
     }
-    stringBuffer[stringLength++] = decoded; }
+    stringBuffer[stringLength++] = c.character; }
 
 <STRING>[^\"] {stringBuffer[stringLength++] =  yytext[0];}
 <STRING>\" {yy_pop_state(); 
