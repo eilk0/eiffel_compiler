@@ -233,7 +233,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     stringBuffer[0] = 0;
     strcpy(stringBuffer, yytext);
     removeUnderscores(stringBuffer);
-    long num =  strtol(stringBuffer + 2, NULL, 10);
+    long num =  strtol(stringBuffer, NULL, 10);
     if(LONG_MAX == num || LONG_MIN == num) {
         fprintf(stderr, "Failed to parse integer: '%s' at line %d\n",yytext, yylineno);
         return 0;
