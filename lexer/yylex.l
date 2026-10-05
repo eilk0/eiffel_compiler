@@ -1,5 +1,6 @@
 %{
     #include <stdio.h>
+    #include <errno.h>
     #include "upper_lower.h"
     #include "unicode_parser.h"
     #define YY_NO_UNISTD_H
@@ -160,16 +161,25 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 \.[0-9]+([eE][+-]?[0-9]+)? |
 (([0-9]{1,3}(_[0-9]{3})+))\.(([0-9]{3}_)*[0-9]{1,3})([eE][+-]?[0-9]+)? |
 (([0-9]{1,3}(_[0-9]{3})+))\.([eE][+-]?[0-9]+)? |
-\.(([0-9]{3}_)*[0-9]{1,3})([eE][+-]?[0-9]+)? { 
+\.(([0-9]{3}_)*[0-9]{1,3})([eE][+-]?[0-9]+)? {
+        if ((size_t)yyleng >= sizeof(stringBuffer)) {
+            fprintf(stderr, "REAL literal is too long at line %d\n", yylineno);
+            return 0;
+        } 
         strcpy(stringBuffer, yytext);
         removeUnderscores(stringBuffer);
-        double num;
-        char state = sscanf(stringBuffer, "%lf", &num); 
-        if(state != 1) {
-            printf("FAILED TO PARSE REAL: %s", stringBuffer);
+        char* end;
+        errno = 0;
+        double num = strtod(stringBuffer, &end);
+        if (end == stringBuffer || *end != '\0') {
+            fprintf(stderr, "Failed to parse REAL: %s at line %d\n", yytext, yylineno);
             return 0;
         }
-        printf("DETECTED TYPE_REAL: %lf\n", num); 
+        if (errno = ERANGE || !isfinite(num)) {
+            fprintf(stderr, "REAL out of range: %s at line %d\n", yytext, yylineno);
+            return 0;
+        }
+        printf("DETECTED TYPE_REAL: %lf\n", num);
         return TYPE_REAL;
     }
 
