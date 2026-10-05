@@ -1,6 +1,7 @@
 %{
     #include <stdio.h>
     #include <errno.h>
+    #include <math.h>
     #include "upper_lower.h"
     #include "unicode_parser.h"
     #define YY_NO_UNISTD_H
@@ -175,7 +176,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
             fprintf(stderr, "Failed to parse REAL: %s at line %d\n", yytext, yylineno);
             return 0;
         }
-        if (errno = ERANGE || !isfinite(num)) {
+        if (errno == ERANGE || !isfinite(num)) {
             fprintf(stderr, "REAL out of range: %s at line %d\n", yytext, yylineno);
             return 0;
         }
