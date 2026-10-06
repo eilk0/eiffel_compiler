@@ -2,3 +2,4 @@
 /.vs
 /Compiler/x64
 /Compiler/yylex.h
+Compiler/grammar.tab.c

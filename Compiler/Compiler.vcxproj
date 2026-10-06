@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="grammar.tab.c" />
     <ClCompile Include="lex.yy.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="unicode_parser.c" />
@@ -28,6 +29,7 @@
     <ClInclude Include="unicode_parser.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="grammar.y" />
     <None Include="yylex.l" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -135,7 +137,7 @@
       <EnableSegmentHeap>true</EnableSegmentHeap>
     </Manifest>
     <PreBuildEvent>
-      <Command>call compileFlex.bat</Command>
+      <Command>call compileBisonFlex.bat</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -158,7 +160,7 @@
       <EnableSegmentHeap>true</EnableSegmentHeap>
     </Manifest>
     <PreBuildEvent>
-      <Command>call compileFlex.bat</Command>
+      <Command>call compileBisonFlex.bat</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

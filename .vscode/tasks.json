@@ -3,7 +3,7 @@
     "tasks": [
         {
             "label": "Compile", // You can run compilation wia CTRL+SHIFT+B
-            "command": "\".\\lexer\\compileFlex.bat\" < nul",
+            "command": "\".\\Compiler\\compileBisonFlex.bat\" < nul",
             "type": "shell",
             "group": "build"
         }
