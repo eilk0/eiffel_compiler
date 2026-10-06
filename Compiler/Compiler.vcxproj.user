@@ -3,7 +3,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LocalDebuggerCommandArguments>tests\big_test.e</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArgumentsHistory>source.eiffel|source.e|D:\Users\User\Documents\GitHub\eiffel_compiler\tests\lexer\big_test.e|tests\big_test.e|</LocalDebuggerCommandArgumentsHistory>
+    <LocalDebuggerCommandArgumentsHistory>source.eiffel|source.e|D:\Users\User\Documents\GitHub\eiffel_compiler\tests\Compiler\big_test.e|tests\big_test.e|</LocalDebuggerCommandArgumentsHistory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LocalDebuggerCommandArguments>tests\big_test.e</LocalDebuggerCommandArguments>

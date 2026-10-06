@@ -21,9 +21,6 @@
     <ClCompile Include="upper_lower.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="unicode_parser.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClCompile>
     <ClCompile Include="unicode_parser.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
@@ -33,6 +30,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="upper_lower.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="unicode_parser.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
