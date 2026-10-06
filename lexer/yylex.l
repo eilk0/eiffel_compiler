@@ -66,7 +66,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     // Local variables
     int stringLength;
     int characterLength;
-    char stringBuffer[MAX_TEXT_TOKEN];
+    wchar_t stringBuffer[MAX_TEXT_TOKEN];
     struct ParsedChar c;
 
 [ \t\r]+    {/* do nothing */}
@@ -339,7 +339,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     }
     stringBuffer[stringLength++] = c.character; }
 
-<CHAR,STRING>[^\"] {stringBuffer[stringLength++] =  yytext[0];}
+<CHAR,STRING>[^\"\'] {stringBuffer[stringLength++] =  yytext[0];}
 
 <CHAR><<EOF>> {
     fprintf(stderr, "Unterminated CHARACTER at line %d\n", yylineno);
@@ -358,7 +358,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 <CHAR>\' {
     BEGIN(INITIAL);
     if (stringLength != 1) {
-        fprintf(stderr, "Invalid CHARACTER length: %d (expected 1) at line %d\n", characterLength, yylineno);
+        fprintf(stderr, "Invalid CHARACTER length: %d (expected 1) at line %d\n", stringLength, yylineno);
         saveLexerError(LEX_INVATID_CHAR_ERROR, stringBuffer);
         return 0;
     }
