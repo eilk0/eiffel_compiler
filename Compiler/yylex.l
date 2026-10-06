@@ -2,7 +2,6 @@
     #include <stdio.h>
     #include <errno.h>
     #include <math.h>
-    #include "upper_lower.h"
     #include "unicode_parser.h"
     #define YY_NO_UNISTD_H
 %}

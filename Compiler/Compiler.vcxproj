@@ -21,11 +21,9 @@
   <ItemGroup>
     <ClCompile Include="main.c" />
     <ClCompile Include="unicode_parser.c" />
-    <ClCompile Include="upper_lower.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unicode_parser.h" />
-    <ClInclude Include="upper_lower.h" />
     <ClInclude Include="yylex.h" />
   </ItemGroup>
   <ItemGroup>
