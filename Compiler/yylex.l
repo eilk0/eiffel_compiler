@@ -2,6 +2,7 @@
     #include <stdio.h>
     #include <errno.h>
     #include <math.h>
+    #include "lexer.h"
     #include "unicode_parser.h"
     #define YY_NO_UNISTD_H
 %}
@@ -35,26 +36,6 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     void printToken(char* token, char* str);
     void removeUnderscores(char* str);
     int removeCharFromString(char* str, int pos);
-
-    typedef enum {
-        LEX_SYNTAX_IN_LINE_ERROR,
-        LEX_INVALID_INT_DECLARATION_ERROR,
-        LEX_INVATID_CHAR_ERROR, 
-        LEX_INCOMPLITE_STRNG_MISS_FINAL_QUOTE_ERROR,
-        LEX_UNKNOWN_SYMB_ERROR,
-        LEX_OTHER_ERROR
-    } LexerErrorType;
-
-    typedef struct{
-        const char* file_name;
-        int line;
-        int position;
-        char* prev_line;
-        char* line_text;
-        char* next_line;
-        char* lexeme;
-        LexerErrorType type;
-    } LexerError;
     
     void saveLexerError(LexerErrorType type, const char* lexeme);
     void generateLexErrorMessage(LexerError* e);
@@ -452,8 +433,6 @@ int removeCharFromString(char* str, int pos) {
     str[i] = str[i + 1];
     return 1;
 }
-
-#define MAX_LEXER_ERRORS 100
 
 LexerError lexerErrors[MAX_LEXER_ERRORS];
 int lexerErrorCount = 0;

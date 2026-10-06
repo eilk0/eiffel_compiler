@@ -19,12 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="lex.yy.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="unicode_parser.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="lexer.h" />
     <ClInclude Include="unicode_parser.h" />
-    <ClInclude Include="yylex.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="yylex.l" />
