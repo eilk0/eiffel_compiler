@@ -1,6 +1,20 @@
 #ifndef EIFFEL_TOKENS_H
 #define EIFFEL_TOKENS_H
 
+#include <stddef.h>
+
+#define MAX_TEXT_TOKEN 4096
+
+typedef union TokenValue {
+    long integer; // TYPE_INT, TYPE_INT2, TYPE_INT8, TYPE_INT16
+    double real; // TYPE_REAL
+    int boolean; // TYPE_TRUE, TYPE_FALSE
+    struct {
+        char data[MAX_TEXT_TOKEN];
+        size_t length;
+    } text; // TYPE_ID, TYPE_STRING, TYPE_CHAR
+} TokenValue;
+
 enum Token {
     KW_ACROSS = 256,
     KW_AGENT,
