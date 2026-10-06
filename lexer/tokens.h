@@ -1,3 +1,6 @@
+#ifndef EIFFEL_TOKENS_H
+#define EIFFEL_TOKENS_H
+
 enum Token {
     KW_ACROSS = 256,
     KW_AGENT,
@@ -103,3 +106,5 @@ enum Token {
     TYPE_FALSE,
     ENDL
 };
+
+#endif
