@@ -12,7 +12,7 @@
 %option yylineno
 
 %x STRING
-%x CHARACTER
+%x CHAR
 
 DIGIT   [0-9]
 BIN (0[bB][0-1][0-1_]+[0-1])|(0[bB][0-1][0-1]?)
@@ -274,53 +274,64 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 
 {ID}    {printToken("TYPE_ID", yytext); return TYPE_ID; /*перенесено после интов для отлова ошибки непсовпадения основания инта*/}
 
-    /* STRINGS */
+    /* STRINGS & CHARACTERS */
 
-\"  {printf("STRING BEGIN DETECTED\n"); BEGIN(STRING); stringLength = 0;}
-<STRING>\%\% {stringBuffer[stringLength++] = '%';}
-<STRING>\%A {stringBuffer[stringLength++] = '@';}
-<STRING>\%B {stringBuffer[stringLength++] = '\b';}
-<STRING>\%С {stringBuffer[stringLength++] = '^';}
-<STRING>\%D {stringBuffer[stringLength++] = '$';}
-<STRING>\%F {stringBuffer[stringLength++] = '\f';}
-<STRING>\%H {stringBuffer[stringLength++] = '\\';}
-<STRING>\%L {stringBuffer[stringLength++] = '~';}
-<STRING>\%N {stringBuffer[stringLength++] = '\n';}
-<STRING>\%Q {stringBuffer[stringLength++] = '`';}
-<STRING>\%R {stringBuffer[stringLength++] = '\r';}
-<STRING>\%S {stringBuffer[stringLength++] = '#';}
-<STRING>\%T {stringBuffer[stringLength++] = '\t';}
-<STRING>\%U {stringBuffer[stringLength++] = '\0';}
-<STRING>\%V {stringBuffer[stringLength++] = '|';}
-<STRING>\%\' {stringBuffer[stringLength++] = '\'';}
-<STRING>\%\" {stringBuffer[stringLength++] = '"';}
-<STRING>\%\( {stringBuffer[stringLength++] = '(';}
-<STRING>\%\) {stringBuffer[stringLength++] = ')';}
-<STRING>\%\< {stringBuffer[stringLength++] = '<';}
-<STRING>\%\> {stringBuffer[stringLength++] =  '>';}
+\' {
+    stringBuffer[0] = 0;
+    stringLength = 0;
+    BEGIN(CHAR);
+}
 
-<STRING>\%\/{BIN}\/ {
+\" {
+    stringBuffer[0] = 0;
+    stringLength = 0;
+    BEGIN(STRING);
+}
+
+<CHAR,STRING>\%\% {stringBuffer[stringLength++] = '%';}
+<CHAR,STRING>\%A {stringBuffer[stringLength++] = '@';}
+<CHAR,STRING>\%B {stringBuffer[stringLength++] = '\b';}
+<CHAR,STRING>\%С {stringBuffer[stringLength++] = '^';}
+<CHAR,STRING>\%D {stringBuffer[stringLength++] = '$';}
+<CHAR,STRING>\%F {stringBuffer[stringLength++] = '\f';}
+<CHAR,STRING>\%H {stringBuffer[stringLength++] = '\\';}
+<CHAR,STRING>\%L {stringBuffer[stringLength++] = '~';}
+<CHAR,STRING>\%N {stringBuffer[stringLength++] = '\n';}
+<CHAR,STRING>\%Q {stringBuffer[stringLength++] = '`';}
+<CHAR,STRING>\%R {stringBuffer[stringLength++] = '\r';}
+<CHAR,STRING>\%S {stringBuffer[stringLength++] = '#';}
+<CHAR,STRING>\%T {stringBuffer[stringLength++] = '\t';}
+<CHAR,STRING>\%U {stringBuffer[stringLength++] = '\0';}
+<CHAR,STRING>\%V {stringBuffer[stringLength++] = '|';}
+<CHAR,STRING>\%\' {stringBuffer[stringLength++] = '\'';}
+<CHAR,STRING>\%\" {stringBuffer[stringLength++] = '"';}
+<CHAR,STRING>\%\( {stringBuffer[stringLength++] = '(';}
+<CHAR,STRING>\%\) {stringBuffer[stringLength++] = ')';}
+<CHAR,STRING>\%\< {stringBuffer[stringLength++] = '<';}
+<CHAR,STRING>\%\> {stringBuffer[stringLength++] =  '>';}
+
+<CHAR,STRING>\%\/{BIN}\/ {
     c = parseUnicode(yytext, yyleng, 2);
     if(!c.success) {
         fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
         return 0;
     }
     stringBuffer[stringLength++] = c.character; }
-<STRING>\%\/{OCT}\/ {
+<CHAR,STRING>\%\/{OCT}\/ {
     c = parseUnicode(yytext, yyleng, 8);
     if(!c.success) {
         fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
         return 0;
     }
     stringBuffer[stringLength++] = c.character;}
-<STRING>\%\/{HEX}\/ {
+<CHAR,STRING>\%\/{HEX}\/ {
     c = parseUnicode(yytext, yyleng, 16);
     if(!c.success) {
         fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
         return 0;
     }
     stringBuffer[stringLength++] = c.character; }
-<STRING>\%\/{INTWB}\/ {
+<CHAR,STRING>\%\/{INTWB}\/ {
     c = parseUnicode(yytext, yyleng, 10);
     if(!c.success) {
         fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
@@ -328,11 +339,14 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     }
     stringBuffer[stringLength++] = c.character; }
 
-<STRING>[^\"] {stringBuffer[stringLength++] =  yytext[0];}
-<STRING>\" {BEGIN(INITIAL); 
-        stringBuffer[stringLength] = 0;
-        printf("STRING FOUND: %s\n", stringBuffer);
-        return TYPE_STRING;}
+<CHAR,STRING>[^\"] {stringBuffer[stringLength++] =  yytext[0];}
+
+<CHAR><<EOF>> {
+    fprintf(stderr, "Unterminated CHARACTER at line %d\n", yylineno);
+    saveLexerError(LEX_INVATID_CHAR_ERROR, stringBuffer);
+    BEGIN(INITIAL);
+    return 0;
+} 
 
 <STRING><<EOF>> {
     fprintf(stderr, "Unterminated STRING at line %d\n", yylineno);
@@ -341,77 +355,9 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     return 0;
 }
 
-    /* CHARACTERS */
-
-\'  {printf("CHARACTER BEGIN DETECTED\n"); BEGIN(CHARACTER); stringLength = 0; characterLength = 0;}
-<CHARACTER>\%\% {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '%';}
-<CHARACTER>\%A {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '@';}
-<CHARACTER>\%B {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '\b';}
-<CHARACTER>\%С {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '^';}
-<CHARACTER>\%D {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '$';}
-<CHARACTER>\%F {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '\f';}
-<CHARACTER>\%H {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '\\';}
-<CHARACTER>\%L {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '~';}
-<CHARACTER>\%N {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '\n';}
-<CHARACTER>\%Q {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '`';}
-<CHARACTER>\%R {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '\r';}
-<CHARACTER>\%S {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '#';}
-<CHARACTER>\%T {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '\t';}
-<CHARACTER>\%U {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '\0';}
-<CHARACTER>\%V {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '|';}
-<CHARACTER>\%\' {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '\'';}
-<CHARACTER>\%\" {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '"';}
-<CHARACTER>\%\( {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '(';}
-<CHARACTER>\%\) {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = ')';}
-<CHARACTER>\%\< {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '<';}
-<CHARACTER>\%\> {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] =  '>';}
-
-<CHARACTER>\%\/{BIN}\/ {
-    c = parseUnicode(yytext, yyleng, 2);
-    if(!c.success) {
-        fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
-        return 0;
-    }
-    characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = c.character; }
-<CHARACTER>\%\/{OCT}\/ {
-    c = parseUnicode(yytext, yyleng, 8);
-    if(!c.success) {
-        fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
-        return 0;
-    }
-    characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = c.character;}
-<CHARACTER>\%\/{HEX}\/ {
-    c = parseUnicode(yytext, yyleng, 16);
-    if(!c.success) {
-        fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
-        return 0;
-    }
-    characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = c.character; }
-<CHARACTER>\%\/{INTWB}\/ {
-    c = parseUnicode(yytext, yyleng, 10);
-    if(!c.success) {
-        fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
-        return 0;
-    }
-    characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = c.character; }
-
-<CHARACTER>{UTF8_2} |
-<CHARACTER>{UTF8_3} |
-<CHARACTER>{UTF8_4} { characterLength++;
-    if (characterLength == 1) {
-        for (int i = 0; i < yyleng; i++) {
-            stringBuffer[stringLength++] = yytext[i];
-        }
-    }
-}
-
-<CHARACTER>[^\'] {
-    characterLength++;
-    if (characterLength == 1) stringBuffer[stringLength++] = yytext[0];
-}
-<CHARACTER>\' {
+<CHAR>\' {
     BEGIN(INITIAL);
-    if (characterLength != 1) {
+    if (stringLength != 1) {
         fprintf(stderr, "Invalid CHARACTER length: %d (expected 1) at line %d\n", characterLength, yylineno);
         saveLexerError(LEX_INVATID_CHAR_ERROR, stringBuffer);
         return 0;
@@ -421,11 +367,11 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     return TYPE_CHAR;
 }
 
-<CHARACTER><<EOF>> {
-    fprintf(stderr, "Unterminated CHARACTER at line %d\n", yylineno);
-    saveLexerError(LEX_INVATID_CHAR_ERROR, stringBuffer);
-    BEGIN(INITIAL);
-    return 0;
+<STRING>\" {
+    BEGIN(INITIAL); 
+    stringBuffer[stringLength] = 0;
+    printf("STRING FOUND: %s\n", stringBuffer);
+    return TYPE_STRING;
 }
 
     /*For any exceptions*/
