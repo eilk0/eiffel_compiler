@@ -9,7 +9,6 @@
 
 %option noyywrap
 %option never-interactive
-%option stack
 %option yylineno
 
 %x STRING
@@ -245,7 +244,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 
     /* STRINGS */
 
-\"  {printf("STRING BEGIN DETECTED\n"); yy_push_state(STRING); stringLength = 0;}
+\"  {printf("STRING BEGIN DETECTED\n"); BEGIN(STRING); stringLength = 0;}
 <STRING>\%\% {stringBuffer[stringLength++] = '%';}
 <STRING>\%A {stringBuffer[stringLength++] = '@';}
 <STRING>\%B {stringBuffer[stringLength++] = '\b';}
@@ -298,20 +297,20 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     stringBuffer[stringLength++] = c.character; }
 
 <STRING>[^\"] {stringBuffer[stringLength++] =  yytext[0];}
-<STRING>\" {yy_pop_state(); 
+<STRING>\" {BEGIN(INITIAL); 
         stringBuffer[stringLength] = 0;
         printf("STRING FOUND: %s\n", stringBuffer);
         return TYPE_STRING;}
 
 <STRING><<EOF>> {
     fprintf(stderr, "Unterminated STRING at line %d\n", yylineno);
-    yy_pop_state();
+    BEGIN(INITIAL);
     return 0;
 }
 
     /* CHARACTERS */
 
-\'  {printf("CHARACTER BEGIN DETECTED\n"); yy_push_state(CHARACTER); stringLength = 0; characterLength = 0;}
+\'  {printf("CHARACTER BEGIN DETECTED\n"); BEGIN(CHARACTER); stringLength = 0; characterLength = 0;}
 <CHARACTER>\%\% {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '%';}
 <CHARACTER>\%A {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '@';}
 <CHARACTER>\%B {characterLength++; if (characterLength == 1) stringBuffer[stringLength++] = '\b';}
@@ -378,7 +377,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     if (characterLength == 1) stringBuffer[stringLength++] = yytext[0];
 }
 <CHARACTER>\' {
-    yy_pop_state();
+    BEGIN(INITIAL);
     if (characterLength != 1) {
         fprintf(stderr, "Invalid CHARACTER length: %d (expected 1) at line %d\n", characterLength, yylineno);
         return 0;
@@ -390,7 +389,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 
 <CHARACTER><<EOF>> {
     fprintf(stderr, "Unterminated CHARACTER at line %d\n", yylineno);
-    yy_pop_state();
+    BEGIN(INITIAL);
     return 0;
 }
 
