@@ -39,7 +39,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     // Local variables
     int stringLength;
     int characterLength;
-    char stringBuffer[4096];
+    char stringBuffer[MAX_TEXT_TOKEN];
     struct ParsedChar c;
 
 [ \t\r]+    {/* do nothing */}

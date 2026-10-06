@@ -15,6 +15,8 @@ typedef union TokenValue {
     } text; // TYPE_ID, TYPE_STRING, TYPE_CHAR
 } TokenValue;
 
+extern TokenValue yylval;
+
 enum Token {
     KW_ACROSS = 256,
     KW_AGENT,
