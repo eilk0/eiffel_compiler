@@ -20,6 +20,10 @@ OCT (0[cC][0-7][0-7_]+[0-7])|(0[cC][0-7][0-7]?)
 HEX (0[xX][0-9a-fA-F][0-9a-fA-F_]+[0-9a-fA-F])|(0[xX][0-9a-fA-F][0-9a-fA-F]?)
 INTWB ([0-9][0-9_]+[0-9]|[0-9][0-9]?)
 
+BIN_INVALID_DECL 0[bB][^_][0-9a-zA-Z_]*
+OCT_INVALID_DECL 0[cC][^_][0-9a-zA-Z_]*
+HEX_INVALID_DECL 0[xX][^_][0-9a-zA-Z_]*
+
 ID  [a-zA-Z][a-zA-Z0-9_]*
 
 UTF8_1 [\000-\011\013-\177]
@@ -32,6 +36,29 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     void printToken(char* token, char* str);
     void removeUnderscores(char* str);
     int removeCharFromString(char* str, int pos);
+
+    typedef enum {
+        LEX_SYNTAX_IN_LINE_ERROR,
+        LEX_INVALID_INT_DECLARATION_ERROR,
+        LEX_INVATID_CHAR_ERROR, 
+        LEX_INCOMPLITE_STRNG_MISS_FINAL_QUOTE_ERROR,
+        LEX_UNKNOWN_SYMB_ERROR,
+        LEX_OTHER_ERROR
+    } LexerErrorType;
+
+    typedef struct{
+        const char* file_name;
+        int line;
+        int position;
+        char* prev_line;
+        char* line_text;
+        char* next_line;
+        char* lexeme;
+        LexerErrorType type;
+    } LexerError;
+    
+    void saveLexerError(LexerErrorType type, const char* lexeme);
+    void generateLexErrorMessage(LexerError* e);
 %}
 
 %%
@@ -151,8 +178,6 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 
     /**/
 
-{ID}    {printToken("TYPE_ID", yytext); return TYPE_ID;}
-
 
     /* REAL */
 
@@ -199,6 +224,8 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     return TYPE_INT2; // не уверена, нужны ли прям такие отдельные токены или просто TYPE_INT
     }
 
+{BIN_INVALID_DECL} {saveLexerError(LEX_INVALID_INT_DECLARATION_ERROR, yytext); return 0;}
+
     /*Octal base*/
 {OCT} {
     stringBuffer[0] = 0;
@@ -212,6 +239,8 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     printf("DETECTED TYPE_INT8: %d\n", num);
     return TYPE_INT8;
     }
+
+{OCT_INVALID_DECL} {saveLexerError(LEX_INVALID_INT_DECLARATION_ERROR, yytext); return 0;}
 
     /*Hexadecimal base*/
 {HEX} {
@@ -227,6 +256,8 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     return TYPE_INT16;
     }
 
+{HEX_INVALID_DECL} {saveLexerError(LEX_INVALID_INT_DECLARATION_ERROR, yytext); return 0;}
+
     /*Integer without base*/
 {INTWB} {
     stringBuffer[0] = 0;
@@ -241,6 +272,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     return TYPE_INT;
 }
 
+{ID}    {printToken("TYPE_ID", yytext); return TYPE_ID; /*перенесено после интов для отлова ошибки непсовпадения основания инта*/}
 
     /* STRINGS */
 
@@ -304,6 +336,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 
 <STRING><<EOF>> {
     fprintf(stderr, "Unterminated STRING at line %d\n", yylineno);
+    saveLexerError(LEX_INCOMPLITE_STRNG_MISS_FINAL_QUOTE_ERROR, stringBuffer);
     BEGIN(INITIAL);
     return 0;
 }
@@ -380,6 +413,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     BEGIN(INITIAL);
     if (characterLength != 1) {
         fprintf(stderr, "Invalid CHARACTER length: %d (expected 1) at line %d\n", characterLength, yylineno);
+        saveLexerError(LEX_INVATID_CHAR_ERROR, stringBuffer);
         return 0;
     }
     stringBuffer[stringLength] = 0;
@@ -389,12 +423,15 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 
 <CHARACTER><<EOF>> {
     fprintf(stderr, "Unterminated CHARACTER at line %d\n", yylineno);
+    saveLexerError(LEX_INVATID_CHAR_ERROR, stringBuffer);
     BEGIN(INITIAL);
     return 0;
 }
 
     /*For any exceptions*/
-.                   {fprintf(stderr, "Unknown character: '%s' at line %d\n",yytext, yylineno); return 0;}
+.                   {fprintf(stderr, "Unknown character: '%s' at line %d\n",yytext, yylineno); 
+                        saveLexerError(LEX_UNKNOWN_SYMB_ERROR, yytext);
+                        return 0;}
 
 %%
 
@@ -415,4 +452,146 @@ int removeCharFromString(char* str, int pos) {
     for (int i = pos; i < pos; i++)
     str[i] = str[i + 1];
     return 1;
+}
+
+#define MAX_LEXER_ERRORS 100
+
+LexerError lexerErrors[MAX_LEXER_ERRORS];
+int lexerErrorCount = 0;
+
+
+void saveLexerError(LexerErrorType type, const char* lexeme)
+{
+    if (lexerErrorCount >= MAX_LEXER_ERRORS)
+        return;
+
+    LexerError* error = &lexerErrors[lexerErrorCount];
+
+    error->file_name = NULL;
+    error->line = yylineno;
+
+    error->prev_line = NULL;
+    error->line_text = NULL;
+    error->next_line = NULL;
+
+    error->lexeme = lexeme;
+
+    if (lexeme != NULL) {
+        error->lexeme = _strdup(lexeme);
+    }
+
+    error->type = type;
+
+    lexerErrorCount++;
+}
+
+void generateLexErrorMessage(LexerError* e)
+{
+    switch (e->type)
+    {
+        case LEX_SYNTAX_IN_LINE_ERROR:
+            printf(
+                "Syntax error at line %d in class TEST_ID\n\n",
+                e->line
+            );
+
+            if (e->line_text != NULL)
+                printf("%s\n", e->prev_line);
+
+           if (e->line_text != NULL)
+                printf("%s\n", e->line_text);
+
+           if (e->next_line != NULL)
+                printf("%s\n", e->next_line);
+
+            break;
+
+
+        case LEX_INVALID_INT_DECLARATION_ERROR:
+            printf(
+                "Invalid integer declaration at line %d\n",
+                e->line
+            );
+
+            if (e->line_text != NULL)
+                printf("%s\n", e->prev_line);
+
+            if (e->line_text != NULL)
+                printf("%s\n", e->line_text);
+
+            if (e->next_line != NULL)
+                printf("%s\n", e->next_line);
+
+            break;
+
+
+        case LEX_INVATID_CHAR_ERROR:
+            printf(
+                "Invalid CHARACTER at line %d\n",
+                e->line
+            );
+
+            if (e->line_text != NULL)
+                printf("%s\n", e->prev_line);
+
+            if (e->line_text != NULL)
+                printf("%s\n", e->line_text);
+
+            if (e->next_line != NULL)
+                printf("%s\n", e->next_line);
+
+            break;
+
+
+        case LEX_INCOMPLITE_STRNG_MISS_FINAL_QUOTE_ERROR:
+            printf(
+                "Unterminated STRING at line %d\n",
+                e->line
+            );
+
+            if (e->line_text != NULL)
+                printf("%s\n", e->prev_line);
+
+            if (e->line_text != NULL)
+                printf("%s\n", e->line_text);
+
+            if (e->next_line != NULL)
+                printf("%s\n", e->next_line);
+
+            break;
+
+
+        case LEX_UNKNOWN_SYMB_ERROR:
+            printf(
+                "Unknown symbol at line %d\n",
+                e->line
+            );
+
+             if (e->line_text != NULL)
+                printf("%s\n", e->prev_line);
+
+             if (e->line_text != NULL)
+                printf("%s\n", e->line_text);
+
+            if (e->next_line != NULL)
+                printf("%s\n", e->next_line);
+            break;
+
+
+        case LEX_OTHER_ERROR:
+            printf(
+                "Lexer error at line %d\n",
+                e->line
+            );
+            if (e->line_text != NULL)
+                printf("%s\n", e->prev_line);
+
+            if (e->line_text != NULL)
+                printf("%s\n", e->line_text);
+
+            if (e->next_line != NULL)
+                printf("%s\n", e->next_line);
+
+            break;
+    }
 }

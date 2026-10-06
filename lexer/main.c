@@ -16,5 +16,10 @@ int main(int argc, char** argv) {
     }
     int token;
     while ((token = yylex())) {}
+    if (lexerErrorCount > 0)
+    {
+        generateLexErrorMessage(&lexerErrors[0]);
+        printf("lexerErrorCount = %d",lexerErrorCount);
+    }
     return 0;
 }
