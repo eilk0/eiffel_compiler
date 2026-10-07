@@ -183,9 +183,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 "&"	{printToken("OP_AMPERSAND", yytext); return OP_AMPERSAND;}
 "|"	{printToken("OP_VBAR", yytext); return OP_VBAR;}
 "^"	{printToken("OP_CARET", yytext); return OP_CARET;}
-(?i:and)\s+(?i:then)	{printToken("OP_ANDTHEN", yytext); return OP_ANDTHEN;}
 (?i:and)	{printToken("OP_AND", yytext); return OP_AND;}
-(?i:or)\s+(?i:else)	{printToken("OP_ORELSE", yytext); return OP_ORELSE;}
 (?i:or)	{printToken("OP_OR", yytext); return OP_OR;}
 (?i:xor) {printToken("OP_XOR", yytext); return OP_XOR;}
 
@@ -403,7 +401,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 }
 
     /*For any exceptions*/
-<*>.                   {fprintf(stderr, "Unknown character: '%s' at line %d\n",yytext, yylineno); 
+.                   {fprintf(stderr, "Unknown character: '%s' at line %d\n",yytext, yylineno); 
                         saveLexerError(LEX_UNKNOWN_SYMB_ERROR, yytext);
                         return 0;}
 
