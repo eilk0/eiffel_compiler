@@ -36,19 +36,13 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     void printToken(char* token, char* str);
     void removeUnderscores(char* str);
     int removeCharFromString(char* str, int pos);
+    void countColumnTokens();
 
-    int tokenStartColumn = 1;
-    int currentColumn = 1;
+   
 
     #define YY_USER_ACTION \
-        do{ \
-            tokenStartColumn = currentColumn; \
-            for (int i = 0; i < yyleng; i++) \
-            { \
-                if(yytext[i] == '\n') currentColumn = 1; \
-                else currentColumn++; \
-            } \
-        }while(0);
+        countColumnTokens();
+        
 
     typedef enum {
         LEX_SYNTAX_IN_LINE_ERROR,
@@ -63,6 +57,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
         const char* file_name;
         int line;
         int position;
+        int crash_pos;
         char* prev_line;
         char* line_text;
         char* next_line;
@@ -401,7 +396,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 }
 
     /*For any exceptions*/
-.                   {fprintf(stderr, "Unknown character: '%s' at line %d\n",yytext, yylineno); 
+<*>.                   {fprintf(stderr, "Unknown character: '%s' at line %d\n",yytext, yylineno); 
                         saveLexerError(LEX_UNKNOWN_SYMB_ERROR, yytext);
                         return 0;}
 
@@ -426,9 +421,10 @@ int removeCharFromString(char* str, int pos) {
     return 1;
 }
 
-#define MAX_LEXER_ERRORS 100
-#define MAX_LEXER_ERRORS 100 // потом уменьшить до 1 , на всякий 2
+#define MAX_LEXER_ERRORS 100 // потом уменьшить до 1 
 
+int tokenStartColumn = 1;
+int currentColumn = 1;
 LexerError lexerErrors[MAX_LEXER_ERRORS];
 int lexerErrorCount = 0;
 
@@ -448,6 +444,7 @@ void saveLexerError(LexerErrorType type, const char* lexeme)
     error->next_line = NULL;
 
     error->position = tokenStartColumn;
+    error->crash_pos = currentColumn;  
     error->lexeme = lexeme;
 
     if (lexeme != NULL) {
@@ -457,6 +454,15 @@ void saveLexerError(LexerErrorType type, const char* lexeme)
     error->type = type;
 
     lexerErrorCount++;
+}
+
+void countColumnTokens(){
+    do{ 
+        tokenStartColumn = currentColumn; 
+         for (int i = 0; i < yyleng; i++) { 
+            if(yytext[i] == '\n') currentColumn = 1; 
+            else currentColumn++; 
+         } }while(0);
 }
 
 void generateLexErrorMessage(LexerError* e)
@@ -471,9 +477,15 @@ void generateLexErrorMessage(LexerError* e)
             );
 
             printf(
-                "Position %d\n\n",
+                "Position %d\n",
                 e->position
             );
+
+             printf(
+                "Crash position %d\n\n",
+                e->crash_pos
+            );
+
 
             if (e->line_text != NULL)
                 printf("%s\n", e->prev_line);
@@ -494,8 +506,13 @@ void generateLexErrorMessage(LexerError* e)
             );
 
             printf(
-                "Position %d\n\n",
+                "Position %d\n",
                 e->position
+            );
+
+            printf(
+                "Crash position %d\n\n",
+                e->crash_pos
             );
 
             if (e->line_text != NULL)
@@ -517,8 +534,13 @@ void generateLexErrorMessage(LexerError* e)
             );
 
             printf(
-                "Position %d\n\n",
+                "Position %d\n",
                 e->position
+            );
+
+            printf(
+                "Crash position %d\n\n",
+                e->crash_pos
             );
 
             if (e->line_text != NULL)
@@ -540,8 +562,13 @@ void generateLexErrorMessage(LexerError* e)
             );
 
             printf(
-                "Position %d\n\n",
+                "Position %d\n",
                 e->position
+            );
+
+            printf(
+                "Crash position %d\n\n",
+                e->crash_pos
             );
 
             if (e->line_text != NULL)
@@ -563,8 +590,13 @@ void generateLexErrorMessage(LexerError* e)
             );
 
             printf(
-                "Position %d\n\n",
+                "Position %d\n",
                 e->position
+            );
+
+            printf(
+                "Crash position %d\n\n",
+                e->crash_pos
             );
 
              if (e->line_text != NULL)
@@ -585,8 +617,13 @@ void generateLexErrorMessage(LexerError* e)
             );
 
             printf(
-                "Position %d\n\n",
+                "Position %d\n",
                 e->position
+            );
+
+            printf(
+                "Crash position %d\n\n",
+                e->crash_pos
             );
 
             if (e->line_text != NULL)
