@@ -1,4 +1,8 @@
+#ifndef UNICODE_PARSER_H
+#define UNICODE_PARSER_H
+
 #include <stddef.h>
+#include <stdint.h>
 
 struct ParsedChar {
     char success;
@@ -6,3 +10,5 @@ struct ParsedChar {
 };
 
 struct ParsedChar parseUnicode(const char* unicodeEncoded, size_t charactersCount, int base);
+
+#endif
