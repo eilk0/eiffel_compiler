@@ -37,6 +37,19 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     void removeUnderscores(char* str);
     int removeCharFromString(char* str, int pos);
 
+    int tokenStartColumn = 1;
+    int currentColumn = 1;
+
+    #define YY_USER_ACTION \
+        do{ \
+            tokenStartColumn = currentColumn; \
+            for (int i = 0; i < yyleng; i++) \
+            { \
+                if(yytext[i] == '\n') currentColumn = 1; \
+                else currentColumn++; \
+            } \
+        }while(0);
+
     typedef enum {
         LEX_SYNTAX_IN_LINE_ERROR,
         LEX_INVALID_INT_DECLARATION_ERROR,
@@ -416,6 +429,7 @@ int removeCharFromString(char* str, int pos) {
 }
 
 #define MAX_LEXER_ERRORS 100
+#define MAX_LEXER_ERRORS 100 // потом уменьшить до 1 , на всякий 2
 
 LexerError lexerErrors[MAX_LEXER_ERRORS];
 int lexerErrorCount = 0;
@@ -435,6 +449,7 @@ void saveLexerError(LexerErrorType type, const char* lexeme)
     error->line_text = NULL;
     error->next_line = NULL;
 
+    error->position = tokenStartColumn;
     error->lexeme = lexeme;
 
     if (lexeme != NULL) {
@@ -453,7 +468,13 @@ void generateLexErrorMessage(LexerError* e)
         case LEX_SYNTAX_IN_LINE_ERROR:
             printf(
                 "Syntax error at line %d in class TEST_ID\n\n",
+                "Syntax error at line %d \n\n",
                 e->line
+            );
+
+            printf(
+                "Position %d\n\n",
+                e->position
             );
 
             if (e->line_text != NULL)
@@ -474,6 +495,11 @@ void generateLexErrorMessage(LexerError* e)
                 e->line
             );
 
+            printf(
+                "Position %d\n\n",
+                e->position
+            );
+
             if (e->line_text != NULL)
                 printf("%s\n", e->prev_line);
 
@@ -490,6 +516,11 @@ void generateLexErrorMessage(LexerError* e)
             printf(
                 "Invalid CHARACTER at line %d\n",
                 e->line
+            );
+
+            printf(
+                "Position %d\n\n",
+                e->position
             );
 
             if (e->line_text != NULL)
@@ -510,6 +541,11 @@ void generateLexErrorMessage(LexerError* e)
                 e->line
             );
 
+            printf(
+                "Position %d\n\n",
+                e->position
+            );
+
             if (e->line_text != NULL)
                 printf("%s\n", e->prev_line);
 
@@ -528,6 +564,11 @@ void generateLexErrorMessage(LexerError* e)
                 e->line
             );
 
+            printf(
+                "Position %d\n\n",
+                e->position
+            );
+
              if (e->line_text != NULL)
                 printf("%s\n", e->prev_line);
 
@@ -544,6 +585,12 @@ void generateLexErrorMessage(LexerError* e)
                 "Lexer error at line %d\n",
                 e->line
             );
+
+            printf(
+                "Position %d\n\n",
+                e->position
+            );
+
             if (e->line_text != NULL)
                 printf("%s\n", e->prev_line);
 
