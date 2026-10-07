@@ -341,12 +341,27 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 
 <CHAR,STRING>[^\"\'] {stringBuffer[stringLength++] =  yytext[0];}
 
+<CHAR>\n {
+    fprintf(stderr, "Unterminated CHARACTER at line %d\n", yylineno);
+    saveLexerError(LEX_INVATID_CHAR_ERROR, stringBuffer);
+    BEGIN(INITIAL);
+    return 0;
+} 
+
 <CHAR><<EOF>> {
     fprintf(stderr, "Unterminated CHARACTER at line %d\n", yylineno);
     saveLexerError(LEX_INVATID_CHAR_ERROR, stringBuffer);
     BEGIN(INITIAL);
     return 0;
 } 
+
+<STRING>\n {
+    fprintf(stderr, "Unterminated STRING at line %d\n", yylineno);
+    saveLexerError(LEX_INCOMPLITE_STRNG_MISS_FINAL_QUOTE_ERROR, stringBuffer);
+    BEGIN(INITIAL);
+    return 0;
+}
+
 
 <STRING><<EOF>> {
     fprintf(stderr, "Unterminated STRING at line %d\n", yylineno);
