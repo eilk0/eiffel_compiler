@@ -2,6 +2,7 @@
 #define EIFFEL_TOKENS_H
 
 #include <stddef.h>
+#include <stdint.h>
 
 #define MAX_TEXT_TOKEN 4096
 
@@ -12,7 +13,12 @@ typedef union TokenValue {
     struct {
         char data[MAX_TEXT_TOKEN];
         size_t length;
-    } text; // TYPE_ID, TYPE_STRING, TYPE_CHAR
+    } identifier; // TYPE_ID
+    uint32_t character; //TYPE_CHAR8, TYPE_CHAR32
+    struct {
+        uint32_t data[MAX_TEXT_TOKEN];
+        size_t length;
+    } string; // TYPE_STRING
 } TokenValue;
 
 extern TokenValue yylval;
