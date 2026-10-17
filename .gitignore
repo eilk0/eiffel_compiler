@@ -1,5 +1,5 @@
 **/x64
 /.vs
 /Compiler/x64
-/Compiler/yylex.h
 Compiler/grammar.tab.c
+Compiler/lex.yy.c
