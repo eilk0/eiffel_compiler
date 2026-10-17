@@ -19,24 +19,26 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="grammar.tab.c" />
+    <ClCompile Include="lex.yy.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="unicode_parser.c" />
-    <ClCompile Include="upper_lower.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="lexer.h" />
     <ClInclude Include="unicode_parser.h" />
-    <ClInclude Include="upper_lower.h" />
-    <ClInclude Include="yylex.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="grammar.y" />
     <None Include="yylex.l" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{ed480f97-253b-4c0e-905d-16dddd072206}</ProjectGuid>
-    <RootNamespace>Lexer</RootNamespace>
+    <RootNamespace>Compiler</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Compiler</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -135,7 +137,7 @@
       <EnableSegmentHeap>true</EnableSegmentHeap>
     </Manifest>
     <PreBuildEvent>
-      <Command>call compileFlex.bat</Command>
+      <Command>call compileBisonFlex.bat</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -158,7 +160,7 @@
       <EnableSegmentHeap>true</EnableSegmentHeap>
     </Manifest>
     <PreBuildEvent>
-      <Command>call compileFlex.bat</Command>
+      <Command>call compileBisonFlex.bat</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -2,7 +2,7 @@
     #include <stdio.h>
     #include <errno.h>
     #include <math.h>
-    #include "upper_lower.h"
+    #include "lexer.h"
     #include "unicode_parser.h"
     #define YY_NO_UNISTD_H
 %}
@@ -38,32 +38,8 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     int removeCharFromString(char* str, int pos);
     void countColumnTokens();
 
-   
-
     #define YY_USER_ACTION \
         countColumnTokens();
-        
-
-    typedef enum {
-        LEX_SYNTAX_IN_LINE_ERROR,
-        LEX_INVALID_INT_DECLARATION_ERROR,
-        LEX_INVATID_CHAR_ERROR, 
-        LEX_INCOMPLITE_STRNG_MISS_FINAL_QUOTE_ERROR,
-        LEX_UNKNOWN_SYMB_ERROR,
-        LEX_OTHER_ERROR
-    } LexerErrorType;
-
-    typedef struct{
-        const char* file_name;
-        int line;
-        int position;
-        int crash_pos;
-        char* prev_line;
-        char* line_text;
-        char* next_line;
-        char* lexeme;
-        LexerErrorType type;
-    } LexerError;
     
     void saveLexerError(LexerErrorType type, const char* lexeme);
     void generateLexErrorMessage(LexerError* e);
@@ -420,8 +396,6 @@ int removeCharFromString(char* str, int pos) {
     str[i] = str[i + 1];
     return 1;
 }
-
-#define MAX_LEXER_ERRORS 100 // потом уменьшить до 1 
 
 int tokenStartColumn = 1;
 int currentColumn = 1;
