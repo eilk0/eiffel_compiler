@@ -2,6 +2,7 @@
     #include <stdio.h>
     #include <errno.h>
     #include <math.h>
+    #include <cstddef>
     #include "lexer.h"
     #include "unicode_parser.h"
     #define YY_NO_UNISTD_H
@@ -49,7 +50,6 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 
     // Local variables
     int stringLength;
-    int characterLength;
     wchar_t stringBuffer[MAX_TEXT_TOKEN];
     struct ParsedChar c;
 
@@ -118,8 +118,8 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 
 
     /*Boolean constants*/
-(?i:true)  {printToken("TYPE_TRUE", yytext); return TYPE_TRUE;}
-(?i:false) {printToken("TYPE_FALSE", yytext); return TYPE_FALSE;}
+(?i:true)  {printToken("TYPE_TRUE", yytext); yylval.boolean = 1; return TYPE_TRUE;}
+(?i:false) {printToken("TYPE_FALSE", yytext); yylval.boolean = 0; return TYPE_FALSE;}
 
 
     /*Operators*/
@@ -171,6 +171,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 \.(([0-9]{3}_)*[0-9]{1,3})([eE][+-]?[0-9]+)? {
         if ((size_t)yyleng >= sizeof(stringBuffer)) {
             fprintf(stderr, "REAL literal is too long at line %d\n", yylineno);
+            // сюда бы тоже saveLexerError?
             return 0;
         } 
         strcpy(stringBuffer, yytext);
@@ -187,6 +188,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
             return 0;
         }
         printf("DETECTED TYPE_REAL: %lf\n", num);
+        yylval.real = num;
         return TYPE_REAL;
     }
 
@@ -203,6 +205,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
         return 0;
     }
     printf("DETECTED TYPE_INT2: %d\n", num);
+    yylval.integer = num;
     return TYPE_INT2; // не уверена, нужны ли прям такие отдельные токены или просто TYPE_INT
     }
 
@@ -219,6 +222,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
         return 0;
     }
     printf("DETECTED TYPE_INT8: %d\n", num);
+    yylval.integer = num;
     return TYPE_INT8;
     }
 
@@ -235,6 +239,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
         return 0;
     }
     printf("DETECTED TYPE_INT16: %d\n", num);
+    yylval.integer = num;
     return TYPE_INT16;
     }
 
@@ -251,10 +256,21 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
         return 0;
     }
     printf("DETECTED TYPE_INT: %d\n", num);
+    yylval.integer = num;
     return TYPE_INT;
 }
 
-{ID}    {printToken("TYPE_ID", yytext); return TYPE_ID; /*перенесено после интов для отлова ошибки непсовпадения основания инта*/}
+{ID}    {
+    if ((size_t)yyleng >= MAX_TEXT_TOKEN) {
+        saveLexerError(LEX_OTHER_ERROR, yytext); // надо добавить отдельный тип ошибки под превышение длины крч
+        return 0;
+    }
+    memcpy(yylval.identifier.data, yytext, (size_t)yyleng);
+    yylval.identifier.data[yyleng]='\0';
+    yylval.identifier.length=(size_t)yyleng;
+    printToken("TYPE_ID", yytext);
+    return TYPE_ID;
+    }
 
     /* STRINGS & CHARACTERS */
 
@@ -360,7 +376,8 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
         return 0;
     }
     stringBuffer[stringLength] = 0;
-    printf("CHARACTER DETECTED:%s\n", stringBuffer);
+    printf("CHARACTER DETECTED:%s\n", stringBuffer[0]);
+    yylval.character = stringBuffer[0];
     return TYPE_CHAR;
 }
 
@@ -368,6 +385,8 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     BEGIN(INITIAL); 
     stringBuffer[stringLength] = 0;
     printf("STRING FOUND: %s\n", stringBuffer);
+    memcpy(yylval.string.data, stringBuffer, ((size_t)stringLength+1) * sizeof(stringBuffer[0]));
+    string.length=(size_t)stringLength;
     return TYPE_STRING;
 }
 
