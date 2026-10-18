@@ -2,7 +2,8 @@
     #include <stdio.h>
     #include <errno.h>
     #include <math.h>
-    #include <cstddef>
+    #include <stdlib.h>
+    #include <limits.h>
     #include "lexer.h"
     #include "unicode_parser.h"
     #define YY_NO_UNISTD_H
