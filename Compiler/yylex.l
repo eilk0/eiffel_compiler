@@ -32,7 +32,7 @@ UTF8_3 [\340-\357][\200-\277][\200-\277]
 UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 
 %{
-    #include "tokens.h"
+    #include "grammar.tab.h"
     void printToken(char* token, char* str);
     void removeUnderscores(char* str);
     int removeCharFromString(char* str, int pos);
