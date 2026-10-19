@@ -153,7 +153,33 @@ convert:
         ;
 
 feature:
-        KW_FEATURE
+        KW_FEATURE feature_decl
+        ;
+
+feature_decl:
+        TYPE_ID formal_arg_opt OP_COLON TYPE_ID
+        KW_DO
+        routine_body
+        KW_END
+        ;
+
+formal_arg_opt:
+        %empty
+        | OP_LPARENTHESIS formal_arg_list OP_RPARENTHESIS
+        ;
+
+formal_arg_list:
+        param
+        | formal_arg_list OP_SEMICOLON param
+        | formal_arg_list param //не уверена про разделители при списке аргументов 
+        ;
+
+param:
+        TYPE_ID OP_COLON TYPE_ID
+        ;
+
+routine_body:
+        %empty
         ;
 
 invariant:
