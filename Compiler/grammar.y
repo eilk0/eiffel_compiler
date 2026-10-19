@@ -157,25 +157,49 @@ feature:
         ;
 
 feature_decl:
-        TYPE_ID formal_arg_opt OP_COLON TYPE_ID
+        TYPE_ID arg_opt OP_COLON TYPE_ID
+        require_opt
+        local_opt
         KW_DO
         routine_body
+        ensure_opt
+        rescue_opt
         KW_END
         ;
 
-formal_arg_opt:
+arg_opt:
         %empty
-        | OP_LPARENTHESIS formal_arg_list OP_RPARENTHESIS
+        | OP_LPARENTHESIS param_list OP_RPARENTHESIS
         ;
 
-formal_arg_list:
+param_list:
         param
-        | formal_arg_list OP_SEMICOLON param
-        | formal_arg_list param //не уверена про разделители при списке аргументов 
+        | param_list OP_SEMICOLON param
+        | param_list param //не уверена про разделители при списке аргументов 
         ;
 
 param:
         TYPE_ID OP_COLON TYPE_ID
+        ;
+
+require_opt:
+        %empty
+        | KW_REQUIRE
+        ;
+
+local_opt:
+        %empty
+        | KW_LOCAL param_list
+        ;
+
+ensure_opt:
+        %empty
+        | KW_ENSURE
+        ;
+
+rescue_opt:
+        %empty
+        | KW_RESCUE routine_body
         ;
 
 routine_body:
