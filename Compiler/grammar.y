@@ -61,8 +61,114 @@ void yyerror(const char* s);
 %%
 
 eiffel_code:
-	   | eiffel_code
+        %empty
+	   | eiffel_code class_decl
 ;
+
+class_decl:
+        note_opt
+        class_header
+        formal_generics_opt
+        obsolete_opt
+        inherit_opt
+        create_opt
+        convert_opt
+        feature_opt
+        note_opt
+        invariant_opt
+        note_opt
+        KW_END
+        ;
+
+class_header:
+        class_mod KW_CLASS TYPE_ID
+        | KW_CLASS TYPE_ID
+        ;
+
+class_mod:
+        KW_DEFERRED
+        | KW_EXPANDED
+        | KW_FROZEN
+        ;
+
+formal_generics_opt:
+        %empty
+        | formal_generics
+        ;
+
+formal_generics:
+        OP_LSQBRACKET formal_generic_list OP_RSQBRACKET
+        ;
+
+formal_generic_list:
+        TYPE_ID
+        | formal_generic_list OP_COMMA TYPE_ID
+        ;
+
+inherit_opt:
+        %empty
+        | inherit
+        ;
+
+create_opt:
+        %empty
+        | create
+        ;
+
+convert_opt:
+        %empty
+        | convert
+        ;
+
+feature_opt:
+        %empty
+        | feature
+        ;
+
+invariant_opt:
+        %empty
+        | invariant
+        ;
+
+obsolete_opt:
+        %empty
+        | obsolete
+        ;
+
+note_opt:
+        %empty
+        | note
+        ;
+
+inherit: 
+        KW_INHERIT
+        ;
+
+create:
+        KW_CREATE
+        ;
+
+convert:
+        KW_CONVERT
+        ;
+
+feature:
+        KW_FEATURE
+        ;
+
+invariant:
+        KW_INVARIANT
+        ;
+
+obsolete:
+        KW_OBSOLETE
+        ;
+
+note:
+        KW_NOTE
+        ;
+
+
 %%
 
 void yyerror(const char* s) {
