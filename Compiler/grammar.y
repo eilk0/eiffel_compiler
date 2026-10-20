@@ -71,22 +71,22 @@ class_decl:
         formal_generics_opt
         obsolete_opt
         inherit_opt
-        create_opt
+        create_list_opt
         convert_opt
-        feature_opt
-        note_opt
+        feature_list_opt
         invariant_opt
         note_opt
         KW_END
         ;
 
 class_header:
-        class_mod KW_CLASS TYPE_ID
+        class_mod_opt KW_CLASS TYPE_ID
         | KW_CLASS TYPE_ID
         ;
 
-class_mod:
-        KW_DEFERRED
+class_mod_opt:
+        %empty
+        | KW_DEFERRED
         | KW_EXPANDED
         | KW_FROZEN
         ;
@@ -109,10 +109,10 @@ inherit_opt:
         %empty
         | inherit
         ;
-
-create_opt:
+/* сделать креате и фичи листами - посмотреть что еще может быть листами */
+create_list_opt:
         %empty
-        | create
+        | create_list
         ;
 
 convert_opt:
@@ -120,19 +120,19 @@ convert_opt:
         | convert
         ;
 
-feature_opt:
+feature_list_opt:
         %empty
-        | feature
+        | feature_list
         ;
 
 invariant_opt:
         %empty
-        | invariant
+        | KW_INVARIANT
         ;
 
 obsolete_opt:
         %empty
-        | obsolete
+        | KW_OBSOLETE
         ;
 
 note_opt:
@@ -144,17 +144,40 @@ inherit:
         KW_INHERIT
         ;
 
-create:
-        KW_CREATE
+create_list:
+        create
+        | create_list create
         ;
 
+create:
+        KW_CREATE combined_id_list
+        ;
+
+/* ?? */
 convert:
         KW_CONVERT
         ;
 
-feature:
-        KW_FEATURE feature_decl
+feature_list:
+        feature
+        | feature feature_list
         ;
+
+feature:
+        note_opt KW_FEATURE feature_acces_mod_opt feature_decl 
+        ;
+
+feature_acces_mod_opt:
+        %empty
+        | OP_LBRACE combined_id_list OP_RBRACE;
+        ;
+
+combined_id_list: 
+        TYPE_ID
+        | id_list ',' TYPE_ID
+        ;
+
+
 
 feature_decl:
         TYPE_ID arg_opt OP_COLON TYPE_ID
@@ -175,7 +198,7 @@ arg_opt:
 param_list:
         param
         | param_list OP_SEMICOLON param
-        | param_list param //не уверена про разделители при списке аргументов 
+        | param_list param /* не уверена про разделители при списке аргументов */ 
         ;
 
 param:
@@ -204,14 +227,6 @@ rescue_opt:
 
 routine_body:
         %empty
-        ;
-
-invariant:
-        KW_INVARIANT
-        ;
-
-obsolete:
-        KW_OBSOLETE
         ;
 
 note:
