@@ -285,6 +285,10 @@ stmt: TYPE_ID ":=" expr
         | loop_stmt
         ;
 
+stmt_list: stmt
+        | stmt_list stmt
+        ;
+
 if_stmt: KW_IF expr
         KW_THEN stmt_list /* if_body? */
         elseif_opt
@@ -292,7 +296,7 @@ if_stmt: KW_IF expr
         KW_END ;
 
 elseif_opt: %empty
-        |elseif KW_ELSEIF expr KW_THEN stmt_list ;
+        |elseif_opt KW_ELSEIF expr KW_THEN stmt_list ;
 
 else_opt: %empty
         | KW_ELSE stmt_list ;
