@@ -108,12 +108,12 @@ formal_generics_opt:
         ;
 
 formal_generics:
-        OP_LSQBRACKET formal_generic_list OP_RSQBRACKET
+        '[' formal_generic_list ']'
         ;
 
 formal_generic_list:
         TYPE_ID
-        | formal_generic_list OP_COMMA TYPE_ID
+        | formal_generic_list ',' TYPE_ID
         ;
 
 obsolete_opt:
@@ -161,8 +161,8 @@ convert_opt:
         ;
 
 convert_list:
-        TYPE_ID OP_COLON OP_LPARENTHESIS OP_LBRACE combined_id_list OP_RBRACE OP_RPARENTHESIS
-        | TYPE_ID OP_COLON OP_LBRACE combined_id_list OP_RBRACE
+        TYPE_ID ':' '(' '{' combined_id_list '}' ')'
+        | TYPE_ID ':' '{' combined_id_list '}'
         | 
         ;
 
@@ -182,12 +182,12 @@ feature:
 
 feature_acces_mod_opt:
         %empty
-        | OP_LBRACE combined_id_list OP_RBRACE;
+        | '{' combined_id_list '}';
         ;
 
 feature_decl:
         assigner_opt
-        TYPE_ID arg_opt OP_COLON TYPE_ID
+        TYPE_ID arg_opt ':' TYPE_ID
         require_opt
         local_opt
         runtime_mod
@@ -204,7 +204,7 @@ assigner_opt:
 
 arg_opt:
         %empty
-        | OP_LPARENTHESIS param_list OP_RPARENTHESIS
+        | '(' param_list ')'
         ;
 
 invariant_opt:
@@ -217,10 +217,6 @@ note_opt:
         | note
         ;
 
-
-
-
-
 combined_id_list: 
         TYPE_ID
         | combined_id_list ',' TYPE_ID
@@ -228,7 +224,7 @@ combined_id_list:
 
 ss_id_list: 
         TYPE_ID
-        | ss_id_list OP_SEMICOLON TYPE_ID
+        | ss_id_list ';' TYPE_ID
         | ss_id_list TYPE_ID
         ;
 
@@ -236,13 +232,13 @@ ss_id_list:
 
 param_list:
         param
-        | param_list OP_SEMICOLON param
+        | param_list ';' param
         | param_list param /* не уверена про разделители при списке аргументов */ 
         ;
 
 param:
-        TYPE_ID OP_COLON TYPE_ID
-        | combined_id_list OP_COLON TYPE_ID
+        TYPE_ID ':' TYPE_ID
+        | combined_id_list ':' TYPE_ID
         ;
 
 runtime_mod:
@@ -283,8 +279,8 @@ note_body:
         ;
 
         /* */
-stmt: TYPE_ID OP_ASSIGN expr
-        | KW_RESULT OP_ASSIGN expr
+stmt: TYPE_ID ":=" expr
+        | KW_RESULT ":=" expr
         | if_stmt
         | loop_stmt
         ;
@@ -307,39 +303,39 @@ loop_stmt: KW_FROM stmt_list invariant_opt /* loop_condition? */
         KW_END ;
 
 expr: literal
-        | OP_LPARENTHESIS expr OP_RPARENTHESIS
-        | OP_LSQBRACKET expr OP_RSQBRACKET /* уточнить, какие выражения могут исп. в кв. скобках */
+        | '(' expr ')'
+        | '[' expr ']' /* уточнить, какие выражения могут исп. в кв. скобках */
         | expr KW_IMPLIES expr %prec KW_IMPLIES
         | expr OP_OR expr %prec OP_OR
         | expr OP_OR KW_ELSE expr %prec OP_OR
         | expr OP_XOR expr %prec OP_XOR
         | expr OP_AND expr %prec OP_AND
         | expr OP_AND KW_THEN expr %prec OP_AND
-        | expr OP_EQUAL expr %prec OP_EQUAL
-        | expr OP_NE expr %prec OP_NE
-        | expr OP_LESS expr %prec OP_LESS
-        | expr OP_GREATER expr %prec OP_GREATER
-        | expr OP_LE expr %prec OP_LE
-        | expr OP_GE expr %prec OP_GE
-        | expr OP_TILDE expr %prec OP_TILDE
-        | expr OP_PLUS expr %prec OP_PLUS
-        | expr OP_MINUS expr %prec OP_MINUS
-        | expr OP_MULT expr %prec OP_MULT
-        | expr OP_DIV expr %prec OP_DIV
-        | expr OP_CARET expr %prec OP_CARET
-        | OP_PLUS expr %prec UNARY
-        | OP_MINUS expr %prec UNARY
+        | expr '=' expr %prec OP_EQUAL
+        | expr "/=" expr %prec OP_NE
+        | expr '<' expr %prec OP_LESS
+        | expr '>' expr %prec OP_GREATER
+        | expr "<=" expr %prec OP_LE
+        | expr ">=" expr %prec OP_GE
+        | expr '~' expr %prec OP_TILDE
+        | expr '+' expr %prec OP_PLUS
+        | expr '-' expr %prec OP_MINUS
+        | expr '*' expr %prec OP_MULT
+        | expr '/' expr %prec OP_DIV
+        | expr '^' expr %prec OP_CARET
+        | '+' expr %prec UNARY
+        | '-' expr %prec UNARY
         | KW_NOT expr %prec UNARY
         ;
 
 expr_list: expr
-        | expr_list OP_COMMA expr
+        | expr_list ',' expr
         ;
         
 call: TYPE_ID arg_opt
-        | KW_CURRENT OP_POINT TYPE_ID arg_opt
-        | KW_RESULT OP_POINT TYPE_ID arg_opt
-        | call OP_POINT TYPE_ID arg_opt
+        | KW_CURRENT '.' TYPE_ID arg_opt
+        | KW_RESULT '.' TYPE_ID arg_opt
+        | call '.' TYPE_ID arg_opt
         ; /* посмотреть на precursor */
 
 literal: TYPE_INT | TYPE_INT2 | TYPE_INT8 | TYPE_INT16 | TYPE_REAL
