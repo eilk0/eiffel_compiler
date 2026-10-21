@@ -4,11 +4,14 @@
 #include "lexer.h"
 #include <stddef.h>
 #include <stdint.h>
-
-#define MAX_TEXT_TOKEN 4096
+#include "grammar.tab.h"
 
 void yyerror(const char* s);
 %}
+
+%code requires {
+#define MAX_TEXT_TOKEN 4096
+}
 
 /* просто перетащила из tokens.h, хз */
 %union {
