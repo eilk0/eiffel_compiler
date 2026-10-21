@@ -56,6 +56,14 @@ void yyerror(const char* s);
 %token <identifier> TYPE_ID
 %token ENDL
 
+%left OP_OR OP_XOR OP_AND
+%left OP_PLUS OP_MINUS
+%left OP_MULT OP_DIV
+%right OP_CARET
+%right KW_IMPLIES
+%nonassoc OP_EQUAL OP_NE OP_LESS OP_GREATER OP_LE OP_GE OP_TILDE
+%precedence UNARY
+
 %start eiffel_code
 
 %%
@@ -233,6 +241,69 @@ note:
         KW_NOTE
         ;
 
+
+        /* */
+stmt: TYPE_ID OP_ASSIGN expr
+        | KW_RESULT OP_ASSIGN expr
+        | if_stmt
+        | loop_stmt
+        ;
+
+if_stmt: KW_IF expr
+        KW_THEN stmt_list /* if_body? */
+        elseif_opt
+        else_opt
+        KW_END ;
+
+elseif_opt: %empty
+        |elseif KW_ELSEIF expr KW_THEN stmt_list ;
+
+else_opt: %empty
+        | KW_ELSE stmt_list ;
+
+loop_stmt: KW_FROM stmt_list invariant_opt /* loop_condition? */
+        KW_UNTIL expr
+        KW_LOOP stmt_list /* loop_body? */
+        KW_END ;
+
+expr: literal
+        | OP_LPARENTHESIS expr OP_RPARENTHESIS
+        | OP_LSQBRACKET expr OP_RSQBRACKET /* уточнить, какие выражения могут исп. в кв. скобках */
+        | expr KW_IMPLIES expr %prec KW_IMPLIES
+        | expr OP_OR expr %prec OP_OR
+        | expr OP_OR KW_ELSE expr %prec OP_OR
+        | expr OP_XOR expr %prec OP_XOR
+        | expr OP_AND expr %prec OP_AND
+        | expr OP_AND KW_THEN expr %prec OP_AND
+        | expr OP_EQUAL expr %prec OP_EQUAL
+        | expr OP_NE expr %prec OP_NE
+        | expr OP_LESS expr %prec OP_LESS
+        | expr OP_GREATER expr %prec OP_GREATER
+        | expr OP_LE expr %prec OP_LE
+        | expr OP_GE expr %prec OP_GE
+        | expr OP_TILDE expr %prec OP_TILDE
+        | expr OP_PLUS expr %prec OP_PLUS
+        | expr OP_MINUS expr %prec OP_MINUS
+        | expr OP_MULT expr %prec OP_MULT
+        | expr OP_DIV expr %prec OP_DIV
+        | expr OP_CARET expr %prec OP_CARET
+        | OP_PLUS expr %prec UNARY
+        | OP_MINUS expr %prec UNARY
+        | KW_NOT expr %prec UNARY
+        ;
+
+expr_list: expr
+        | expr_list OP_COMMA expr
+        ;
+        
+call: TYPE_ID arg_opt
+        | KW_CURRENT OP_POINT TYPE_ID arg_opt
+        | KW_RESULT OP_POINT TYPE_ID arg_opt
+        | call OP_POINT TYPE_ID arg_opt
+        ; /* посмотреть на precursor */
+
+literal: TYPE_INT | TYPE_INT2 | TYPE_INT8 | TYPE_INT16 | TYPE_REAL
+        | TYPE_STRING | TYPE_CHAR | TYPE_BOOLEAN | TYPE_ID ;
 
 %%
 
