@@ -13,31 +13,37 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Генерированные файлы">
+      <UniqueIdentifier>{21f67b2e-ccaf-47b1-9baf-224407e539cf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="upper_lower.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="unicode_parser.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="grammar.tab.c">
+      <Filter>Генерированные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="lex.yy.c">
+      <Filter>Генерированные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="yylex.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="upper_lower.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="unicode_parser.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="lexer.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="yylex.l">
+      <Filter>Исходные файлы</Filter>
+    </None>
+    <None Include="grammar.y">
       <Filter>Исходные файлы</Filter>
     </None>
   </ItemGroup>
