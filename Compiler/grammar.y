@@ -71,7 +71,7 @@ class_decl:
         formal_generics_opt
         obsolete_opt
         inherit_opt
-        create_list_opt
+        create_list_opt /*тут фигня с рут классом и входной функцией*/
         convert_opt
         feature_list_opt
         invariant_opt
@@ -81,7 +81,6 @@ class_decl:
 
 class_header:
         class_mod_opt KW_CLASS TYPE_ID
-        | KW_CLASS TYPE_ID
         ;
 
 class_mod_opt:
@@ -105,43 +104,32 @@ formal_generic_list:
         | formal_generic_list OP_COMMA TYPE_ID
         ;
 
+obsolete_opt:
+        %empty
+        | KW_OBSOLETE TYPE_STRING /*требует уточения*/
+        ;
+
 inherit_opt:
         %empty
-        | inherit
+        | KW_INHERIT inherit_list
         ;
+
+inherit_list:
+        TYPE_ID inherit_body_opt
+        | inherit_list TYPE_ID inherit_body_opt
+        | inherit_list ',' TYPE_ID inherit_body_opt
+        ;
+
+inherit_body_opt: 
+        %empty
+        | KW_REDEFINE combined_id_list KW_END
+        ;
+
 /* сделать креате и фичи листами - посмотреть что еще может быть листами */
+
 create_list_opt:
         %empty
         | create_list
-        ;
-
-convert_opt:
-        %empty
-        | convert
-        ;
-
-feature_list_opt:
-        %empty
-        | feature_list
-        ;
-
-invariant_opt:
-        %empty
-        | KW_INVARIANT
-        ;
-
-obsolete_opt:
-        %empty
-        | KW_OBSOLETE
-        ;
-
-note_opt:
-        %empty
-        | note
-        ;
-
-inherit: 
-        KW_INHERIT
         ;
 
 create_list:
@@ -150,12 +138,25 @@ create_list:
         ;
 
 create:
-        KW_CREATE combined_id_list
+        | KW_CREATE
+        | KW_CREATE combined_id_list
         ;
 
-/* ?? */
-convert:
-        KW_CONVERT
+/* convert не сделан */
+convert_opt:
+        %empty
+        | KW_CONVERT convert_list 
+        ;
+
+convert_list:
+        TYPE_ID OP_COLON OP_LPARENTHESIS OP_LBRACE combined_id_list OP_RBRACE OP_RPARENTHESIS
+        | TYPE_ID OP_COLON OP_LBRACE combined_id_list OP_RBRACE
+        | 
+        ;
+
+feature_list_opt:
+        %empty
+        | feature_list
         ;
 
 feature_list:
@@ -172,28 +173,54 @@ feature_acces_mod_opt:
         | OP_LBRACE combined_id_list OP_RBRACE;
         ;
 
-combined_id_list: 
-        TYPE_ID
-        | id_list ',' TYPE_ID
-        ;
-
-
-
 feature_decl:
+        assigner_opt
         TYPE_ID arg_opt OP_COLON TYPE_ID
         require_opt
         local_opt
-        KW_DO
+        runtime_mod
         routine_body
         ensure_opt
         rescue_opt
         KW_END
         ;
 
+assigner_opt:
+        %empty 
+        | param KW_ASSIGN TYPE_ID
+        ;
+
 arg_opt:
         %empty
         | OP_LPARENTHESIS param_list OP_RPARENTHESIS
         ;
+
+invariant_opt:
+        %empty
+        | KW_INVARIANT
+        ;
+
+note_opt:
+        %empty
+        | note
+        ;
+
+
+
+
+
+combined_id_list: 
+        TYPE_ID
+        | combined_id_list ',' TYPE_ID
+        ;
+
+ss_id_list: 
+        TYPE_ID
+        | ss_id_list OP_SEMICOLON TYPE_ID
+        | ss_id_list TYPE_ID
+        ;
+
+
 
 param_list:
         param
@@ -203,6 +230,12 @@ param_list:
 
 param:
         TYPE_ID OP_COLON TYPE_ID
+        | combined_id_list OP_COLON TYPE_ID
+        ;
+
+runtime_mod:
+        KW_DO
+        | KW_ONCE
         ;
 
 require_opt:
@@ -231,8 +264,11 @@ routine_body:
 
 note:
         KW_NOTE
+        | KW_NOTE note_body
         ;
 
+note_body: 
+        ;
 
 %%
 
