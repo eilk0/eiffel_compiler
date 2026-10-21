@@ -387,7 +387,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     stringBuffer[stringLength] = 0;
     printf("STRING FOUND: %s\n", stringBuffer);
     memcpy(yylval.string.data, stringBuffer, ((size_t)stringLength+1) * sizeof(stringBuffer[0]));
-    string.length=(size_t)stringLength;
+    yylval.string.length=(size_t)stringLength;
     return TYPE_STRING;
 }
 
