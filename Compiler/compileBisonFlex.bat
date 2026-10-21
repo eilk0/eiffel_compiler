@@ -5,5 +5,5 @@ del grammar.tab.c
 del lex.yy.c
 
 "..\bin\flex.exe" yylex.l
-"..\bin\bison.exe" grammar.y
+"..\bin\bison.exe" -d grammar.y
 @echo on
