@@ -1,10 +1,6 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
-#include "lexer.h"
-#include <stddef.h>
-#include <stdint.h>
-#include "grammar.tab.h"
 
 void yyerror(const char* s);
 %}
@@ -12,24 +8,6 @@ void yyerror(const char* s);
 %code requires {
 #define MAX_TEXT_TOKEN 4096
 }
-
-/* просто перетащила из tokens.h, хз */
-%union {
-    long integer; // TYPE_INT, TYPE_INT2, TYPE_INT8, TYPE_INT16
-    double real; // TYPE_REAL
-    int boolean; // TYPE_TRUE, TYPE_FALSE
-    struct {
-        char data[MAX_TEXT_TOKEN];
-        size_t length;
-    } identifier; // TYPE_ID
-    uint32_t character; // TYPE_CHAR
-    struct {
-        uint32_t data[MAX_TEXT_TOKEN];
-        size_t length;
-    } string; // TYPE_STRING
-}
-
-// ---------------- TOKENS ----------------
 
 %token KW_ACROSS  KW_AGENT KW_ALIAS KW_ALL KW_AS
 %token KW_ASSIGN KW_ATTRIBUTE KW_CHECK KW_CLASS KW_CONVERT
@@ -51,6 +29,15 @@ void yyerror(const char* s);
 %token OP_HASH '#' OP_DOLLAR '$' OP_PERCENT '%' OP_AMPERSAND '&' OP_VBAR '|'
 %token OP_CARET '^' OP_AND OP_OR OP_XOR
 
+%union {
+    int integer;
+    double real;
+    char character;
+    struct {char data[MAX_TEXT_TOKEN]; int length;} string;
+    char boolean;
+    struct {char data[MAX_TEXT_TOKEN]; int length;} identifier;
+}
+
 %token <integer> TYPE_INT TYPE_INT2 TYPE_INT8 TYPE_INT16
 %token <real> TYPE_REAL
 %token <character> TYPE_CHAR
@@ -58,292 +45,18 @@ void yyerror(const char* s);
 %token <boolean> TYPE_BOOLEAN TYPE_TRUE TYPE_FALSE
 %token <identifier> TYPE_ID
 %token ENDL
-
-%left OP_OR OP_XOR
-%left OP_AND
-%left OP_PLUS OP_MINUS
-%left OP_MULT OP_DIV
-%right OP_CARET
-%right KW_IMPLIES
-%nonassoc OP_EQUAL OP_NE OP_LESS OP_GREATER OP_LE OP_GE OP_TILDE
-%precedence UNARY
-
-%start eiffel_code
+%start number_list
 
 %%
 
-eiffel_code:
-        %empty
-	   | eiffel_code class_decl
-;
+number_list: %empty
+        | number_list operand;
 
-class_decl:
-        note_opt
-        class_header
-        formal_generics_opt
-        obsolete_opt
-        inherit_opt
-        create_list_opt /*тут фигня с рут классом и входной функцией*/
-        convert_opt
-        feature_list_opt
-        invariant_opt
-        note_opt
-        KW_END
+operand: TYPE_INT
+        | TYPE_INT16
+        | TYPE_INT2
+        | TYPE_INT8
         ;
-
-class_header:
-        class_mod_opt KW_CLASS TYPE_ID
-        ;
-
-class_mod_opt:
-        %empty
-        | KW_DEFERRED
-        | KW_EXPANDED
-        | KW_FROZEN
-        ;
-
-formal_generics_opt:
-        %empty
-        | formal_generics
-        ;
-
-formal_generics:
-        '[' formal_generic_list ']'
-        ;
-
-formal_generic_list:
-        TYPE_ID
-        | formal_generic_list ',' TYPE_ID
-        ;
-
-obsolete_opt:
-        %empty
-        | KW_OBSOLETE TYPE_STRING /*требует уточения*/
-        ;
-
-inherit_opt:
-        %empty
-        | KW_INHERIT inherit_list
-        ;
-
-inherit_list:
-        TYPE_ID inherit_body_opt
-        | inherit_list TYPE_ID inherit_body_opt
-        | inherit_list ',' TYPE_ID inherit_body_opt
-        ;
-
-inherit_body_opt: 
-        %empty
-        | KW_REDEFINE combined_id_list KW_END
-        ;
-
-/* сделать креате и фичи листами - посмотреть что еще может быть листами */
-
-create_list_opt:
-        %empty
-        | create_list
-        ;
-
-create_list:
-        create
-        | create_list create
-        ;
-
-create:
-        | KW_CREATE
-        | KW_CREATE combined_id_list
-        ;
-
-/* convert не сделан */
-convert_opt:
-        %empty
-        | KW_CONVERT convert_list 
-        ;
-
-convert_list:
-        TYPE_ID ':' '(' '{' combined_id_list '}' ')'
-        | TYPE_ID ':' '{' combined_id_list '}'
-        | 
-        ;
-
-feature_list_opt:
-        %empty
-        | feature_list
-        ;
-
-feature_list:
-        feature
-        | feature feature_list
-        ;
-
-feature:
-        note_opt KW_FEATURE feature_acces_mod_opt feature_decl 
-        ;
-
-feature_acces_mod_opt:
-        %empty
-        | '{' combined_id_list '}';
-        ;
-
-feature_decl:
-        assigner_opt
-        TYPE_ID arg_opt ':' TYPE_ID
-        require_opt
-        local_opt
-        runtime_mod
-        routine_body
-        ensure_opt
-        rescue_opt
-        KW_END
-        ;
-
-assigner_opt:
-        %empty 
-        | param KW_ASSIGN TYPE_ID
-        ;
-
-arg_opt:
-        %empty
-        | '(' param_list ')'
-        ;
-
-invariant_opt:
-        %empty
-        | KW_INVARIANT
-        ;
-
-note_opt:
-        %empty
-        | note
-        ;
-
-combined_id_list: 
-        TYPE_ID
-        | combined_id_list ',' TYPE_ID
-        ;
-
-ss_id_list: 
-        TYPE_ID
-        | ss_id_list ';' TYPE_ID
-        | ss_id_list TYPE_ID
-        ;
-
-
-
-param_list:
-        param
-        | param_list ';' param
-        | param_list param /* не уверена про разделители при списке аргументов */ 
-        ;
-
-param:
-        TYPE_ID ':' TYPE_ID
-        | combined_id_list ':' TYPE_ID
-        ;
-
-runtime_mod:
-        KW_DO
-        | KW_ONCE
-        ;
-
-require_opt:
-        %empty
-        | KW_REQUIRE
-        ;
-
-local_opt:
-        %empty
-        | KW_LOCAL param_list
-        ;
-
-ensure_opt:
-        %empty
-        | KW_ENSURE
-        ;
-
-rescue_opt:
-        %empty
-        | KW_RESCUE routine_body
-        ;
-
-routine_body:
-        %empty
-        ;
-
-note:
-        KW_NOTE
-        | KW_NOTE note_body
-        ;
-
-note_body: 
-        ;
-
-        /* */
-stmt: TYPE_ID ":=" expr
-        | KW_RESULT ":=" expr
-        | if_stmt
-        | loop_stmt
-        ;
-
-stmt_list: stmt
-        | stmt_list stmt
-        ;
-
-if_stmt: KW_IF expr
-        KW_THEN stmt_list /* if_body? */
-        elseif_opt
-        else_opt
-        KW_END ;
-
-elseif_opt: %empty
-        |elseif_opt KW_ELSEIF expr KW_THEN stmt_list ;
-
-else_opt: %empty
-        | KW_ELSE stmt_list ;
-
-loop_stmt: KW_FROM stmt_list invariant_opt /* loop_condition? */
-        KW_UNTIL expr
-        KW_LOOP stmt_list /* loop_body? */
-        KW_END ;
-
-expr: literal
-        | '(' expr ')'
-        | '[' expr ']' /* уточнить, какие выражения могут исп. в кв. скобках */
-        | expr KW_IMPLIES expr %prec KW_IMPLIES
-        | expr OP_OR expr %prec OP_OR
-        | expr OP_OR KW_ELSE expr %prec OP_OR
-        | expr OP_XOR expr %prec OP_XOR
-        | expr OP_AND expr %prec OP_AND
-        | expr OP_AND KW_THEN expr %prec OP_AND
-        | expr '=' expr %prec OP_EQUAL
-        | expr "/=" expr %prec OP_NE
-        | expr '<' expr %prec OP_LESS
-        | expr '>' expr %prec OP_GREATER
-        | expr "<=" expr %prec OP_LE
-        | expr ">=" expr %prec OP_GE
-        | expr '~' expr %prec OP_TILDE
-        | expr '+' expr %prec OP_PLUS
-        | expr '-' expr %prec OP_MINUS
-        | expr '*' expr %prec OP_MULT
-        | expr '/' expr %prec OP_DIV
-        | expr '^' expr %prec OP_CARET
-        | '+' expr %prec UNARY
-        | '-' expr %prec UNARY
-        | KW_NOT expr %prec UNARY
-        ;
-
-expr_list: expr
-        | expr_list ',' expr
-        ;
-        
-call: TYPE_ID arg_opt
-        | KW_CURRENT '.' TYPE_ID arg_opt
-        | KW_RESULT '.' TYPE_ID arg_opt
-        | call '.' TYPE_ID arg_opt
-        ; /* посмотреть на precursor */
-
-literal: TYPE_INT | TYPE_INT2 | TYPE_INT8 | TYPE_INT16 | TYPE_REAL
-        | TYPE_STRING | TYPE_CHAR | TYPE_BOOLEAN | TYPE_ID ;
 
 %%
 

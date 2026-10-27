@@ -1,5 +1,6 @@
 #include "lexer.h"
 
+extern int yydebug;
 
 int main(int argc, char** argv) {
     if (argc > 1) {
@@ -14,12 +15,10 @@ int main(int argc, char** argv) {
         printf("File is not specified!");
         return -1;
     }
-    int token;
-    while ((token = yylex())) {}
-    if (lexerErrorCount > 0)
-    {
-        generateLexErrorMessage(&lexerErrors[0]);
-        printf("lexerErrorCount = %d",lexerErrorCount);
-    }
+
+    yydebug = 1;
+
+    yyparse();
+
     return 0;
 }
