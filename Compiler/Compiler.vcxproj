@@ -25,6 +25,7 @@
     <ClCompile Include="unicode_parser.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="colors.h" />
     <ClInclude Include="grammar.tab.h" />
     <ClInclude Include="lexer.h" />
     <ClInclude Include="unicode_parser.h" />
