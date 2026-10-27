@@ -391,6 +391,12 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     return TYPE_STRING;
 }
 
+
+<<EOF>> {
+    printf("Reached end of file!\n");
+    return 0;
+}
+
     /*For any exceptions*/
 <*>.                   {fprintf(stderr, "Unknown character: '%s' at line %d\n",yytext, yylineno); 
                         saveLexerError(LEX_UNKNOWN_SYMB_ERROR, yytext);
