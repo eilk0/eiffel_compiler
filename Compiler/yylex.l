@@ -340,7 +340,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 
 <CHAR,STRING>[^\"\'] {stringBuffer[stringLength++] =  yytext[0];}
 
-<CHAR>\n {
+<CHAR>[^']& {
     fprintf(stderr, "Unterminated CHARACTER at line %d\n", yylineno);
     saveLexerError(LEX_INVATID_CHAR_ERROR, stringBuffer);
     BEGIN(INITIAL);
@@ -354,7 +354,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     return 0;
 } 
 
-<STRING>\n {
+<STRING>[^"]& {
     fprintf(stderr, "Unterminated STRING at line %d\n", yylineno);
     saveLexerError(LEX_INCOMPLITE_STRNG_MISS_FINAL_QUOTE_ERROR, stringBuffer);
     BEGIN(INITIAL);
