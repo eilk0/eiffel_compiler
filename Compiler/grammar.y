@@ -21,13 +21,13 @@ void yyerror(const char* s);
 %token KW_RETRY KW_SELECT KW_SEPARATE KW_THEN KW_TUPLE
 %token KW_UNDEFINE KW_UNTIL KW_VARIANT KW_VOID KW_WHEN
 
-%token OP_GREATER '>' OP_LESS '<' OP_ASSIGN ":=" OP_EQUAL "=" OP_NE "/="
-%token OP_LE "<=" OP_GE ">=" OP_PLUS '+' OP_MINUS '-' OP_MULT '*'
-%token OP_DIV '/' OP_LPARENTHESIS '(' OP_RPARENTHESIS ')' OP_LSQBRACKET '[' OP_RSQBRACKET ']'
-%token OP_LBRACE '{' OP_RBRACE '}' OP_COMMA ',' OP_COLON ':' OP_SEMICOLON ';'
-%token OP_POINT '.' OP_ATSIGN '@' OP_QUESTION '?' OP_TILDE '~' OP_EXCLAMATION '!'
-%token OP_HASH '#' OP_DOLLAR '$' OP_PERCENT '%' OP_AMPERSAND '&' OP_VBAR '|'
-%token OP_CARET '^' OP_AND OP_OR OP_XOR
+%token OP_GREATER ">" OP_LESS "<" OP_ASSIGN ":=" OP_EQUAL "=" OP_NE "/="
+%token OP_LE "<=" OP_GE ">=" OP_PLUS "+" OP_MINUS "-" OP_MULT "*"
+%token OP_DIV "/" OP_LPARENTHESIS "(" OP_RPARENTHESIS ")" OP_LSQBRACKET "[" OP_RSQBRACKET "]"
+%token OP_LBRACE "{" OP_RBRACE "}" OP_COMMA "," OP_COLON ":" OP_SEMICOLON ";"
+%token OP_POINT "." OP_ATSIGN "@" OP_QUESTION "?" OP_TILDE "~" OP_EXCLAMATION "!"
+%token OP_HASH "#" OP_DOLLAR "$" OP_PERCENT "%" OP_AMPERSAND "&" OP_VBAR "|"
+%token OP_CARET "^" OP_AND OP_OR OP_XOR
 
 %union {
     int integer;
@@ -45,12 +45,16 @@ void yyerror(const char* s);
 %token <boolean> TYPE_BOOLEAN TYPE_TRUE TYPE_FALSE
 %token <identifier> TYPE_ID
 %token ENDL
-%start number_list
+%start expression
 
 %%
 
-number_list: %empty
-        | number_list operand;
+expression: %empty 
+          | operand
+          | operation_sum
+          ;
+operation_sum: operand "+" operand
+             ;
 
 operand: TYPE_INT
         | TYPE_INT16
