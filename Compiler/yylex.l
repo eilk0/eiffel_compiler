@@ -191,7 +191,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
             fprintf(stderr, LEXER_COLOR "REAL out of range: %s at line %d\n" RESET, yytext, yylineno);
             return 0;
         }
-        printf(LEXER_COLOR "DETECTED TYPE_REAL: %lf\n" RESET, num);
+        printf(LEXER_COLOR "Detected TYPE_REAL: %lf\n" RESET, num);
         yylval.real = num;
         return TYPE_REAL;
     }
@@ -208,7 +208,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
         fprintf(stderr, LEXER_COLOR "Failed to parse integer: '%s' at line %d\n" RESET, yytext, yylineno);
         return 0;
     }
-    printf(LEXER_COLOR "DETECTED TYPE_INT2: %d\n" RESET, num);
+    printf(LEXER_COLOR "Detected TYPE_INT2: %d\n" RESET, num);
     yylval.integer = num;
     return TYPE_INT2; // не уверена, нужны ли прям такие отдельные токены или просто TYPE_INT
     }
@@ -225,7 +225,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
         fprintf(stderr, LEXER_COLOR "Failed to parse integer: '%s' at line %d\n" RESET, yytext, yylineno);
         return 0;
     }
-    printf(LEXER_COLOR "DETECTED TYPE_INT8: %d\n" RESET, num);
+    printf(LEXER_COLOR "Detected TYPE_INT8: %d\n" RESET, num);
     yylval.integer = num;
     return TYPE_INT8;
     }
@@ -242,7 +242,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
         fprintf(stderr, LEXER_COLOR "Failed to parse integer: '%s' at line %d\n" RESET, yytext, yylineno);
         return 0;
     }
-    printf(LEXER_COLOR "DETECTED TYPE_INT16: %d\n" RESET, num);
+    printf(LEXER_COLOR "Detected TYPE_INT16: %d\n" RESET, num);
     yylval.integer = num;
     return TYPE_INT16;
     }
@@ -259,7 +259,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
         fprintf(stderr, LEXER_COLOR "Failed to parse integer: '%s' at line %d\n" RESET, yytext, yylineno);
         return 0;
     }
-    printf(LEXER_COLOR "DETECTED TYPE_INT: %d\n" RESET, num);
+    printf(LEXER_COLOR "Detected TYPE_INT: %d\n" RESET, num);
     yylval.integer = num;
     return TYPE_INT;
 }
@@ -315,28 +315,28 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 <CHAR,STRING>\%\/{BIN}\/ {
     c = parseUnicode(yytext, yyleng, 2);
     if(!c.success) {
-        fprintf(stderr, LEXER_COLOR "Failed to parse ENCODED char: '%s' at line %d\n" RESET, yytext, yylineno);
+        fprintf(stderr, LEXER_COLOR "Failed to parse UNOCODE char: '%s' at line %d\n" RESET, yytext, yylineno);
         return 0;
     }
     stringBuffer[stringLength++] = c.character; }
 <CHAR,STRING>\%\/{OCT}\/ {
     c = parseUnicode(yytext, yyleng, 8);
     if(!c.success) {
-        fprintf(stderr, LEXER_COLOR "Failed to parse ENCODED char: '%s' at line %d\n" RESET, yytext, yylineno);
+        fprintf(stderr, LEXER_COLOR "Failed to parse UNOCODE char: '%s' at line %d\n" RESET, yytext, yylineno);
         return 0;
     }
     stringBuffer[stringLength++] = c.character;}
 <CHAR,STRING>\%\/{HEX}\/ {
     c = parseUnicode(yytext, yyleng, 16);
     if(!c.success) {
-        fprintf(stderr, LEXER_COLOR "Failed to parse ENCODED char: '%s' at line %d\n" RESET, yytext, yylineno);
+        fprintf(stderr, LEXER_COLOR "Failed to parse UNOCODE char: '%s' at line %d\n" RESET, yytext, yylineno);
         return 0;
     }
     stringBuffer[stringLength++] = c.character; }
 <CHAR,STRING>\%\/{INTWB}\/ {
     c = parseUnicode(yytext, yyleng, 10);
     if(!c.success) {
-        fprintf(stderr, LEXER_COLOR "Failed to parse ENCODED char: '%s' at line %d\n" RESET, yytext, yylineno);
+        fprintf(stderr, LEXER_COLOR "Failed to parse UNOCODE char: '%s' at line %d\n" RESET, yytext, yylineno);
         return 0;
     }
     stringBuffer[stringLength++] = c.character; }
@@ -380,7 +380,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
         return 0;
     }
     stringBuffer[stringLength] = 0;
-    printf(LEXER_COLOR "CHARACTER DETECTED:%s\n" RESET, stringBuffer[0]);
+    printf(LEXER_COLOR "Detected CHARACTER:%s\n" RESET, stringBuffer[0]);
     yylval.character = stringBuffer[0];
     return TYPE_CHAR;
 }
@@ -388,7 +388,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 <STRING>\" {
     BEGIN(INITIAL); 
     stringBuffer[stringLength] = 0;
-    printf(LEXER_COLOR "STRING FOUND: %s\n" RESET, stringBuffer);
+    printf(LEXER_COLOR "Detected STRING: %s\n" RESET, stringBuffer);
     memcpy(yylval.string.data, stringBuffer, ((size_t)stringLength+1) * sizeof(stringBuffer[0]));
     yylval.string.length=(size_t)stringLength;
     return TYPE_STRING;
@@ -402,7 +402,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 %%
 
 void printToken(char* token, char* str) {
-    printf(LEXER_COLOR "DETECTED %s: %s\n" RESET, token, str);
+    printf(LEXER_COLOR "Detected %s: %s\n" RESET, token, str);
 }
 
 void removeUnderscores(char* str){
