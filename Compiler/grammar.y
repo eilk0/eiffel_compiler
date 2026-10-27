@@ -49,12 +49,13 @@ void yyerror(const char* s);
 
 %%
 
-expression: %empty 
+expression: parenthesis_group
           | operand
           | operation_sum
           ;
 operation_sum: operand "+" operand
              ;
+parenthesis_group: "(" expression ")";
 
 operand: TYPE_INT
         | TYPE_INT16
