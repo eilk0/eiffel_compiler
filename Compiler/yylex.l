@@ -58,7 +58,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     struct ParsedChar c;
 
 [ \t\r]+    {/* do nothing */}
-\n(--[^\n]*|[\t \n\r]*)*    {printf(LEXER_COLOR "NEWLINE\n" RESET); return ENDL;}
+\n(--[^\n]*|[\t \n\r]*)*    {}
 
 "--"[^\r\n]* {/*idk if commentary should be mentioned; 
                 Eiffel does not support multiline comments*/}
