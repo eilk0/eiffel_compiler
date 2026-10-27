@@ -7,6 +7,9 @@
     #include "lexer.h"
     #include "unicode_parser.h"
     #define YY_NO_UNISTD_H
+
+    #include "colors.h"
+
 %}
 
 %option noyywrap
@@ -55,7 +58,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     struct ParsedChar c;
 
 [ \t\r]+    {/* do nothing */}
-\n(--[^\n]*|[\t \n\r]*)*    {printf("NEWLINE\n"); return ENDL;}
+\n(--[^\n]*|[\t \n\r]*)*    {printf(LEXER_COLOR "NEWLINE\n" RESET); return ENDL;}
 
 "--"[^\r\n]* {/*idk if commentary should be mentioned; 
                 Eiffel does not support multiline comments*/}
@@ -171,7 +174,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 (([0-9]{1,3}(_[0-9]{3})+))\.([eE][+-]?[0-9]+)? |
 \.(([0-9]{3}_)*[0-9]{1,3})([eE][+-]?[0-9]+)? {
         if ((size_t)yyleng >= sizeof(stringBuffer)) {
-            fprintf(stderr, "REAL literal is too long at line %d\n", yylineno);
+            fprintf(stderr, LEXER_COLOR "REAL literal is too long at line %d\n" RESET, yylineno);
             // сюда бы тоже saveLexerError?
             return 0;
         } 
@@ -181,14 +184,14 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
         errno = 0;
         double num = strtod(stringBuffer, &end);
         if (end == stringBuffer || *end != '\0') {
-            fprintf(stderr, "Failed to parse REAL: %s at line %d\n", yytext, yylineno);
+            fprintf(stderr, LEXER_COLOR "Failed to parse REAL: %s at line %d\n" RESET, yytext, yylineno);
             return 0;
         }
         if (errno == ERANGE || !isfinite(num)) {
-            fprintf(stderr, "REAL out of range: %s at line %d\n", yytext, yylineno);
+            fprintf(stderr, LEXER_COLOR "REAL out of range: %s at line %d\n" RESET, yytext, yylineno);
             return 0;
         }
-        printf("DETECTED TYPE_REAL: %lf\n", num);
+        printf(LEXER_COLOR "DETECTED TYPE_REAL: %lf\n" RESET, num);
         yylval.real = num;
         return TYPE_REAL;
     }
@@ -202,10 +205,10 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     removeUnderscores(stringBuffer);
     long num =  strtol(stringBuffer + 2, NULL, 2);
     if(LONG_MAX == num || LONG_MIN == num) {
-        fprintf(stderr, "Failed to parse integer: '%s' at line %d\n",yytext, yylineno);
+        fprintf(stderr, LEXER_COLOR "Failed to parse integer: '%s' at line %d\n" RESET, yytext, yylineno);
         return 0;
     }
-    printf("DETECTED TYPE_INT2: %d\n", num);
+    printf(LEXER_COLOR "DETECTED TYPE_INT2: %d\n" RESET, num);
     yylval.integer = num;
     return TYPE_INT2; // не уверена, нужны ли прям такие отдельные токены или просто TYPE_INT
     }
@@ -219,10 +222,10 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     removeUnderscores(stringBuffer);
     long num =  strtol(stringBuffer + 2, NULL, 8);
     if(LONG_MAX == num || LONG_MIN == num) {
-        fprintf(stderr, "Failed to parse integer: '%s' at line %d\n",yytext, yylineno);
+        fprintf(stderr, LEXER_COLOR "Failed to parse integer: '%s' at line %d\n" RESET, yytext, yylineno);
         return 0;
     }
-    printf("DETECTED TYPE_INT8: %d\n", num);
+    printf(LEXER_COLOR "DETECTED TYPE_INT8: %d\n" RESET, num);
     yylval.integer = num;
     return TYPE_INT8;
     }
@@ -236,10 +239,10 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     removeUnderscores(stringBuffer);
     long num =  strtol(stringBuffer + 2, NULL, 16);
     if(LONG_MAX == num || LONG_MIN == num) {
-        fprintf(stderr, "Failed to parse integer: '%s' at line %d\n",yytext, yylineno);
+        fprintf(stderr, LEXER_COLOR "Failed to parse integer: '%s' at line %d\n" RESET, yytext, yylineno);
         return 0;
     }
-    printf("DETECTED TYPE_INT16: %d\n", num);
+    printf(LEXER_COLOR "DETECTED TYPE_INT16: %d\n" RESET, num);
     yylval.integer = num;
     return TYPE_INT16;
     }
@@ -253,10 +256,10 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     removeUnderscores(stringBuffer);
     long num =  strtol(stringBuffer, NULL, 10);
     if(LONG_MAX == num || LONG_MIN == num) {
-        fprintf(stderr, "Failed to parse integer: '%s' at line %d\n",yytext, yylineno);
+        fprintf(stderr, LEXER_COLOR "Failed to parse integer: '%s' at line %d\n" RESET, yytext, yylineno);
         return 0;
     }
-    printf("DETECTED TYPE_INT: %d\n", num);
+    printf(LEXER_COLOR "DETECTED TYPE_INT: %d\n" RESET, num);
     yylval.integer = num;
     return TYPE_INT;
 }
@@ -312,28 +315,28 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 <CHAR,STRING>\%\/{BIN}\/ {
     c = parseUnicode(yytext, yyleng, 2);
     if(!c.success) {
-        fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
+        fprintf(stderr, LEXER_COLOR "Failed to parse ENCODED char: '%s' at line %d\n" RESET, yytext, yylineno);
         return 0;
     }
     stringBuffer[stringLength++] = c.character; }
 <CHAR,STRING>\%\/{OCT}\/ {
     c = parseUnicode(yytext, yyleng, 8);
     if(!c.success) {
-        fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
+        fprintf(stderr, LEXER_COLOR "Failed to parse ENCODED char: '%s' at line %d\n" RESET, yytext, yylineno);
         return 0;
     }
     stringBuffer[stringLength++] = c.character;}
 <CHAR,STRING>\%\/{HEX}\/ {
     c = parseUnicode(yytext, yyleng, 16);
     if(!c.success) {
-        fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
+        fprintf(stderr, LEXER_COLOR "Failed to parse ENCODED char: '%s' at line %d\n" RESET, yytext, yylineno);
         return 0;
     }
     stringBuffer[stringLength++] = c.character; }
 <CHAR,STRING>\%\/{INTWB}\/ {
     c = parseUnicode(yytext, yyleng, 10);
     if(!c.success) {
-        fprintf(stderr, "Failed to parse ENCODED char: '%s' at line %d\n",yytext, yylineno);
+        fprintf(stderr, LEXER_COLOR "Failed to parse ENCODED char: '%s' at line %d\n" RESET, yytext, yylineno);
         return 0;
     }
     stringBuffer[stringLength++] = c.character; }
@@ -341,21 +344,21 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 <CHAR,STRING>[^\"\'] {stringBuffer[stringLength++] =  yytext[0];}
 
 <CHAR>\n {
-    fprintf(stderr, "Unterminated CHARACTER at line %d\n", yylineno);
+    fprintf(stderr, LEXER_COLOR "Unterminated CHARACTER at line %d\n" RESET, yylineno);
     saveLexerError(LEX_INVATID_CHAR_ERROR, stringBuffer);
     BEGIN(INITIAL);
     return 0;
 } 
 
 <CHAR><<EOF>> {
-    fprintf(stderr, "Unterminated CHARACTER at line %d\n", yylineno);
+    fprintf(stderr, LEXER_COLOR "Unterminated CHARACTER at line %d\n" RESET, yylineno);
     saveLexerError(LEX_INVATID_CHAR_ERROR, stringBuffer);
     BEGIN(INITIAL);
     return 0;
 } 
 
 <STRING>\n {
-    fprintf(stderr, "Unterminated STRING at line %d\n", yylineno);
+    fprintf(stderr, LEXER_COLOR "Unterminated STRING at line %d\n" RESET, yylineno);
     saveLexerError(LEX_INCOMPLITE_STRNG_MISS_FINAL_QUOTE_ERROR, stringBuffer);
     BEGIN(INITIAL);
     return 0;
@@ -363,7 +366,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 
 
 <STRING><<EOF>> {
-    fprintf(stderr, "Unterminated STRING at line %d\n", yylineno);
+    fprintf(stderr, LEXER_COLOR "Unterminated STRING at line %d\n" RESET, yylineno);
     saveLexerError(LEX_INCOMPLITE_STRNG_MISS_FINAL_QUOTE_ERROR, stringBuffer);
     BEGIN(INITIAL);
     return 0;
@@ -372,12 +375,12 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 <CHAR>\' {
     BEGIN(INITIAL);
     if (stringLength != 1) {
-        fprintf(stderr, "Invalid CHARACTER length: %d (expected 1) at line %d\n", stringLength, yylineno);
+        fprintf(stderr, LEXER_COLOR "Invalid CHARACTER length: %d (expected 1) at line %d\n" RESET, stringLength, yylineno);
         saveLexerError(LEX_INVATID_CHAR_ERROR, stringBuffer);
         return 0;
     }
     stringBuffer[stringLength] = 0;
-    printf("CHARACTER DETECTED:%s\n", stringBuffer[0]);
+    printf(LEXER_COLOR "CHARACTER DETECTED:%s\n" RESET, stringBuffer[0]);
     yylval.character = stringBuffer[0];
     return TYPE_CHAR;
 }
@@ -385,21 +388,21 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 <STRING>\" {
     BEGIN(INITIAL); 
     stringBuffer[stringLength] = 0;
-    printf("STRING FOUND: %s\n", stringBuffer);
+    printf(LEXER_COLOR "STRING FOUND: %s\n" RESET, stringBuffer);
     memcpy(yylval.string.data, stringBuffer, ((size_t)stringLength+1) * sizeof(stringBuffer[0]));
     yylval.string.length=(size_t)stringLength;
     return TYPE_STRING;
 }
 
     /*For any exceptions*/
-<*>.                   {fprintf(stderr, "Unknown character: '%s' at line %d\n",yytext, yylineno); 
+<*>.                   {fprintf(stderr, LEXER_COLOR "Unknown character: '%s' at line %d\n" RESET, yytext, yylineno); 
                         saveLexerError(LEX_UNKNOWN_SYMB_ERROR, yytext);
                         return 0;}
 
 %%
 
 void printToken(char* token, char* str) {
-    printf("DETECTED %s: %s\n", token, str);
+    printf(LEXER_COLOR "DETECTED %s: %s\n" RESET, token, str);
 }
 
 void removeUnderscores(char* str){
@@ -465,169 +468,167 @@ void generateLexErrorMessage(LexerError* e)
     {
         case LEX_SYNTAX_IN_LINE_ERROR:
             printf(
-                "Syntax error at line %d in class TEST_ID\n\n",
-                "Syntax error at line %d \n\n",
+                ERROR "Syntax error at line %d in class TEST_ID\n\n" RESET,
+                ERROR "Syntax error at line %d \n\n" RESET,
                 e->line
             );
 
             printf(
-                "Position %d\n",
+                ERROR "Position %d\n" RESET,
                 e->position
             );
 
              printf(
-                "Crash position %d\n\n",
+                ERROR "Crash position %d\n\n" RESET,
                 e->crash_pos
             );
 
-
             if (e->line_text != NULL)
-                printf("%s\n", e->prev_line);
+                printf(ERROR "%s\n" RESET, e->prev_line);
 
            if (e->line_text != NULL)
-                printf("%s\n", e->line_text);
+                printf(ERROR "%s\n" RESET, e->line_text);
 
            if (e->next_line != NULL)
-                printf("%s\n", e->next_line);
+                printf(ERROR "%s\n" RESET, e->next_line);
 
             break;
 
 
         case LEX_INVALID_INT_DECLARATION_ERROR:
             printf(
-                "Invalid integer declaration at line %d\n",
+                ERROR "Invalid integer declaration at line %d\n" RESET,
                 e->line
             );
 
             printf(
-                "Position %d\n",
+                ERROR "Position %d\n" RESET,
                 e->position
             );
 
             printf(
-                "Crash position %d\n\n",
+                ERROR "Crash position %d\n\n" RESET,
                 e->crash_pos
             );
 
             if (e->line_text != NULL)
-                printf("%s\n", e->prev_line);
+                printf(ERROR "%s\n" RESET, e->prev_line);
 
             if (e->line_text != NULL)
-                printf("%s\n", e->line_text);
+                printf(ERROR "%s\n" RESET, e->line_text);
 
             if (e->next_line != NULL)
-                printf("%s\n", e->next_line);
+                printf(ERROR "%s\n" RESET, e->next_line);
 
             break;
 
 
         case LEX_INVATID_CHAR_ERROR:
             printf(
-                "Invalid CHARACTER at line %d\n",
+                ERROR "Invalid CHARACTER at line %d\n" RESET,
                 e->line
             );
 
             printf(
-                "Position %d\n",
+                ERROR "Position %d\n" RESET,
                 e->position
             );
 
             printf(
-                "Crash position %d\n\n",
+                ERROR "Crash position %d\n\n" RESET,
                 e->crash_pos
             );
 
             if (e->line_text != NULL)
-                printf("%s\n", e->prev_line);
+                printf(ERROR "%s\n" RESET, e->prev_line);
 
             if (e->line_text != NULL)
-                printf("%s\n", e->line_text);
+                printf(ERROR "%s\n" RESET, e->line_text);
 
             if (e->next_line != NULL)
-                printf("%s\n", e->next_line);
+                printf(ERROR "%s\n" RESET, e->next_line);
 
             break;
 
 
         case LEX_INCOMPLITE_STRNG_MISS_FINAL_QUOTE_ERROR:
             printf(
-                "Unterminated STRING at line %d\n",
+                ERROR "Unterminated STRING at line %d\n" RESET,
                 e->line
             );
 
             printf(
-                "Position %d\n",
+                ERROR "Position %d\n" RESET,
                 e->position
             );
 
             printf(
-                "Crash position %d\n\n",
+                ERROR "Crash position %d\n\n" RESET,
                 e->crash_pos
             );
 
             if (e->line_text != NULL)
-                printf("%s\n", e->prev_line);
+                printf(ERROR "%s\n" RESET, e->prev_line);
 
             if (e->line_text != NULL)
-                printf("%s\n", e->line_text);
+                printf(ERROR "%s\n" RESET, e->line_text);
 
             if (e->next_line != NULL)
-                printf("%s\n", e->next_line);
+                printf(ERROR "%s\n" RESET, e->next_line);
 
             break;
 
 
         case LEX_UNKNOWN_SYMB_ERROR:
             printf(
-                "Unknown symbol at line %d\n",
+                ERROR "Unknown symbol at line %d\n" RESET,
                 e->line
             );
 
             printf(
-                "Position %d\n",
+                ERROR "Position %d\n" RESET,
                 e->position
             );
 
             printf(
-                "Crash position %d\n\n",
+                ERROR "Crash position %d\n\n" RESET,
                 e->crash_pos
             );
 
              if (e->line_text != NULL)
-                printf("%s\n", e->prev_line);
+                printf(ERROR "%s\n" RESET, e->prev_line);
 
              if (e->line_text != NULL)
-                printf("%s\n", e->line_text);
+                printf(ERROR "%s\n" RESET, e->line_text);
 
             if (e->next_line != NULL)
-                printf("%s\n", e->next_line);
+                printf(ERROR "%s\n" RESET, e->next_line);
             break;
 
 
         case LEX_OTHER_ERROR:
             printf(
-                "Lexer error at line %d\n",
+                ERROR "Lexer error at line %d\n" RESET,
                 e->line
             );
 
             printf(
-                "Position %d\n",
+                ERROR "Position %d\n" RESET,
                 e->position
             );
 
-            printf(
-                "Crash position %d\n\n",
+            printf(ERROR "Crash position %d\n\n" RESET,
                 e->crash_pos
             );
 
             if (e->line_text != NULL)
-                printf("%s\n", e->prev_line);
+                printf(ERROR "%s\n" RESET, e->prev_line);
 
             if (e->line_text != NULL)
-                printf("%s\n", e->line_text);
+                printf(ERROR "%s\n" RESET, e->line_text);
 
             if (e->next_line != NULL)
-                printf("%s\n", e->next_line);
+                printf(ERROR "%s\n" RESET, e->next_line);
 
             break;
     }

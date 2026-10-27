@@ -41,6 +41,9 @@
     <ClInclude Include="grammar.tab.h">
       <Filter>Генерированные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="colors.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="yylex.l">
