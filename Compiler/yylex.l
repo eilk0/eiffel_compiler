@@ -396,7 +396,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 
 
 <<EOF>> {
-    printf(LEXER_COLOR_LOG "Reached end of file!\n");
+    printf(LEXER_COLOR_LOG "Reached end of file!\n" RESET);
     return 0;
 }
 
