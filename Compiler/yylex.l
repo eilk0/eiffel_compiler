@@ -119,8 +119,8 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 
 
     /*Boolean constants*/
-(?i:true)  {printToken("TYPE_TRUE", yytext); yylval.boolean = 1; return TYPE_TRUE;}
-(?i:false) {printToken("TYPE_FALSE", yytext); yylval.boolean = 0; return TYPE_FALSE;}
+(?i:true)  {printToken("TYPE_BOOLEAN", yytext); yylval.boolean = 1; return TYPE_BOOLEAN;}
+(?i:false) {printToken("TYPE_BOOLEAN", yytext); yylval.boolean = 0; return TYPE_BOOLEAN;}
 
 
     /*Operators*/
