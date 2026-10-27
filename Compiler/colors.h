@@ -17,4 +17,5 @@
 #define ERROR	"\033[41m"
 #define RESET   "\033[0m"
 
-#define LEXER_COLOR CYAN
+#define LEXER_COLOR_LOG CYAN
+#define LEXER_COLOR_ACCENT BRIGHT_CYAN
