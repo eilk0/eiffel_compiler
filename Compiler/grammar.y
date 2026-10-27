@@ -56,6 +56,7 @@ operand: TYPE_INT
         | TYPE_INT16
         | TYPE_INT2
         | TYPE_INT8
+        | TYPE_REAL
         ;
 
 %%
