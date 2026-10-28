@@ -73,8 +73,8 @@ expression: "(" expression ")"
 operand: expression;
 
 feature: TYPE_ID
-       | feature "." TYPE_ID;
-
+       | feature "." TYPE_ID
+       | feature "[" expression "]";
 
 instruction: expression
            | feature ":=" expression;
