@@ -77,9 +77,17 @@ operand: expression;
 
 feature: TYPE_ID
        | feature "." TYPE_ID
-       | feature "[" expression "]";
+       | feature "[" expression "]"
+       | feature_call;
 
-instruction: feature ":=" expression;
+instruction: feature ":=" expression
+           | feature_call;
+
+feature_call: feature "(" ")"
+            | feature "(" parameters_list ")";
+
+parameters_list: expression
+               | parameters_list "," expression;
 
 instruction_list: %empty
                 | instruction_list instruction;

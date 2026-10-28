@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>tests\instructions\array_elements.e</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>tests\instructions\different_calls.e</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArgumentsHistory>tests\arithmetics\features\folded_features.e|tests\arithmetics\features\nested_features.e|tests\instructions\equating.e|tests\instructions\equating_list.e|tests\instructions\array_elements.e|</LocalDebuggerCommandArgumentsHistory>
+    <LocalDebuggerCommandArgumentsHistory>tests\arithmetics\features\nested_features.e|tests\instructions\equating.e|tests\instructions\equating_list.e|tests\instructions\array_elements.e|tests\instructions\different_calls.e|</LocalDebuggerCommandArgumentsHistory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>tests\instructions\array_elements.e</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>tests\instructions\different_calls.e</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>
