@@ -67,6 +67,8 @@ expression: "(" expression ")"
           | TYPE_INT2
           | TYPE_INT8
           | TYPE_REAL
+          | TYPE_CHAR
+          | TYPE_STRING
           | feature
           ;
 
