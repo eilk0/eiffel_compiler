@@ -15,7 +15,7 @@ void yyerror(const char* s);
 %token KW_ELSE KW_ELSEIF KW_END "end" KW_ENSURE KW_EXPANDED
 %token KW_EXPORT KW_EXTERNAL KW_FEATURE "feature" KW_FROM KW_FROZEN
 %token KW_IF KW_IMPLIES KW_INHERIT "inherit" KW_INSPECT KW_INVARIANT
-%token KW_LIKE KW_LOCAL "local" KW_LOOP KW_NOT KW_NOTE
+%token KW_LIKE KW_LOCAL "local" KW_LOOP KW_NOT KW_NOTE "note"
 %token KW_OBSOLETE KW_OLD KW_ONCE KW_ONLY KW_PRECURSOR
 %token KW_REDEFINE KW_RENAME KW_REQUIRE KW_RESCUE KW_RESULT
 %token KW_RETRY KW_SELECT KW_SEPARATE KW_THEN KW_TUPLE
@@ -45,7 +45,7 @@ void yyerror(const char* s);
 %token <boolean> TYPE_BOOLEAN
 %token <identifier> TYPE_ID
 %token ENDL
-%start class_definition
+%start eiffel_code
 
 /* %left и %right указывает порядкок того, как нужно обрабатывать ряд однотипных операторов. */
 /* Внутри одного %left или %right порядок не имеет никакого значения. */
@@ -143,6 +143,20 @@ class_definition: class_definition_header class_features_sections_list "end"
                 | class_definition_header class_constructors_section class_features_sections_list "end"
                 | class_definition_header class_inheritance_section class_features_sections_list "end"
                 | class_definition_header class_inheritance_section class_constructors_section class_features_sections_list "end";
+
+
+
+/* EIFFEL LANGUAGE FILE STRUCTURE */
+
+note_section: "note" note_fields_list;
+
+note_fields_list: note_field
+                | note_fields_list note_field;
+
+note_field: TYPE_ID ":" TYPE_STRING;
+
+eiffel_code: class_definition
+           | note_section class_definition;
 
 %%
 
