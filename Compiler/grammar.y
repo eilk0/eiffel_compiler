@@ -47,13 +47,20 @@ void yyerror(const char* s);
 %token ENDL
 %start expression
 
-%left "+"
+/* %left и %right указывает порядкок того, как нужно обрабатывать ряд однотипных операторов. */
+/* Внутри одного %left или %right порядок не имеет никакого значения. */
+/* Порядок строк %left или %right определяет приоритет оператров: чем номер строки больше, тем больше приоритет этих операций. */
+%left "+" "-" 
+%left "*" "/" 
 
 %%
 
 expression: parenthesis_group
           | operand
           | expression "+" expression
+          | expression "-" expression
+          | expression "*" expression
+          | expression "/" expression
           ;
 parenthesis_group: "(" expression ")";
 
