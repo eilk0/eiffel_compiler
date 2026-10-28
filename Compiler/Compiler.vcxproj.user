@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>tests\classes\simple_person_with_clients.e</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>tests\classes\application_with_create.e</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArgumentsHistory>tests\features\method_with_args_and_output_value.e|tests\features\multiple_methods.e|tests\features\multiple_methods_and_fields.e|tests\classes\simple_person.e|tests\classes\simple_person_with_clients.e|</LocalDebuggerCommandArgumentsHistory>
+    <LocalDebuggerCommandArgumentsHistory>tests\features\multiple_methods_and_fields.e|tests\classes\simple_person.e|tests\classes\simple_person_with_clients.e|tests\classes\application_with_locals.e|tests\classes\application_with_create.e|</LocalDebuggerCommandArgumentsHistory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LocalDebuggerCommandArguments>tests\features\multiple_methods_and_fields.e</LocalDebuggerCommandArguments>

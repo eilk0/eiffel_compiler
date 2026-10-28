@@ -82,6 +82,7 @@ feature: TYPE_ID
 
 instruction: feature ":=" expression
            | KW_RESULT ":=" expression
+           | "create" TYPE_ID "." TYPE_ID "(" parameters_list ")"
            | feature_call;
 
 feature_call: feature "(" ")"
