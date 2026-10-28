@@ -15,7 +15,7 @@ void yyerror(const char* s);
 %token KW_ELSE KW_ELSEIF KW_END "end" KW_ENSURE KW_EXPANDED
 %token KW_EXPORT KW_EXTERNAL KW_FEATURE "feature" KW_FROM KW_FROZEN
 %token KW_IF KW_IMPLIES KW_INHERIT "inherit" KW_INSPECT KW_INVARIANT
-%token KW_LIKE KW_LOCAL KW_LOOP KW_NOT KW_NOTE
+%token KW_LIKE KW_LOCAL "local" KW_LOOP KW_NOT KW_NOTE
 %token KW_OBSOLETE KW_OLD KW_ONCE KW_ONLY KW_PRECURSOR
 %token KW_REDEFINE KW_RENAME KW_REQUIRE KW_RESCUE KW_RESULT
 %token KW_RETRY KW_SELECT KW_SEPARATE KW_THEN KW_TUPLE
@@ -107,7 +107,11 @@ feature_method_header: TYPE_ID
                      | TYPE_ID "(" ")" ":" TYPE_ID
                      | TYPE_ID "(" variables_definition_list ")" ":" TYPE_ID;
 
-feature_method_definition: feature_method_header do_end_section;
+
+feature_method_local_section: "local" variables_definition_list;
+
+feature_method_definition: feature_method_header do_end_section
+                         | feature_method_header feature_method_local_section do_end_section;
 
 variables_definition_list: field_definition
                          | variables_definition_list ";" field_definition;
