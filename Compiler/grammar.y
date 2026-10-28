@@ -47,14 +47,14 @@ void yyerror(const char* s);
 %token ENDL
 %start expression
 
+%left "+"
+
 %%
 
 expression: parenthesis_group
           | operand
-          | operation_sum
+          | expression "+" expression
           ;
-operation_sum: operand "+" operand
-             ;
 parenthesis_group: "(" expression ")";
 
 operand: TYPE_INT
