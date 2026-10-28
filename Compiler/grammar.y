@@ -52,6 +52,7 @@ void yyerror(const char* s);
 /* Порядок строк %left или %right определяет приоритет оператров: чем номер строки больше, тем больше приоритет этих операций. */
 %left "+" "-" 
 %left "*" "/" 
+%left "^"
 
 %%
 
@@ -60,6 +61,7 @@ expression: "(" expression ")"
           | operand "-" operand
           | operand "*" operand
           | operand "/" operand
+          | operand "^" operand
           | TYPE_INT
           | TYPE_INT16
           | TYPE_INT2
