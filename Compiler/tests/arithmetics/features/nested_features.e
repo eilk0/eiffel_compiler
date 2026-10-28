@@ -1,0 +1,1 @@
+(this.position.x ^ 2 + this.position.y ^ 2) ^ 0.5

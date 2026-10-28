@@ -72,7 +72,8 @@ expression: "(" expression ")"
 
 operand: expression;
 
-feature: TYPE_ID;
+feature: TYPE_ID
+       | feature "." TYPE_ID;
 
 
 %%
