@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>tests\arithmetics\precedence\2plus2multiply2.e</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>tests\arithmetics\features\expr_with_ID.e</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArgumentsHistory>tests\big_test.e|tests\single_operand_INT.e|tests\arithmetics\single_operand\REAL.e|tests\arithmetics\plus\REAL_INT.e|tests\arithmetics\precedence\2plus2multiply2.e|</LocalDebuggerCommandArgumentsHistory>
+    <LocalDebuggerCommandArgumentsHistory>tests\single_operand_INT.e|tests\arithmetics\single_operand\REAL.e|tests\arithmetics\plus\REAL_INT.e|tests\arithmetics\precedence\2plus2multiply2.e|tests\arithmetics\features\expr_with_ID.e|</LocalDebuggerCommandArgumentsHistory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>tests\arithmetics\precedence\2plus2multiply2.e</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>tests\arithmetics\features\expr_with_ID.e</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

@@ -65,9 +65,12 @@ expression: "(" expression ")"
           | TYPE_INT2
           | TYPE_INT8
           | TYPE_REAL
+          | feature
           ;
 
 operand: expression;
+
+feature: TYPE_ID;
 
 
 %%
