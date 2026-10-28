@@ -45,7 +45,7 @@ void yyerror(const char* s);
 %token <boolean> TYPE_BOOLEAN
 %token <identifier> TYPE_ID
 %token ENDL
-%start feature_method_definition
+%start feature_list
 
 /* %left и %right указывает порядкок того, как нужно обрабатывать ряд однотипных операторов. */
 /* Внутри одного %left или %right порядок не имеет никакого значения. */
@@ -112,6 +112,9 @@ variables_definition_list: field_definition
                          | variables_definition_list ";" field_definition;
 
 field_definition: TYPE_ID ":" TYPE_ID;
+
+feature_list: feature_method_definition
+            | feature_list feature_method_definition;
 
 %%
 
