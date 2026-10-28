@@ -45,7 +45,7 @@ void yyerror(const char* s);
 %token <boolean> TYPE_BOOLEAN TYPE_TRUE TYPE_FALSE
 %token <identifier> TYPE_ID
 %token ENDL
-%start expression
+%start instruction
 
 /* %left и %right указывает порядкок того, как нужно обрабатывать ряд однотипных операторов. */
 /* Внутри одного %left или %right порядок не имеет никакого значения. */
@@ -75,6 +75,8 @@ operand: expression;
 feature: TYPE_ID
        | feature "." TYPE_ID;
 
+
+instruction: expression;
 
 %%
 
