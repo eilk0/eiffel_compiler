@@ -11,8 +11,8 @@ void yyerror(const char* s);
 
 %token KW_ACROSS  KW_AGENT KW_ALIAS KW_ALL KW_AS
 %token KW_ASSIGN KW_ATTRIBUTE KW_CHECK KW_CLASS KW_CONVERT
-%token KW_CREATE KW_CURRENT KW_DEBUG KW_DEFERRED KW_DO
-%token KW_ELSE KW_ELSEIF KW_END KW_ENSURE KW_EXPANDED
+%token KW_CREATE KW_CURRENT KW_DEBUG KW_DEFERRED KW_DO "do"
+%token KW_ELSE KW_ELSEIF KW_END "end" KW_ENSURE KW_EXPANDED
 %token KW_EXPORT KW_EXTERNAL KW_FEATURE KW_FROM KW_FROZEN
 %token KW_IF KW_IMPLIES KW_INHERIT KW_INSPECT KW_INVARIANT
 %token KW_LIKE KW_LOCAL KW_LOOP KW_NOT KW_NOTE
@@ -45,7 +45,7 @@ void yyerror(const char* s);
 %token <boolean> TYPE_BOOLEAN
 %token <identifier> TYPE_ID
 %token ENDL
-%start instruction_list
+%start feature_method_definition
 
 /* %left и %right указывает порядкок того, как нужно обрабатывать ряд однотипных операторов. */
 /* Внутри одного %left или %right порядок не имеет никакого значения. */
@@ -92,6 +92,26 @@ parameters_list: expression
 
 instruction_list: %empty
                 | instruction_list instruction;
+
+
+
+/* CLASS DESCRIPTION SECTION */
+
+do_end_section: "do" instruction_list "end";
+
+feature_method_header: TYPE_ID
+                     | TYPE_ID "(" ")"
+                     | TYPE_ID "(" variables_definition_list ")"
+                     | TYPE_ID ":" TYPE_ID
+                     | TYPE_ID "(" ")" ":" TYPE_ID
+                     | TYPE_ID "(" variables_definition_list ")" ":" TYPE_ID;
+
+feature_method_definition: feature_method_header do_end_section;
+
+variables_definition_list: field_definition
+                         | variables_definition_list ";" field_definition;
+
+field_definition: TYPE_ID ":" TYPE_ID;
 
 %%
 
