@@ -81,6 +81,7 @@ feature: TYPE_ID
        | feature_call;
 
 instruction: feature ":=" expression
+           | KW_RESULT ":=" expression
            | feature_call;
 
 feature_call: feature "(" ")"
