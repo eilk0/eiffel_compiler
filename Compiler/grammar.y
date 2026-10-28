@@ -55,21 +55,20 @@ void yyerror(const char* s);
 
 %%
 
-expression: parenthesis_group
-          | operand
-          | expression "+" expression
-          | expression "-" expression
-          | expression "*" expression
-          | expression "/" expression
+expression: "(" expression ")"
+          | operand "+" operand
+          | operand "-" operand
+          | operand "*" operand
+          | operand "/" operand
+          | TYPE_INT
+          | TYPE_INT16
+          | TYPE_INT2
+          | TYPE_INT8
+          | TYPE_REAL
           ;
-parenthesis_group: "(" expression ")";
 
-operand: TYPE_INT
-        | TYPE_INT16
-        | TYPE_INT2
-        | TYPE_INT8
-        | TYPE_REAL
-        ;
+operand: expression;
+
 
 %%
 
