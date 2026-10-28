@@ -128,11 +128,16 @@ class_inheritance_section: "inherit" identifier_list;
 
 class_constructors_section: "create" identifier_list;
 
-class_features_section: "feature" feature_list;
-class_definition: class_definition_header class_features_section "end"
-                | class_definition_header class_constructors_section class_features_section "end"
-                | class_definition_header class_inheritance_section class_features_section "end"
-                | class_definition_header class_inheritance_section class_constructors_section class_features_section "end";
+class_features_section: "feature" feature_list
+                      | "feature" "{" identifier_list "}" feature_list;
+
+class_features_sections_list: class_features_section
+                            | class_features_sections_list class_features_section;
+
+class_definition: class_definition_header class_features_sections_list "end"
+                | class_definition_header class_constructors_section class_features_sections_list "end"
+                | class_definition_header class_inheritance_section class_features_sections_list "end"
+                | class_definition_header class_inheritance_section class_constructors_section class_features_sections_list "end";
 
 %%
 
