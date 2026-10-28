@@ -42,7 +42,7 @@ void yyerror(const char* s);
 %token <real> TYPE_REAL
 %token <character> TYPE_CHAR
 %token <string> TYPE_STRING
-%token <boolean> TYPE_BOOLEAN TYPE_TRUE TYPE_FALSE
+%token <boolean> TYPE_BOOLEAN
 %token <identifier> TYPE_ID
 %token ENDL
 %start instruction_list
@@ -69,6 +69,7 @@ expression: "(" expression ")"
           | TYPE_REAL
           | TYPE_CHAR
           | TYPE_STRING
+          | TYPE_BOOLEAN
           | feature
           ;
 
