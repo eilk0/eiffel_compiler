@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>tests\instructions\equating.e</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>tests\instructions\equating_list.e</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArgumentsHistory>tests\arithmetics\features\expr_with_ID.e|tests\arithmetics\precedence\power_sum_mul.e|tests\arithmetics\features\folded_features.e|tests\arithmetics\features\nested_features.e|tests\instructions\equating.e|</LocalDebuggerCommandArgumentsHistory>
+    <LocalDebuggerCommandArgumentsHistory>tests\arithmetics\precedence\power_sum_mul.e|tests\arithmetics\features\folded_features.e|tests\arithmetics\features\nested_features.e|tests\instructions\equating.e|tests\instructions\equating_list.e|</LocalDebuggerCommandArgumentsHistory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>tests\instructions\equating.e</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>tests\instructions\equating_list.e</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>
