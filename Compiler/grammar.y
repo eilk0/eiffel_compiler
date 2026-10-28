@@ -9,12 +9,12 @@ void yyerror(const char* s);
 #define MAX_TEXT_TOKEN 4096
 }
 
-%token KW_ACROSS  KW_AGENT KW_ALIAS KW_ALL KW_AS
-%token KW_ASSIGN KW_ATTRIBUTE KW_CHECK KW_CLASS KW_CONVERT
-%token KW_CREATE KW_CURRENT KW_DEBUG KW_DEFERRED KW_DO "do"
+%token KW_ACROSS KW_AGENT KW_ALIAS KW_ALL KW_AS
+%token KW_ASSIGN KW_ATTRIBUTE KW_CHECK KW_CLASS "class" KW_CONVERT
+%token KW_CREATE "create" KW_CURRENT KW_DEBUG KW_DEFERRED KW_DO "do"
 %token KW_ELSE KW_ELSEIF KW_END "end" KW_ENSURE KW_EXPANDED
-%token KW_EXPORT KW_EXTERNAL KW_FEATURE KW_FROM KW_FROZEN
-%token KW_IF KW_IMPLIES KW_INHERIT KW_INSPECT KW_INVARIANT
+%token KW_EXPORT KW_EXTERNAL KW_FEATURE "feature" KW_FROM KW_FROZEN
+%token KW_IF KW_IMPLIES KW_INHERIT "inherit" KW_INSPECT KW_INVARIANT
 %token KW_LIKE KW_LOCAL KW_LOOP KW_NOT KW_NOTE
 %token KW_OBSOLETE KW_OLD KW_ONCE KW_ONLY KW_PRECURSOR
 %token KW_REDEFINE KW_RENAME KW_REQUIRE KW_RESCUE KW_RESULT
@@ -45,7 +45,7 @@ void yyerror(const char* s);
 %token <boolean> TYPE_BOOLEAN
 %token <identifier> TYPE_ID
 %token ENDL
-%start feature_list
+%start class_definition
 
 /* %left и %right указывает порядкок того, как нужно обрабатывать ряд однотипных операторов. */
 /* Внутри одного %left или %right порядок не имеет никакого значения. */
@@ -117,6 +117,22 @@ feature_list: feature_method_definition
             | field_definition
             | feature_list feature_method_definition
             | feature_list field_definition;
+
+identifier_list: TYPE_ID
+               | identifier_list "," TYPE_ID;
+
+
+class_definition_header: "class" TYPE_ID;
+
+class_inheritance_section: "inherit" identifier_list;
+
+class_constructors_section: "create" identifier_list;
+
+class_features_section: "feature" feature_list;
+class_definition: class_definition_header class_features_section "end"
+                | class_definition_header class_constructors_section class_features_section "end"
+                | class_definition_header class_inheritance_section class_features_section "end"
+                | class_definition_header class_inheritance_section class_constructors_section class_features_section "end";
 
 %%
 
