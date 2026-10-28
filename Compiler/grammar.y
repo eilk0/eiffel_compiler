@@ -76,8 +76,7 @@ feature: TYPE_ID
        | feature "." TYPE_ID
        | feature "[" expression "]";
 
-instruction: expression
-           | feature ":=" expression;
+instruction: feature ":=" expression;
 
 instruction_list: %empty
                 | instruction_list instruction;
