@@ -114,7 +114,9 @@ variables_definition_list: field_definition
 field_definition: TYPE_ID ":" TYPE_ID;
 
 feature_list: feature_method_definition
-            | feature_list feature_method_definition;
+            | field_definition
+            | feature_list feature_method_definition
+            | feature_list field_definition;
 
 %%
 
