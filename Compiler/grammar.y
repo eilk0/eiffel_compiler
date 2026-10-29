@@ -66,11 +66,11 @@ void yyerror(const char* s);
 %%
 
 expression: "(" expression ")"
-          | operand "+" operand
-          | operand "-" operand
-          | operand "*" operand
-          | operand "/" operand
-          | operand "^" operand
+          | expression "+" expression
+          | expression "-" expression
+          | expression "*" expression
+          | expression "/" expression
+          | expression "^" expression
           | TYPE_INT
           | TYPE_INT16
           | TYPE_INT2
@@ -81,8 +81,6 @@ expression: "(" expression ")"
           | TYPE_BOOLEAN
           | feature
           ;
-
-operand: expression;
 
 feature: TYPE_ID
        | feature "." TYPE_ID
