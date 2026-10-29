@@ -136,19 +136,15 @@ identifier_list: TYPE_ID
 
 class_definition_header: "class" TYPE_ID;
 
-class_inheritance_section: "inherit" identifier_list;
+class_inheritance_section:  %empty | "inherit" identifier_list;
 
-class_constructors_section: "create" identifier_list;
+class_constructors_section:  %empty | "create" identifier_list;
 
-class_features_section: "feature" feature_list
+class_features_section: %empty
+                      | "feature" feature_list
                       | "feature" "{" identifier_list "}" feature_list;
 
-unfinished_class_definition: class_definition_header 
-                | unfinished_class_definition class_features_section
-                | unfinished_class_definition class_constructors_section
-                | unfinished_class_definition class_inheritance_section;
-
-class_definition: unfinished_class_definition "end";
+class_definition: class_definition_header class_inheritance_section class_constructors_section class_features_section "end";
 
 
 /* EIFFEL LANGUAGE FILE STRUCTURE */
