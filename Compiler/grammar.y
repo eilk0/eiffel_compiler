@@ -1,6 +1,7 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include "colors.h"
 
 void yyerror(const char* s);
 %}
@@ -45,6 +46,14 @@ void yyerror(const char* s);
 %token <boolean> TYPE_BOOLEAN
 %token <identifier> TYPE_ID
 %token ENDL
+
+%printer {fprintf(yyo, GRAMMAR_PRINTER_COLOR "%d" RESET, $$);} <integer>
+%printer {fprintf(yyo, GRAMMAR_PRINTER_COLOR "%.*e" RESET, $$);} <real>
+%printer {fprintf(yyo, GRAMMAR_PRINTER_COLOR "'%c'" RESET, $$);} <character>
+%printer {fprintf(yyo, GRAMMAR_PRINTER_COLOR "\"%s\"" RESET, $$);} <string>
+%printer {if($$) fprintf(yyo, GRAMMAR_PRINTER_COLOR "TRUE" RESET); else fprintf(yyo, GRAMMAR_PRINTER_COLOR "FALSE" RESET);} <boolean>
+%printer {fprintf(yyo, GRAMMAR_PRINTER_COLOR "%s" RESET, $$);} <identifier>
+
 %start eiffel_code
 
 /* %left и %right указывает порядкок того, как нужно обрабатывать ряд однотипных операторов. */
