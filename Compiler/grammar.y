@@ -136,14 +136,12 @@ class_constructors_section: "create" identifier_list;
 class_features_section: "feature" feature_list
                       | "feature" "{" identifier_list "}" feature_list;
 
-class_features_sections_list: class_features_section
-                            | class_features_sections_list class_features_section;
+unfinished_class_definition: class_definition_header 
+                | unfinished_class_definition class_features_section
+                | unfinished_class_definition class_constructors_section
+                | unfinished_class_definition class_inheritance_section;
 
-class_definition: class_definition_header class_features_sections_list "end"
-                | class_definition_header class_constructors_section class_features_sections_list "end"
-                | class_definition_header class_inheritance_section class_features_sections_list "end"
-                | class_definition_header class_inheritance_section class_constructors_section class_features_sections_list "end";
-
+class_definition: unfinished_class_definition "end";
 
 
 /* EIFFEL LANGUAGE FILE STRUCTURE */
