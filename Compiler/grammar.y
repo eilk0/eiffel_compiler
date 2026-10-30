@@ -65,6 +65,7 @@ void yyerror(const char* s);
 
 %%
 
+/* Грамматическая структура арифметических, булевых и бинарных операций */
 expression: "(" expression ")"
           | expression "+" expression
           | expression "-" expression
@@ -82,22 +83,29 @@ expression: "(" expression ")"
           | feature
           ;
 
+/* Полному идентификатору ячейки памяти (переменной, поля, или ячейки в массиве) */
 feature: TYPE_ID
        | feature "." TYPE_ID
        | feature "[" expression "]"
-       | feature_call;
+       | feature_call; /* Вызов рутины может возвращать значение, которое может использоваться в выражениях. */
 
-instruction: feature ":=" expression
+
+
+/* Инструкция = команда = стейтмент = одна строчка кода.*/
+instruction: feature ":=" expression /* Приравнивание является инструкцией */ /* БАГ: feature может быть feature_call, а ему не может быть присвоено значение! Исправить. */
            | KW_RESULT ":=" expression
-           | "create" TYPE_ID "." TYPE_ID "(" parameters_list ")"
-           | feature_call;
+           | "create" TYPE_ID "." TYPE_ID "(" parameters_list ")" /* Вызов конструктора является инструкцией */
+           | feature_call; /* Вызов рутины МОЖЕТ быть не только в выражении, но и быть один - как инструкция */
 
+/* Грамматическая структура вызова фичи. */ /* БАГОВАННАЯ, так как сам вызов может быть в feature и выйдет something(1,2)(3)(4,5) чего в языке быть не может */
 feature_call: feature "(" ")"
             | feature "(" parameters_list ")";
 
+/* Список параметров функции (значений/выражений) */
 parameters_list: expression
                | parameters_list "," expression;
 
+/* реализация структуры: "следование". Последовательность инструкций к выполнению. */
 instruction_list: %empty
                 | instruction_list instruction;
 
@@ -107,6 +115,7 @@ instruction_list: %empty
 
 do_end_section: "do" instruction_list "end";
 
+/** Заголовок метода/рутины */
 feature_method_header: TYPE_ID
                      | TYPE_ID "(" ")"
                      | TYPE_ID "(" variables_definition_list ")"
@@ -114,48 +123,61 @@ feature_method_header: TYPE_ID
                      | TYPE_ID "(" ")" ":" TYPE_ID
                      | TYPE_ID "(" variables_definition_list ")" ":" TYPE_ID;
 
-
+/* Секция локальных переменных метода/рутины */
 feature_method_local_section: "local" variables_definition_list;
 
+/* Полная структура объявления метода/рутины. */
 feature_method_definition: feature_method_header do_end_section
                          | feature_method_header feature_method_local_section do_end_section;
 
+/* последовательность объявлений локальных переменных неизвестной длинны. */
 variables_definition_list: field_definition
                          | variables_definition_list ";" field_definition;
 
+/* Объявление атрибута/локальной переменной рутины */
 field_definition: TYPE_ID ":" TYPE_ID;
 
+/* Последовательное перечисление фич класса, будь то рутина или атрибут. */
 feature_list: feature_method_definition
             | field_definition
             | feature_list feature_method_definition
             | feature_list field_definition;
 
+/* Список идентификаторов произвольной длинны. Через запятую, т.к. используется в указании доступов. */
 identifier_list: TYPE_ID
                | identifier_list "," TYPE_ID;
 
-
+/* Заголовок объявления класса */
 class_definition_header: "class" TYPE_ID;
 
+/* Описание секции о наследовании в классе */
 class_inheritance_section:  %empty | "inherit" identifier_list;
 
+/* Описание секции перечисления конструкторов класса */
 class_constructors_section:  %empty | "create" identifier_list;
 
+/* Описание секции фич класса */
 class_features_section: %empty
                       | "feature" feature_list
                       | "feature" "{" identifier_list "}" feature_list;
 
+/* Полное описание объявления класса */
 class_definition: class_definition_header class_inheritance_section class_constructors_section class_features_section "end";
 
 
 /* EIFFEL LANGUAGE FILE STRUCTURE */
 
+/* ПРИМИТИВНЕЙШАЯ реализация секции заметок */
 note_section: "note" note_fields_list;
 
+/* Список полей заметок произвольной длинны. */
 note_fields_list: note_field
                 | note_fields_list note_field;
 
+/* Одно поле из заметок. TODO: А там только строки могут быть? */
 note_field: TYPE_ID ":" TYPE_STRING;
 
+/* Корневая сущность, являющаяся всем кодом в файле эйфеля. */
 eiffel_code: class_definition
            | note_section class_definition;
 
