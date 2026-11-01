@@ -107,7 +107,8 @@ parameters_list: expression
 
 /* реализация структуры: "следование". Последовательность инструкций к выполнению. */
 instruction_list: %empty
-                | instruction_list instruction;
+                | instruction_list instruction
+                | instruction_list ";" {/* Буквально ничего не делать */}; 
 
 
 
