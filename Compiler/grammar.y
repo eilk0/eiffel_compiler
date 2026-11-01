@@ -80,8 +80,9 @@ expression: "(" expression ")"
           | TYPE_CHAR
           | TYPE_STRING
           | TYPE_BOOLEAN
-          | callable_feature_reference
-          | uncallable_feature_reference
+          | feature_reference
+          | feature_reference_with_parameters
+          | array_element_reference
           ;
 
 
@@ -93,29 +94,26 @@ parameters_list: %empty
                | expression
                | parameters_list "," expression;
 
-callable_feature_reference: TYPE_ID
-                          | callable_feature_reference "." TYPE_ID
-                          | uncallable_feature_reference "." TYPE_ID;
+feature_reference: TYPE_ID
+                 | feature_reference "." TYPE_ID
+                 | feature_reference_with_parameters "." TYPE_ID
+                 | array_element_reference "." TYPE_ID;
 
-feature_call_with_parameters: callable_feature_reference "(" parameters_list ")";
+array_element_reference: feature_reference "[" expression "]";
 
-uncallable_feature_reference: feature_reference_from_array
-                            | feature_call_with_parameters;
+feature_reference_with_parameters: feature_reference "(" parameters_list ")";
 
-feature_reference_from_array: callable_feature_reference "[" expression "]"
-                            | uncallable_feature_reference "[" expression "]";
-
-assignable_feature_reference: feature_reference_from_array
-                               | callable_feature_reference;
 
 create_instruction: "create" TYPE_ID "." TYPE_ID "(" parameters_list ")"
                   | "create" TYPE_ID "." TYPE_ID;
 
 /* Инструкция = команда = стейтмент = одна строчка кода.*/
-instruction: assignable_feature_reference ":=" expression /* Приравнивание является инструкцией */
+instruction: feature_reference ":=" expression
+           | array_element_reference ":=" expression
            | KW_RESULT ":=" expression
            | create_instruction
-           | callable_feature_reference | feature_call_with_parameters; 
+           | feature_reference_with_parameters 
+           | feature_reference; 
 
 
 
