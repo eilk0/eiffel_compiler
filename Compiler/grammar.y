@@ -164,7 +164,57 @@ identifier_list: TYPE_ID
 class_definition_header: "class" TYPE_ID;
 
 /* Описание секции о наследовании в классе */
-class_inheritance_section:  %empty | "inherit" identifier_list;
+class_inheritance_section:  %empty | "inherit" parent_list;
+
+parent_list: parent
+               | parent_list parent
+               | parent_list ";" parent
+               ;
+
+parent: TYPE_ID
+            | TYPE_ID inherit_feature_adaptation
+            ;
+
+/* Адаптация уналедованных features */
+inherit_feature_adaptation:
+      "undefine" identifier_list redefine_section rename_section export_section select_section "end"
+    | "redefine" identifier_list rename_section export_section select_section "end"
+    | "rename" rename_list export_section select_section "end"
+    | "export" export_list select_section "end"
+    | "select" identifier_list "end"
+    ;
+
+redefine_section: %empty
+            | "redefine" identifier_list
+            ;
+
+rename_section: %empty
+            | "rename" rename_list
+            ;
+
+rename_list: rename_pair
+            | rename_list "," rename_pair
+            ;
+
+rename_pair: TYPE_ID "as" TYPE_ID
+            ;
+
+export_section: %empty
+            | "export" export_list 
+            ;
+
+export_list: export_item
+            | export_list export_item
+            ;
+
+export_item: "{" identifier_list "}" identifier_list
+            ;
+            
+
+select_section: %empty
+            | "select" identifier_list
+            ;
+
 
 /* Описание секции перечисления конструкторов класса */
 class_constructors_section:  %empty | "create" identifier_list;
