@@ -98,11 +98,11 @@ instruction: feature ":=" expression /* Приравнивание являет�
            | feature_call; /* Вызов рутины МОЖЕТ быть не только в выражении, но и быть один - как инструкция */
 
 /* Грамматическая структура вызова фичи. */ /* БАГОВАННАЯ, так как сам вызов может быть в feature и выйдет something(1,2)(3)(4,5) чего в языке быть не может */
-feature_call: feature "(" ")"
-            | feature "(" parameters_list ")";
+feature_call: feature "(" parameters_list ")";
 
 /* Список параметров функции (значений/выражений) */
-parameters_list: expression
+parameters_list: %empty
+               | expression
                | parameters_list "," expression;
 
 /* реализация структуры: "следование". Последовательность инструкций к выполнению. */
