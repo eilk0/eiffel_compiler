@@ -21,7 +21,7 @@ feature {NONE} -- Initialization
 		do
 			create student.new_student("John");
 			print (student.getName)
-			doSomeMagic;;;
+			doSomeMagic();;;
 		end
 
 end
