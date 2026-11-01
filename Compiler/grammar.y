@@ -80,30 +80,41 @@ expression: "(" expression ")"
           | TYPE_CHAR
           | TYPE_STRING
           | TYPE_BOOLEAN
-          | feature
+          | callable_feature_reference
+          | uncallable_feature_reference
           ;
 
-/* Полному идентификатору ячейки памяти (переменной, поля, или ячейки в массиве) */
-feature: TYPE_ID
-       | feature "." TYPE_ID
-       | feature "[" expression "]"
-       | feature_call; /* Вызов рутины может возвращать значение, которое может использоваться в выражениях. */
 
 
+          
+/* FEATURE KINDS SECTION */
+
+parameters_list: %empty
+               | expression
+               | parameters_list "," expression;
+
+callable_feature_reference: TYPE_ID
+                          | callable_feature_reference "." TYPE_ID
+                          | uncallable_feature_reference "." TYPE_ID;
+
+feature_call_with_parameters: callable_feature_reference "(" parameters_list ")";
+
+uncallable_feature_reference: feature_reference_from_array
+                            | feature_call_with_parameters;
+
+feature_reference_from_array: callable_feature_reference "[" expression "]"
+                            | uncallable_feature_reference "[" expression "]";
+
+assignable_feature_reference: feature_reference_from_array
+                               | callable_feature_reference;
 
 /* Инструкция = команда = стейтмент = одна строчка кода.*/
-instruction: feature ":=" expression /* Приравнивание является инструкцией */ /* БАГ: feature может быть feature_call, а ему не может быть присвоено значение! Исправить. */
+instruction: assignable_feature_reference ":=" expression /* Приравнивание является инструкцией */
            | KW_RESULT ":=" expression
            | "create" TYPE_ID "." TYPE_ID "(" parameters_list ")" /* Вызов конструктора является инструкцией */
-           | feature_call; /* Вызов рутины МОЖЕТ быть не только в выражении, но и быть один - как инструкция */
+           | callable_feature_reference | feature_call_with_parameters; 
 
-/* Грамматическая структура вызова фичи. */ /* БАГОВАННАЯ, так как сам вызов может быть в feature и выйдет something(1,2)(3)(4,5) чего в языке быть не может */
-feature_call: feature "(" ")"
-            | feature "(" parameters_list ")";
 
-/* Список параметров функции (значений/выражений) */
-parameters_list: expression
-               | parameters_list "," expression;
 
 /* реализация структуры: "следование". Последовательность инструкций к выполнению. */
 instruction_list: %empty
