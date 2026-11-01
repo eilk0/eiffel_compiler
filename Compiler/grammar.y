@@ -108,10 +108,13 @@ feature_reference_from_array: callable_feature_reference "[" expression "]"
 assignable_feature_reference: feature_reference_from_array
                                | callable_feature_reference;
 
+create_instruction: "create" TYPE_ID "." TYPE_ID "(" parameters_list ")"
+                  | "create" TYPE_ID "." TYPE_ID;
+
 /* Инструкция = команда = стейтмент = одна строчка кода.*/
 instruction: assignable_feature_reference ":=" expression /* Приравнивание является инструкцией */
            | KW_RESULT ":=" expression
-           | "create" TYPE_ID "." TYPE_ID "(" parameters_list ")" /* Вызов конструктора является инструкцией */
+           | create_instruction
            | callable_feature_reference | feature_call_with_parameters; 
 
 
