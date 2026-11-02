@@ -153,26 +153,40 @@ feature_reference_with_parameters: feature_reference multiple_expressions_in_bra
 
 
 
+new_feature_reference_without_start_brackets: TYPE_ID
+                     | new_feature_reference_without_start_brackets "." TYPE_ID;
 
-create_instruction: "create" TYPE_ID "." TYPE_ID expression_in_brackets
-                  | "create" TYPE_ID "." TYPE_ID multiple_expressions_in_brackets
-                  | "create" TYPE_ID "." TYPE_ID "(" ")"
-                  | "create" TYPE_ID "." TYPE_ID;
+new_feature_reference_in_brackets_group: "(" new_feature_reference ")"
+                     | "(" new_feature_reference new_feature_reference_in_brackets_group ")"
+                     | "(" new_feature_reference_in_brackets_group ")";
 
-/* Инструкция = команда = стейтмент = одна строчка кода.*/
-instruction: feature_reference ":=" expression
-           | array_element_reference ":=" expression
-           | KW_RESULT ":=" expression
-           | create_instruction
-           | feature_reference_with_parameters 
-           | feature_reference; 
+new_multiple_feature_reference_list: new_feature_reference "," new_feature_reference
+                                   | new_multiple_feature_reference_list "," new_feature_reference;
+
+new_multiple_feature_reference_in_brackets_group: "(" new_multiple_feature_reference_list ")";
+
+new_feature_reference_with_start_brackets: new_feature_reference_in_brackets_group "." TYPE_ID;
+
+new_feature_reference: new_feature_reference_without_start_brackets
+                            | new_feature_reference_with_start_brackets;
 
 
+/* 
+   NPI = Not Parametrized Instruction
+   PI = Parametrized Instruction
+*/
 
-/* реализация структуры: "следование". Последовательность инструкций к выполнению. */
+instruction_list_ended_with_npi: new_feature_reference /* Создание списка */
+                               | instruction_list_ended_with_npi new_feature_reference_without_start_brackets /* последовательно можно писать такие инструкции только тогда, когда следующая не начинается со скобок */
+                               | instruction_list_ended_with_pi new_feature_reference /* такую инструкцию все же можно написать, но при условии, что перед ней идет инструкция с (параметрами)  */;
+
+instruction_list_ended_with_pi: instruction_list_ended_with_npi          new_feature_reference_in_brackets_group
+                              | instruction_list_ended_with_npi new_multiple_feature_reference_in_brackets_group
+                              | instruction_list_ended_with_npi "(" ")";
+
 instruction_list: %empty
-                | instruction_list instruction
-                | instruction_list ";" {/* Буквально ничего не делать */}; 
+                | instruction_list_ended_with_npi
+                | instruction_list_ended_with_pi;
 
 
 

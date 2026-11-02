@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>tests\instructions\optional_semicolons.e</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>tests\instructions\bracket_groups_instruction_list.e</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArgumentsHistory>tests\classes\simple_person_with_clients.e|tests\classes\application_with_create.e|tests\classes\application_with_locals.e|tests\simple_project\application.e|tests\instructions\optional_semicolons.e|</LocalDebuggerCommandArgumentsHistory>
+    <LocalDebuggerCommandArgumentsHistory>tests\classes\application_with_create.e|tests\classes\application_with_locals.e|tests\simple_project\application.e|tests\instructions\optional_semicolons.e|tests\instructions\bracket_groups_instruction_list.e|</LocalDebuggerCommandArgumentsHistory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LocalDebuggerCommandArguments>tests\instructions\optional_semicolons.e</LocalDebuggerCommandArguments>
