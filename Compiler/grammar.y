@@ -83,6 +83,7 @@ expression: "(" expression ")"
           | feature_reference
           | feature_reference_with_parameters
           | array_element_reference
+          | precursor_call
           ;
 
 
@@ -103,6 +104,12 @@ array_element_reference: feature_reference "[" expression "]";
 
 feature_reference_with_parameters: feature_reference "(" parameters_list ")";
 
+precursor_call: "precursor"
+                | "precursor" "(" parameters_list ")"
+                | "precursor" "{" TYPE_ID "}"
+                | "precursor" "{" TYPE_ID "}" "(" parameters_list ")"
+                ;
+
 
 create_instruction: "create" TYPE_ID "." TYPE_ID "(" parameters_list ")"
                   | "create" TYPE_ID "." TYPE_ID;
@@ -113,7 +120,9 @@ instruction: feature_reference ":=" expression
            | KW_RESULT ":=" expression
            | create_instruction
            | feature_reference_with_parameters 
-           | feature_reference; 
+           | feature_reference
+           | precursor_call
+           ; 
 
 
 
