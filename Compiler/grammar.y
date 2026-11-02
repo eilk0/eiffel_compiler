@@ -91,9 +91,10 @@ expression_in_brackets: "(" expression ")";
           
 /* FEATURE KINDS SECTION */
 
-parameters_list: %empty
-               | expression
-               | parameters_list "," expression;
+multiple_expressions_list: expression "," expression
+               | multiple_expressions_list "," expression;
+
+multiple_expressions_in_brackets: "(" multiple_expressions_list ")";
 
 feature_reference: TYPE_ID
                  | feature_reference "." TYPE_ID
@@ -103,10 +104,16 @@ feature_reference: TYPE_ID
 
 array_element_reference: feature_reference "[" expression "]";
 
-feature_reference_with_parameters: feature_reference "(" parameters_list ")";
+feature_reference_with_parameters: feature_reference multiple_expressions_in_brackets
+                                 | feature_reference expression_in_brackets
+                                 | feature_reference "(" ")";
 
 
-create_instruction: "create" TYPE_ID "." TYPE_ID "(" parameters_list ")"
+
+
+create_instruction: "create" TYPE_ID "." TYPE_ID expression_in_brackets
+                  | "create" TYPE_ID "." TYPE_ID multiple_expressions_in_brackets
+                  | "create" TYPE_ID "." TYPE_ID "(" ")"
                   | "create" TYPE_ID "." TYPE_ID;
 
 /* Инструкция = команда = стейтмент = одна строчка кода.*/
