@@ -141,6 +141,7 @@ do_end_section: "do" instruction_list "end"
 
 rescue_section: 
             KW_RESCUE instruction_list
+            | KW_RESCUE instruction_list KW_RETRY
             ;
 
 /** Заголовок метода/рутины */
