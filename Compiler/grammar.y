@@ -31,7 +31,7 @@ void yyerror(const char* s);
 %token OP_CARET "^" OP_AND OP_OR OP_XOR
 
 %union {
-    int integer;
+    long integer;
     double real;
     char character;
     struct {char data[MAX_TEXT_TOKEN]; int length;} string;
@@ -47,7 +47,7 @@ void yyerror(const char* s);
 %token <identifier> TYPE_ID
 %token ENDL
 
-%printer {fprintf(yyo, GRAMMAR_PRINTER_COLOR "%d" RESET, $$);} <integer>
+%printer {fprintf(yyo, GRAMMAR_PRINTER_COLOR "%ld" RESET, $$);} <integer>
 %printer {fprintf(yyo, GRAMMAR_PRINTER_COLOR "%.*e" RESET, $$);} <real>
 %printer {fprintf(yyo, GRAMMAR_PRINTER_COLOR "'%c'" RESET, $$);} <character>
 %printer {fprintf(yyo, GRAMMAR_PRINTER_COLOR "\"%s\"" RESET, $$);} <string>
