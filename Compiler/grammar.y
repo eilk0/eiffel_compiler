@@ -91,6 +91,49 @@ expression_in_brackets: "(" expression ")";
           
 /* FEATURE KINDS SECTION */
 
+
+/* 
+
+Проблема: болтаюющийся параметр в скобках
+
+        action "(" parameter ")" "." action 
+
+Может быть раскрыт двумя способами:
+
+    1.  action
+        "(" parameter ")" "." action 
+    
+    2.  action "(" parameter ")" "." action 
+
+В оригинальном языке данный код всегда приводится к формату 2.
+
+Решение: ограничить правила для инструкций.
+
+Суть решения заключается в том, чтобы частично запретить инструкции начинаться с значениях в (скобках).
+
+Тоесть, парсер должен обработать код так:
+
+        action "(" parameter ")" "." action 
+
+    1.  action -> instruction_without_parameters
+
+        instruction_without_parameters "(" parameter ")" "." action 
+    
+    2.  instruction_without_parameters "(" parameter ")" -> instruction_with_parameters
+
+        instructuin_wuth_parameters "." action
+
+    3.  instructuin_wuth_parameters "." action -> instuction_without_parameters
+
+        instuction_without_parameters
+
+    Суть в том, что instuction_without_parameters может идти после instuction_without_parameters только если оно не начинается со скобок.
+
+    При этом, instuction_without_parameters - ожидаемое продолжение после instruction_with_parameters
+
+*/
+
+
 multiple_expressions_list: expression "," expression
                | multiple_expressions_list "," expression;
 
