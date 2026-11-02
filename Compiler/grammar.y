@@ -135,7 +135,13 @@ instruction_list: %empty
 
 /* CLASS DESCRIPTION SECTION */
 
-do_end_section: "do" instruction_list "end";
+do_end_section: "do" instruction_list "end"
+            | "do" instruction_list rescue_section "end"
+            ;
+
+rescue_section: 
+            KW_RESCUE instruction_list
+            ;
 
 /** Заголовок метода/рутины */
 feature_method_header: TYPE_ID
