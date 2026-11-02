@@ -10,7 +10,7 @@ void yyerror(const char* s);
 #define MAX_TEXT_TOKEN 4096
 }
 
-%token KW_ACROSS KW_AGENT KW_ALIAS KW_ALL KW_AS "as"
+%token KW_ACROSS KW_AGENT KW_ALIAS "alias" KW_ALL KW_AS "as"
 %token KW_ASSIGN KW_ATTRIBUTE KW_CHECK KW_CLASS "class" KW_CONVERT
 %token KW_CREATE "create" KW_CURRENT KW_DEBUG KW_DEFERRED KW_DO "do"
 %token KW_ELSE KW_ELSEIF KW_END "end" KW_ENSURE KW_EXPANDED
@@ -157,7 +157,14 @@ feature_method_local_section: "local" variables_definition_list;
 
 /* Полная структура объявления метода/рутины. */
 feature_method_definition: feature_method_header do_end_section
-                         | feature_method_header feature_method_local_section do_end_section;
+                         | feature_method_header feature_alias do_end_section
+                         | feature_method_header feature_method_local_section do_end_section
+                         | feature_method_header feature_alias feature_method_local_section do_end_section
+                         ;
+
+feature_alias:
+            "alias" TYPE_STRING 
+            ;
 
 /* последовательность объявлений локальных переменных неизвестной длинны. */
 variables_definition_list: field_definition
