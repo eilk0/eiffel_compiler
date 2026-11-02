@@ -39,7 +39,7 @@ void yyerror(const char* s);
     struct {char data[MAX_TEXT_TOKEN]; int length;} identifier;
 }
 
-%token <integer> TYPE_INT TYPE_INT2 TYPE_INT8 TYPE_INT16
+%token <integer> TYPE_INT
 %token <real> TYPE_REAL
 %token <character> TYPE_CHAR
 %token <string> TYPE_STRING
@@ -73,9 +73,6 @@ expression: "(" expression ")"
           | expression "/" expression
           | expression "^" expression
           | TYPE_INT
-          | TYPE_INT16
-          | TYPE_INT2
-          | TYPE_INT8
           | TYPE_REAL
           | TYPE_CHAR
           | TYPE_STRING

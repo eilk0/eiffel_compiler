@@ -197,6 +197,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     }
 
     /*integer v2*/
+    /* я думаю, можно будет потом тут сделать рефакторинг жесткий. сейчас не лезу*/
 
     /*Binary base*/
 {BIN} {
@@ -205,12 +206,12 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     removeUnderscores(stringBuffer);
     long num =  strtol(stringBuffer + 2, NULL, 2);
     if(LONG_MAX == num || LONG_MIN == num) {
-        fprintf(stderr, LEXER_COLOR_LOG "Failed to parse " LEXER_COLOR_ACCENT "TYPE_INT2" LEXER_COLOR_LOG ": '%s' at line %d\n" RESET, yytext, yylineno);
+        fprintf(stderr, LEXER_COLOR_LOG "Failed to parse BIN" LEXER_COLOR_ACCENT " TYPE_INT" LEXER_COLOR_LOG ": '%s' at line %d\n" RESET, yytext, yylineno);
         return 0;
     }
-    printf(LEXER_COLOR_LOG "Detected " LEXER_COLOR_ACCENT "TYPE_INT2" LEXER_COLOR_LOG ": %d\n" RESET, num);
+    printf(LEXER_COLOR_LOG "Detected BIN" LEXER_COLOR_ACCENT " TYPE_INT" LEXER_COLOR_LOG ": %d\n" RESET, num);
     yylval.integer = num;
-    return TYPE_INT2; // не уверена, нужны ли прям такие отдельные токены или просто TYPE_INT
+    return TYPE_INT;
     }
 
 {BIN_INVALID_DECL} {saveLexerError(LEX_INVALID_INT_DECLARATION_ERROR, yytext); return 0;}
@@ -222,12 +223,12 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     removeUnderscores(stringBuffer);
     long num =  strtol(stringBuffer + 2, NULL, 8);
     if(LONG_MAX == num || LONG_MIN == num) {
-        fprintf(stderr, LEXER_COLOR_LOG "Failed to parse " LEXER_COLOR_ACCENT " TYPE_INT8" LEXER_COLOR_LOG ": '%s' at line %d\n" RESET, yytext, yylineno);
+        fprintf(stderr, LEXER_COLOR_LOG "Failed to parse OCT" LEXER_COLOR_ACCENT " TYPE_INT" LEXER_COLOR_LOG ": '%s' at line %d\n" RESET, yytext, yylineno);
         return 0;
     }
-    printf(LEXER_COLOR_LOG "Detected " LEXER_COLOR_ACCENT "TYPE_INT8" LEXER_COLOR_LOG ": %d\n" RESET, num);
+    printf(LEXER_COLOR_LOG "Detected OCT" LEXER_COLOR_ACCENT " TYPE_INT" LEXER_COLOR_LOG ": %d\n" RESET, num);
     yylval.integer = num;
-    return TYPE_INT8;
+    return TYPE_INT;
     }
 
 {OCT_INVALID_DECL} {saveLexerError(LEX_INVALID_INT_DECLARATION_ERROR, yytext); return 0;}
@@ -239,12 +240,12 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     removeUnderscores(stringBuffer);
     long num =  strtol(stringBuffer + 2, NULL, 16);
     if(LONG_MAX == num || LONG_MIN == num) {
-        fprintf(stderr, LEXER_COLOR_LOG "Failed to parse " LEXER_COLOR_ACCENT "TYPE_INT8" LEXER_COLOR_LOG ": '%s' at line %d\n" RESET, yytext, yylineno);
+        fprintf(stderr, LEXER_COLOR_LOG "Failed to parse HEX" LEXER_COLOR_ACCENT "TYPE_INT" LEXER_COLOR_LOG ": '%s' at line %d\n" RESET, yytext, yylineno);
         return 0;
     }
-    printf(LEXER_COLOR_LOG "Detected " LEXER_COLOR_ACCENT "TYPE_INT16" LEXER_COLOR_LOG ": %d\n" RESET, num);
+    printf(LEXER_COLOR_LOG "Detected HEX" LEXER_COLOR_ACCENT " TYPE_INT" LEXER_COLOR_LOG ": %d\n" RESET, num);
     yylval.integer = num;
-    return TYPE_INT16;
+    return TYPE_INT;
     }
 
 {HEX_INVALID_DECL} {saveLexerError(LEX_INVALID_INT_DECLARATION_ERROR, yytext); return 0;}
