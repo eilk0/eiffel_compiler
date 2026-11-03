@@ -128,6 +128,7 @@ instruction: feature_reference ":=" expression
            | array_element_reference ":=" expression
            | KW_RESULT ":=" expression
            | create_instruction
+           | loop_instruction
            | feature_reference_with_parameters 
            | feature_reference; 
 
@@ -137,6 +138,13 @@ instruction: feature_reference ":=" expression
 instruction_list: %empty
                 | instruction_list instruction
                 | instruction_list ";" {/* Буквально ничего не делать */}; 
+
+/* цикл. вроде похоже на правду? не знаю пока что че сюда дописать... */
+loop_instruction: KW_FROM instruction_list
+    KW_UNTIL expression
+    KW_LOOP
+    instruction_list
+    "end";
 
 
 
@@ -178,7 +186,7 @@ constant_value: TYPE_INT
               | TYPE_CHAR
               | TYPE_STRING
               | TYPE_BOOLEAN;
-              
+
 /* Последовательное перечисление фич класса, будь то рутина или атрибут. */
 feature_list: feature_method_definition
             | field_definition
