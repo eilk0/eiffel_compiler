@@ -382,7 +382,7 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
         return 0;
     }
     stringBuffer[stringLength] = 0;
-    printf(LEXER_COLOR_LOG "Detected " LEXER_COLOR_ACCENT "CHARACTER" LEXER_COLOR_LOG ":%s\n" RESET, stringBuffer[0]);
+    printf(LEXER_COLOR_LOG "Detected " LEXER_COLOR_ACCENT "CHARACTER" LEXER_COLOR_LOG ":%c\n" RESET, stringBuffer[0]);
     yylval.character = stringBuffer[0];
     return TYPE_CHAR;
 }
