@@ -67,7 +67,7 @@ void yyerror(const char* s);
 %%
 
 /* Грамматическая структура арифметических, булевых и бинарных операций */
-expression_without_brackets_at_borders: TYPE_INT
+expression_without_brackets_at_end: TYPE_INT
                            | TYPE_INT16
                            | TYPE_INT2
                            | TYPE_INT8
@@ -76,34 +76,34 @@ expression_without_brackets_at_borders: TYPE_INT
                            | TYPE_STRING
                            | TYPE_BOOLEAN
                            | feature_reference
-                           | expression_without_brackets_at_borders "+" expression_without_brackets_at_borders
-                           | expression_without_brackets_at_borders "-" expression_without_brackets_at_borders
-                           | expression_without_brackets_at_borders "*" expression_without_brackets_at_borders
-                           | expression_without_brackets_at_borders "/" expression_without_brackets_at_borders
-                           | expression_without_brackets_at_borders "^" expression_without_brackets_at_borders
-                           | expression_ended_with_brackets "+" expression_without_brackets_at_borders
-                           | expression_ended_with_brackets "-" expression_without_brackets_at_borders
-                           | expression_ended_with_brackets "*" expression_without_brackets_at_borders
-                           | expression_ended_with_brackets "/" expression_without_brackets_at_borders
-                           | expression_ended_with_brackets "^" expression_without_brackets_at_borders;
+                           | expression_without_brackets_at_end "+" expression_without_brackets_at_end
+                           | expression_without_brackets_at_end "-" expression_without_brackets_at_end
+                           | expression_without_brackets_at_end "*" expression_without_brackets_at_end
+                           | expression_without_brackets_at_end "/" expression_without_brackets_at_end
+                           | expression_without_brackets_at_end "^" expression_without_brackets_at_end
+                           | expression_ended_with_brackets "+" expression_without_brackets_at_end
+                           | expression_ended_with_brackets "-" expression_without_brackets_at_end
+                           | expression_ended_with_brackets "*" expression_without_brackets_at_end
+                           | expression_ended_with_brackets "/" expression_without_brackets_at_end
+                           | expression_ended_with_brackets "^" expression_without_brackets_at_end;
 
 expression_ended_with_brackets: feature_reference_with_parameters
                  | expression_in_brackets
-                 | expression_without_brackets_at_borders "+" expression_ended_with_brackets
-                 | expression_without_brackets_at_borders "-" expression_ended_with_brackets
-                 | expression_without_brackets_at_borders "*" expression_ended_with_brackets
-                 | expression_without_brackets_at_borders "/" expression_ended_with_brackets
-                 | expression_without_brackets_at_borders "^" expression_ended_with_brackets
+                 | expression_without_brackets_at_end "+" expression_ended_with_brackets
+                 | expression_without_brackets_at_end "-" expression_ended_with_brackets
+                 | expression_without_brackets_at_end "*" expression_ended_with_brackets
+                 | expression_without_brackets_at_end "/" expression_ended_with_brackets
+                 | expression_without_brackets_at_end "^" expression_ended_with_brackets
                  | expression_ended_with_brackets "+" expression_ended_with_brackets
                  | expression_ended_with_brackets "-" expression_ended_with_brackets
                  | expression_ended_with_brackets "*" expression_ended_with_brackets
                  | expression_ended_with_brackets "/" expression_ended_with_brackets
                  | expression_ended_with_brackets "^" expression_ended_with_brackets;
 
-expression_in_brackets: "(" expression_without_brackets_at_borders ")"
+expression_in_brackets: "(" expression_without_brackets_at_end ")"
                       | "(" expression_ended_with_brackets ")";
 
-expression: expression_without_brackets_at_borders
+expression: expression_without_brackets_at_end
           | expression_ended_with_brackets;
 
 
