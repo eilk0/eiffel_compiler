@@ -1,0 +1,13 @@
+class TESTACTGENERIC
+
+feature
+
+valone : ONEGENERIC [INTEGER]
+
+valtwo : TWOGENERIC [INTEGER, STRING]
+
+valin : ONEGENERIC [ P[INTEGER] ]
+
+valin2 : ONEGENERIC [ TWOGENERIC [INTEGER, STRING] ]
+
+end
