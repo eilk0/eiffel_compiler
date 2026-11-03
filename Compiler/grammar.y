@@ -29,9 +29,10 @@ void yyerror(const char* s);
 %token OP_POINT "." OP_ATSIGN "@" OP_QUESTION "?" OP_TILDE "~" OP_EXCLAMATION "!"
 %token OP_HASH "#" OP_DOLLAR "$" OP_PERCENT "%" OP_AMPERSAND "&" OP_VBAR "|"
 %token OP_CARET "^" OP_AND OP_OR OP_XOR
+%token OP_RANGE ".."
 
 %union {
-    int integer;
+    long integer;
     double real;
     char character;
     struct {char data[MAX_TEXT_TOKEN]; int length;} string;
@@ -39,7 +40,7 @@ void yyerror(const char* s);
     struct {char data[MAX_TEXT_TOKEN]; int length;} identifier;
 }
 
-%token <integer> TYPE_INT TYPE_INT2 TYPE_INT8 TYPE_INT16
+%token <integer> TYPE_INT
 %token <real> TYPE_REAL
 %token <character> TYPE_CHAR
 %token <string> TYPE_STRING
@@ -47,7 +48,7 @@ void yyerror(const char* s);
 %token <identifier> TYPE_ID
 %token ENDL
 
-%printer {fprintf(yyo, GRAMMAR_PRINTER_COLOR "%d" RESET, $$);} <integer>
+%printer {fprintf(yyo, GRAMMAR_PRINTER_COLOR "%ld" RESET, $$);} <integer>
 %printer {fprintf(yyo, GRAMMAR_PRINTER_COLOR "%.*e" RESET, $$);} <real>
 %printer {fprintf(yyo, GRAMMAR_PRINTER_COLOR "'%c'" RESET, $$);} <character>
 %printer {fprintf(yyo, GRAMMAR_PRINTER_COLOR "\"%s\"" RESET, $$);} <string>
@@ -59,23 +60,41 @@ void yyerror(const char* s);
 /* %left и %right указывает порядкок того, как нужно обрабатывать ряд однотипных операторов. */
 /* Внутри одного %left или %right порядок не имеет никакого значения. */
 /* Порядок строк %left или %right определяет приоритет оператров: чем номер строки больше, тем больше приоритет этих операций. */
+%left OP_OR OP_XOR "|"
+%left OP_AND "&"
+%nonassoc "=" "/=" "<" ">" "<=" ">="
 %left "+" "-" 
 %left "*" "/" 
 %right "^"
+%precedence KW_NOT "!" UPLUS UMINUS /* это обозначения чисто для порядка, если что */
 
 %%
 
 /* Грамматическая структура арифметических, булевых и бинарных операций */
 expression: "(" expression ")"
+          | expression OP_OR expression
+          | expression OP_OR KW_ELSE expression %prec OP_OR
+          | expression OP_XOR expression
+          | expression OP_AND expression
+          | expression OP_AND KW_THEN expression %prec OP_AND
+          | expression "|" expression
+          | expression "&" expression
+          | KW_NOT expression
+          | "!" expression
+          | "+" expression %prec UPLUS
+          | "-" expression %prec UMINUS
+          | expression "=" expression
+          | expression "/=" expression
+          | expression "<" expression
+          | expression ">" expression
+          | expression "<=" expression
+          | expression ">=" expression
           | expression "+" expression
           | expression "-" expression
           | expression "*" expression
           | expression "/" expression
           | expression "^" expression
           | TYPE_INT
-          | TYPE_INT16
-          | TYPE_INT2
-          | TYPE_INT8
           | TYPE_REAL
           | TYPE_CHAR
           | TYPE_STRING
@@ -85,8 +104,6 @@ expression: "(" expression ")"
           | array_element_reference
           | precursor_call
           ;
-
-
 
           
 /* FEATURE KINDS SECTION */
@@ -119,6 +136,9 @@ instruction: feature_reference ":=" expression
            | array_element_reference ":=" expression
            | KW_RESULT ":=" expression
            | create_instruction
+           | loop_instruction
+           | if_instruction
+           | inspect_instruction
            | feature_reference_with_parameters 
            | feature_reference
            | precursor_call
@@ -131,7 +151,41 @@ instruction_list: %empty
                 | instruction_list instruction
                 | instruction_list ";" {/* Буквально ничего не делать */}; 
 
+/* цикл. вроде похоже на правду? не знаю пока что че сюда дописать... */
+loop_instruction: KW_FROM instruction_list
+    KW_UNTIL expression
+    KW_LOOP
+    instruction_list
+    "end";
 
+
+/* условная конструкция. elseif и else необязательны, end обязательно */
+if_instruction: KW_IF expression 
+    KW_THEN instruction_list
+    elseif_list else_section
+    "end";
+
+elseif_list: %empty
+           | elseif_list KW_ELSEIF expression KW_THEN instruction_list;
+
+else_section: %empty
+            | KW_ELSE instruction_list;
+
+/* switch-case (inspect) */
+inspect_instruction: KW_INSPECT expression when_list else_section "end";
+
+when_list: %empty
+         | when_list KW_WHEN inspect_choices KW_THEN instruction_list;
+
+inspect_choices: inspect_choice
+               | inspect_choices "," inspect_choice;
+
+inspect_choice: inspect_constant
+              | inspect_constant ".." inspect_constant;
+
+/* это чтобы в семантике можно было проверить на уникальность */
+inspect_constant: constant_value
+                | TYPE_ID;
 
 /* CLASS DESCRIPTION SECTION */
 
@@ -173,11 +227,26 @@ variables_definition_list: field_definition
 /* Объявление атрибута/локальной переменной рутины */
 field_definition: TYPE_ID ":" TYPE_ID;
 
+/* Константный атрибут класса (значение задаётся литералом) */
+constant_definition: TYPE_ID ":" TYPE_ID "=" constant_value;
+
+constant_value: TYPE_INT
+              | TYPE_REAL
+              | "+" TYPE_INT
+              | "-" TYPE_INT
+              | "+" TYPE_REAL
+              | "-" TYPE_REAL
+              | TYPE_CHAR
+              | TYPE_STRING
+              | TYPE_BOOLEAN;
+
 /* Последовательное перечисление фич класса, будь то рутина или атрибут. */
 feature_list: feature_method_definition
             | field_definition
+            | constant_definition
             | feature_list feature_method_definition
-            | feature_list field_definition;
+            | feature_list field_definition
+            | feature_list constant_definition;
 
 /* Список идентификаторов произвольной длинны. Через запятую, т.к. используется в указании доступов. */
 identifier_list: TYPE_ID
