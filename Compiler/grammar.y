@@ -148,9 +148,9 @@ rescue_section:
 feature_method_header: TYPE_ID
                      | TYPE_ID "(" ")"
                      | TYPE_ID "(" variables_definition_list ")"
-                     | TYPE_ID ":" TYPE_ID
-                     | TYPE_ID "(" ")" ":" TYPE_ID
-                     | TYPE_ID "(" variables_definition_list ")" ":" TYPE_ID;
+                     | TYPE_ID ":" type
+                     | TYPE_ID "(" ")" ":" type
+                     | TYPE_ID "(" variables_definition_list ")" ":" type;
 
 /* Секция локальных переменных метода/рутины */
 feature_method_local_section: "local" variables_definition_list;
@@ -171,7 +171,7 @@ variables_definition_list: field_definition
                          | variables_definition_list ";" field_definition;
 
 /* Объявление атрибута/локальной переменной рутины */
-field_definition: TYPE_ID ":" TYPE_ID;
+field_definition: TYPE_ID ":" type;
 
 /* Последовательное перечисление фич класса, будь то рутина или атрибут. */
 feature_list: feature_method_definition
@@ -184,7 +184,37 @@ identifier_list: TYPE_ID
                | identifier_list "," TYPE_ID;
 
 /* Заголовок объявления класса */
-class_definition_header: "class" TYPE_ID;
+class_definition_header: "class" TYPE_ID  
+            |"class" TYPE_ID formal_generics
+            ;
+
+/* Genericity */
+
+/* Формалные параметры */
+formal_generics: "[" formal_generic_list "]"
+            ;
+
+formal_generic_list: formal_generic 
+            | formal_generic_list "," formal_generic
+            ;
+
+formal_generic: TYPE_ID
+            | TYPE_ID "-" ">" type
+            ;
+
+/* Фактичекие параметры */
+
+actual_generics: "[" type_list "]"
+            ;
+
+type_list: type
+            | type_list "," type
+            ;
+
+type: TYPE_ID
+            | TYPE_ID actual_generics
+            ;
+
 
 /* Описание секции о наследовании в классе */
 class_inheritance_section:  %empty 
@@ -197,8 +227,8 @@ parent_list: parent
                | parent_list ";" parent
                ;
 
-parent: TYPE_ID
-            | TYPE_ID inherit_feature_adaptation
+parent: type
+            | type inherit_feature_adaptation
             ;
 
 /* Адаптация уналедованных features */
