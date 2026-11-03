@@ -147,7 +147,8 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
 ","	{printToken("OP_COMMA", yytext); return OP_COMMA;}
 ":"	{printToken("OP_COLON", yytext); return OP_COLON;}
 ";"	{printToken("OP_SEMICOLON", yytext); return OP_SEMICOLON;}
-"."	{printToken("OP_POINT", yytext); return OP_POINT;}
+"." {printToken("OP_POINT", yytext); return OP_POINT;}
+".."    {printToken("OP_RANGE", yytext); return OP_RANGE;}
 "@"	{printToken("OP_ATSIGN", yytext); return OP_ATSIGN;}
 "?"	{printToken("OP_QUESTION", yytext); return OP_QUESTION;}
 "~"	{printToken("OP_TILDE", yytext); return OP_TILDE;}

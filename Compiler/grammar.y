@@ -29,6 +29,7 @@ void yyerror(const char* s);
 %token OP_POINT "." OP_ATSIGN "@" OP_QUESTION "?" OP_TILDE "~" OP_EXCLAMATION "!"
 %token OP_HASH "#" OP_DOLLAR "$" OP_PERCENT "%" OP_AMPERSAND "&" OP_VBAR "|"
 %token OP_CARET "^" OP_AND OP_OR OP_XOR
+%token OP_RANGE ".."
 
 %union {
     long integer;
@@ -130,6 +131,7 @@ instruction: feature_reference ":=" expression
            | create_instruction
            | loop_instruction
            | if_instruction
+           | inspect_instruction
            | feature_reference_with_parameters 
            | feature_reference; 
 
@@ -159,6 +161,22 @@ elseif_list: %empty
 
 else_section: %empty
             | KW_ELSE instruction_list;
+
+/* switch-case (inspect) */
+inspect_instruction: KW_INSPECT expression when_list else_section "end";
+
+when_list: %empty
+         | when_list KW_WHEN inspect_choices KW_THEN instruction_list;
+
+inspect_choices: inspect_choice
+               | inspect_choices "," inspect_choice;
+
+inspect_choice: inspect_constant
+              | inspect_constant ".." inspect_constant;
+
+/* это чтобы в семантике можно было проверить на уникальность */
+inspect_constant: constant_value
+                | TYPE_ID;
 
 /* CLASS DESCRIPTION SECTION */
 
