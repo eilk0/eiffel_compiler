@@ -129,6 +129,7 @@ instruction: feature_reference ":=" expression
            | KW_RESULT ":=" expression
            | create_instruction
            | loop_instruction
+           | if_instruction
            | feature_reference_with_parameters 
            | feature_reference; 
 
@@ -147,6 +148,17 @@ loop_instruction: KW_FROM instruction_list
     "end";
 
 
+/* условная конструкция. elseif и else необязательны, end обязательно */
+if_instruction: KW_IF expression 
+    KW_THEN instruction_list
+    elseif_list else_section
+    "end";
+
+elseif_list: %empty
+           | elseif_list KW_ELSEIF expression KW_THEN instruction_list;
+
+else_section: %empty
+            | KW_ELSE instruction_list;
 
 /* CLASS DESCRIPTION SECTION */
 
