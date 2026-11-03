@@ -185,7 +185,12 @@ identifier_list: TYPE_ID
 
 /* Заголовок объявления класса */
 class_definition_header: "class" TYPE_ID  
-            |"class" TYPE_ID formal_generics
+            | header_mark "class" TYPE_ID 
+            | "class" TYPE_ID formal_generics
+            | header_mark "class" TYPE_ID formal_generics
+            ;
+
+header_mark:  "frozen"
             ;
 
 /* Genericity */
