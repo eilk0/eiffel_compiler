@@ -54,11 +54,12 @@ void yyerror(const char* s);
 %printer {if($$) fprintf(yyo, GRAMMAR_PRINTER_COLOR "TRUE" RESET); else fprintf(yyo, GRAMMAR_PRINTER_COLOR "FALSE" RESET);} <boolean>
 %printer {fprintf(yyo, GRAMMAR_PRINTER_COLOR "%s" RESET, $$);} <identifier>
 
-%start eiffel_code
+%start instruction_list
 
 /* %left и %right указывает порядкок того, как нужно обрабатывать ряд однотипных операторов. */
 /* Внутри одного %left или %right порядок не имеет никакого значения. */
 /* Порядок строк %left или %right определяет приоритет оператров: чем номер строки больше, тем больше приоритет этих операций. */
+%left "."
 %left "+" "-" 
 %left "*" "/" 
 %right "^"
@@ -66,7 +67,7 @@ void yyerror(const char* s);
 %%
 
 /* Грамматическая структура арифметических, булевых и бинарных операций */
-expression: "(" expression ")"
+expression: expression_in_brackets
           | expression "+" expression
           | expression "-" expression
           | expression "*" expression
@@ -86,32 +87,39 @@ expression: "(" expression ")"
           | precursor_call
           ;
 
-
+expression_in_brackets: "(" expression ")";
 
           
 /* FEATURE KINDS SECTION */
 
-parameters_list: %empty
-               | expression
-               | parameters_list "," expression;
+multiple_expressions_list: expression "," expression
+               | multiple_expressions_list "," expression;
+
+multiple_expressions_in_brackets: "(" multiple_expressions_list ")";
 
 feature_reference: TYPE_ID
                  | feature_reference "." TYPE_ID
                  | feature_reference_with_parameters "." TYPE_ID
-                 | array_element_reference "." TYPE_ID;
+                 | array_element_reference "." TYPE_ID
+                 | expression_in_brackets "." TYPE_ID;
 
 array_element_reference: feature_reference "[" expression "]";
 
-feature_reference_with_parameters: feature_reference "(" parameters_list ")";
+feature_reference_with_parameters: feature_reference multiple_expressions_in_brackets
+                                 | feature_reference expression_in_brackets
+                                 | feature_reference "(" ")";
 
-precursor_call: "precursor"
-                | "precursor" "(" parameters_list ")"
-                | "precursor" "{" TYPE_ID "}"
-                | "precursor" "{" TYPE_ID "}" "(" parameters_list ")"
-                ;
+precursor_call_extension: %empty | "{" TYPE_ID "}"; 
+
+precursor_call: "precursor" precursor_call_extension
+                | "precursor" precursor_call_extension multiple_expressions_in_brackets
+                | "precursor" precursor_call_extension expression_in_brackets
+                | "precursor" precursor_call_extension "(" ")";
 
 
-create_instruction: "create" TYPE_ID "." TYPE_ID "(" parameters_list ")"
+create_instruction: "create" TYPE_ID "." TYPE_ID expression_in_brackets
+                  | "create" TYPE_ID "." TYPE_ID multiple_expressions_in_brackets
+                  | "create" TYPE_ID "." TYPE_ID "(" ")"
                   | "create" TYPE_ID "." TYPE_ID;
 
 /* Инструкция = команда = стейтмент = одна строчка кода.*/

@@ -5,3 +5,4 @@ Compiler/grammar.tab.c
 Compiler/lex.yy.c
 
 Compiler/grammar.tab.h
+Compiler/grammar.output
