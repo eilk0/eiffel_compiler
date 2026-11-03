@@ -67,24 +67,40 @@ void yyerror(const char* s);
 %%
 
 /* Грамматическая структура арифметических, булевых и бинарных операций */
-expression: "(" expression ")"
-          | expression "+" expression
-          | expression "-" expression
-          | expression "*" expression
-          | expression "/" expression
-          | expression "^" expression
-          | TYPE_INT
-          | TYPE_INT16
-          | TYPE_INT2
-          | TYPE_INT8
-          | TYPE_REAL
-          | TYPE_CHAR
-          | TYPE_STRING
-          | TYPE_BOOLEAN
-          | feature_reference
-          | feature_reference_with_parameters
-          | array_element_reference
-          ;
+expression_without_brackets_at_borders: TYPE_INT
+                           | TYPE_INT16
+                           | TYPE_INT2
+                           | TYPE_INT8
+                           | TYPE_REAL
+                           | TYPE_CHAR
+                           | TYPE_STRING
+                           | TYPE_BOOLEAN
+                           | feature_reference
+                           | expression_without_brackets_at_borders "+" expression_without_brackets_at_borders
+                           | expression_without_brackets_at_borders "-" expression_without_brackets_at_borders
+                           | expression_without_brackets_at_borders "*" expression_without_brackets_at_borders
+                           | expression_without_brackets_at_borders "/" expression_without_brackets_at_borders
+                           | expression_without_brackets_at_borders "^" expression_without_brackets_at_borders
+                           | expression_with_method_at_end "+" expression_without_brackets_at_borders
+                           | expression_with_method_at_end "-" expression_without_brackets_at_borders
+                           | expression_with_method_at_end "*" expression_without_brackets_at_borders
+                           | expression_with_method_at_end "/" expression_without_brackets_at_borders
+                           | expression_with_method_at_end "^" expression_without_brackets_at_borders;
+
+expression_with_method_at_end: feature_reference_with_parameters
+                 | expression_without_brackets_at_borders "+" expression_with_method_at_end
+                 | expression_without_brackets_at_borders "-" expression_with_method_at_end
+                 | expression_without_brackets_at_borders "*" expression_with_method_at_end
+                 | expression_without_brackets_at_borders "/" expression_with_method_at_end
+                 | expression_without_brackets_at_borders "^" expression_with_method_at_end
+                 | expression_with_method_at_end "+" expression_with_method_at_end
+                 | expression_with_method_at_end "-" expression_with_method_at_end
+                 | expression_with_method_at_end "*" expression_with_method_at_end
+                 | expression_with_method_at_end "/" expression_with_method_at_end
+                 | expression_with_method_at_end "^" expression_with_method_at_end;
+
+expression: expression_without_brackets_at_borders
+          | expression_with_method_at_end;
 
 
 
