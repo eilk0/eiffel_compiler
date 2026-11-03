@@ -81,26 +81,30 @@ expression_without_brackets_at_borders: TYPE_INT
                            | expression_without_brackets_at_borders "*" expression_without_brackets_at_borders
                            | expression_without_brackets_at_borders "/" expression_without_brackets_at_borders
                            | expression_without_brackets_at_borders "^" expression_without_brackets_at_borders
-                           | expression_with_method_at_end "+" expression_without_brackets_at_borders
-                           | expression_with_method_at_end "-" expression_without_brackets_at_borders
-                           | expression_with_method_at_end "*" expression_without_brackets_at_borders
-                           | expression_with_method_at_end "/" expression_without_brackets_at_borders
-                           | expression_with_method_at_end "^" expression_without_brackets_at_borders;
+                           | expression_ended_with_brackets "+" expression_without_brackets_at_borders
+                           | expression_ended_with_brackets "-" expression_without_brackets_at_borders
+                           | expression_ended_with_brackets "*" expression_without_brackets_at_borders
+                           | expression_ended_with_brackets "/" expression_without_brackets_at_borders
+                           | expression_ended_with_brackets "^" expression_without_brackets_at_borders;
 
-expression_with_method_at_end: feature_reference_with_parameters
-                 | expression_without_brackets_at_borders "+" expression_with_method_at_end
-                 | expression_without_brackets_at_borders "-" expression_with_method_at_end
-                 | expression_without_brackets_at_borders "*" expression_with_method_at_end
-                 | expression_without_brackets_at_borders "/" expression_with_method_at_end
-                 | expression_without_brackets_at_borders "^" expression_with_method_at_end
-                 | expression_with_method_at_end "+" expression_with_method_at_end
-                 | expression_with_method_at_end "-" expression_with_method_at_end
-                 | expression_with_method_at_end "*" expression_with_method_at_end
-                 | expression_with_method_at_end "/" expression_with_method_at_end
-                 | expression_with_method_at_end "^" expression_with_method_at_end;
+expression_ended_with_brackets: feature_reference_with_parameters
+                 | expression_in_brackets
+                 | expression_without_brackets_at_borders "+" expression_ended_with_brackets
+                 | expression_without_brackets_at_borders "-" expression_ended_with_brackets
+                 | expression_without_brackets_at_borders "*" expression_ended_with_brackets
+                 | expression_without_brackets_at_borders "/" expression_ended_with_brackets
+                 | expression_without_brackets_at_borders "^" expression_ended_with_brackets
+                 | expression_ended_with_brackets "+" expression_ended_with_brackets
+                 | expression_ended_with_brackets "-" expression_ended_with_brackets
+                 | expression_ended_with_brackets "*" expression_ended_with_brackets
+                 | expression_ended_with_brackets "/" expression_ended_with_brackets
+                 | expression_ended_with_brackets "^" expression_ended_with_brackets;
+
+expression_in_brackets: "(" expression_without_brackets_at_borders ")"
+                      | "(" expression_ended_with_brackets ")";
 
 expression: expression_without_brackets_at_borders
-          | expression_with_method_at_end;
+          | expression_ended_with_brackets;
 
 
 
