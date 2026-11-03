@@ -67,7 +67,7 @@ void yyerror(const char* s);
 %%
 
 /* Грамматическая структура арифметических, булевых и бинарных операций */
-expression: expression_in_brackets
+expression: "(" expression ")"
           | expression "+" expression
           | expression "-" expression
           | expression "*" expression
@@ -86,7 +86,7 @@ expression: expression_in_brackets
           | array_element_reference
           ;
 
-expression_in_brackets: "(" expression ")";
+
 
           
 /* FEATURE KINDS SECTION */
@@ -98,8 +98,7 @@ parameters_list: %empty
 feature_reference: TYPE_ID
                  | feature_reference "." TYPE_ID
                  | feature_reference_with_parameters "." TYPE_ID
-                 | array_element_reference "." TYPE_ID
-                 | expression_in_brackets "." TYPE_ID;
+                 | array_element_reference "." TYPE_ID;
 
 array_element_reference: feature_reference "[" expression "]";
 
