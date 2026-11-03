@@ -187,7 +187,10 @@ identifier_list: TYPE_ID
 class_definition_header: "class" TYPE_ID;
 
 /* Описание секции о наследовании в классе */
-class_inheritance_section:  %empty | "inherit" parent_list;
+class_inheritance_section:  %empty 
+            | "inherit" parent_list 
+            | "inherit" 
+            ;
 
 parent_list: parent
                | parent_list parent
