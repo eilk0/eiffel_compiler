@@ -59,14 +59,33 @@ void yyerror(const char* s);
 /* %left и %right указывает порядкок того, как нужно обрабатывать ряд однотипных операторов. */
 /* Внутри одного %left или %right порядок не имеет никакого значения. */
 /* Порядок строк %left или %right определяет приоритет оператров: чем номер строки больше, тем больше приоритет этих операций. */
+%left OP_OR OP_XOR "|"
+%left OP_AND "&"
+%nonassoc "=" "/=" "<" ">" "<=" ">="
 %left "+" "-" 
 %left "*" "/" 
 %right "^"
+%precedence KW_NOT "!"
 
 %%
 
 /* Грамматическая структура арифметических, булевых и бинарных операций */
 expression: "(" expression ")"
+          | expression OP_OR expression
+          | expression OP_OR KW_ELSE expression %prec OP_OR
+          | expression OP_XOR expression
+          | expression OP_AND expression
+          | expression OP_AND KW_THEN expression %prec OP_AND
+          | expression "|" expression
+          | expression "&" expression
+          | KW_NOT expression
+          | "!" expression
+          | expression "=" expression
+          | expression "/=" expression
+          | expression "<" expression
+          | expression ">" expression
+          | expression "<=" expression
+          | expression ">=" expression
           | expression "+" expression
           | expression "-" expression
           | expression "*" expression
