@@ -75,7 +75,7 @@ expression_without_brackets_at_end: TYPE_INT
                            | TYPE_CHAR
                            | TYPE_STRING
                            | TYPE_BOOLEAN
-                           | feature_reference
+                           | feature_reference_without_parameters
                            | expression_without_brackets_at_end "+" expression_without_brackets_at_end
                            | expression_without_brackets_at_end "-" expression_without_brackets_at_end
                            | expression_without_brackets_at_end "*" expression_without_brackets_at_end
@@ -115,33 +115,46 @@ parameters_list: %empty
                | expression
                | parameters_list "," expression;
 
-feature_reference: TYPE_ID
-                 | feature_reference "." TYPE_ID
+feature_reference_without_parameters: TYPE_ID
+                 | feature_reference_without_parameters "." TYPE_ID
                  | feature_reference_with_parameters "." TYPE_ID
                  | array_element_reference "." TYPE_ID;
 
-array_element_reference: feature_reference "[" expression "]";
+array_element_reference: feature_reference_without_parameters "[" expression "]";
 
-feature_reference_with_parameters: feature_reference "(" parameters_list ")";
-
-
-create_instruction: "create" TYPE_ID "." TYPE_ID "(" parameters_list ")"
-                  | "create" TYPE_ID "." TYPE_ID;
-
-/* Инструкция = команда = стейтмент = одна строчка кода.*/
-instruction: feature_reference ":=" expression
-           | array_element_reference ":=" expression
-           | KW_RESULT ":=" expression
-           | create_instruction
-           | feature_reference_with_parameters 
-           | feature_reference; 
+feature_reference_with_parameters: feature_reference_without_parameters "(" parameters_list ")";
 
 
+create_instruction_ended_with_parameters: create_instruction_ended_without_parameters "(" parameters_list ")";
+
+create_instruction_ended_without_parameters: "create" TYPE_ID "." TYPE_ID;
+
+
+/*
+Если предыдущая комманда не закончилась скобками...
+    Следующая комманда не может начинаться со скобок
+
+Если предыдущая комманда закончилась скобками...
+    Следующая комманда может начинаться со скобок
+
+*/
+
+instruction_list_ended_without_brackets: %empty 
+                                       | instruction_list_ended_without_brackets    feature_reference_without_parameters ":=" expression_without_brackets_at_end
+                                       | instruction_list_ended_without_brackets    array_element_reference ":=" expression_without_brackets_at_end
+                                       | instruction_list_ended_without_brackets    KW_RESULT ":=" expression_without_brackets_at_end
+                                       | instruction_list_ended_without_brackets    create_instruction_ended_without_parameters
+                                       | instruction_list_ended_without_brackets    feature_reference_without_parameters; 
+
+instruction_list_ended_with_brackets: instruction_list_ended_without_brackets    feature_reference_without_parameters ":=" expression_ended_with_brackets
+                                    | instruction_list_ended_without_brackets    array_element_reference ":=" expression_ended_with_brackets
+                                    | instruction_list_ended_without_brackets    KW_RESULT ":=" expression_ended_with_brackets
+                                    | instruction_list_ended_without_brackets    create_instruction_ended_with_parameters
+                                    | instruction_list_ended_without_brackets    feature_reference_with_parameters;
 
 /* реализация структуры: "следование". Последовательность инструкций к выполнению. */
-instruction_list: %empty
-                | instruction_list instruction
-                | instruction_list ";" {/* Буквально ничего не делать */}; 
+instruction_list: instruction_list_ended_without_brackets 
+                | instruction_list_ended_with_brackets; 
 
 
 
