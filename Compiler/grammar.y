@@ -65,7 +65,7 @@ void yyerror(const char* s);
 %left "+" "-" 
 %left "*" "/" 
 %right "^"
-%precedence KW_NOT "!"
+%precedence KW_NOT "!" UPLUS UMINUS /* это обозначения чисто для порядка, если что */
 
 %%
 
@@ -80,6 +80,8 @@ expression: "(" expression ")"
           | expression "&" expression
           | KW_NOT expression
           | "!" expression
+          | "+" expression %prec UPLUS
+          | "-" expression %prec UMINUS
           | expression "=" expression
           | expression "/=" expression
           | expression "<" expression
@@ -100,8 +102,6 @@ expression: "(" expression ")"
           | feature_reference_with_parameters
           | array_element_reference
           ;
-
-
 
           
 /* FEATURE KINDS SECTION */
