@@ -166,11 +166,26 @@ variables_definition_list: field_definition
 /* Объявление атрибута/локальной переменной рутины */
 field_definition: TYPE_ID ":" TYPE_ID;
 
+/* Константный атрибут класса (значение задаётся литералом) */
+constant_definition: TYPE_ID ":" TYPE_ID "=" constant_value;
+
+constant_value: TYPE_INT
+              | TYPE_REAL
+              | "+" TYPE_INT
+              | "-" TYPE_INT
+              | "+" TYPE_REAL
+              | "-" TYPE_REAL
+              | TYPE_CHAR
+              | TYPE_STRING
+              | TYPE_BOOLEAN;
+              
 /* Последовательное перечисление фич класса, будь то рутина или атрибут. */
 feature_list: feature_method_definition
             | field_definition
+            | constant_definition
             | feature_list feature_method_definition
-            | feature_list field_definition;
+            | feature_list field_definition
+            | feature_list constant_definition;
 
 /* Список идентификаторов произвольной длинны. Через запятую, т.к. используется в указании доступов. */
 identifier_list: TYPE_ID
