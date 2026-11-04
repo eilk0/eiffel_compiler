@@ -176,8 +176,13 @@ field_definition: TYPE_ID ":" type;
 /* Последовательное перечисление фич класса, будь то рутина или атрибут. */
 feature_list: feature_method_definition
             | field_definition
+            | "frozen" feature_method_definition
+            | "frozen" field_definition
             | feature_list feature_method_definition
-            | feature_list field_definition;
+            | feature_list field_definition
+            | feature_list "frozen" feature_method_definition
+            | feature_list "frozen" field_definition
+            ;
 
 /* Список идентификаторов произвольной длинны. Через запятую, т.к. используется в указании доступов. */
 identifier_list: TYPE_ID
