@@ -203,8 +203,20 @@ formal_generic_list: formal_generic
             | formal_generic_list "," formal_generic
             ;
 
-formal_generic: TYPE_ID
-            | TYPE_ID "-" ">" type
+formal_generic:
+            frozen_opt formal_generic_name constraint_opt
+            ;
+
+frozen_opt: %empty
+            | KW_FROZEN
+            ;
+
+formal_generic_name: TYPE_ID
+            | "?" TYPE_ID
+            ;
+
+constraint_opt: %empty
+            | "-" ">" type
             ;
 
 /* Фактичекие параметры */
