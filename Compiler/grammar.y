@@ -220,8 +220,25 @@ formal_generic_name: TYPE_ID
             | "?" TYPE_ID
             ;
 
+/*пересмотреть create и rename секции в ограничениях формальных параметров */     
+
 constraint_opt: %empty
-            | "-" ">" type
+            | "-" ">" constraint_type class_constructors_end_section
+            | "-" ">" "{" constraint_type_list "}" class_constructors_end_section
+            ;
+
+constraint_type_list:
+            constraint_type
+            | constraint_type_list "," constraint_type
+            ;
+
+constraint_type:
+            type
+            | type "rename" rename_list "end"
+            ;
+
+class_constructors_end_section: %empty
+            | "create" identifier_list "end" 
             ;
 
 /* Фактичекие параметры */
