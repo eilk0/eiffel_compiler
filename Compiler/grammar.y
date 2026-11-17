@@ -310,6 +310,24 @@ select_section: %empty
             | "select" identifier_list
             ;
 
+/* Агенты - используются для реализации замыканий */
+call_agent: "agent" call_agent_body ;
+call_agent_body: agent_qualified | agent_unqualified ;
+agent_qualified: agent_target "." agent_qualified ;
+agent_unqualified: TYPE_ID
+                | TYPE_ID agent_actuals
+                ;
+
+agent_target: "(" expression ")"
+            | TYPE_ID
+            ;
+agent_actuals: "(" agent_actual_list ")" ;
+agent_actual_list: agent_actual
+                | agent_actual_list "," agent_actual
+                ;
+agent_actual: expression | placeholder ;
+placeholder: TYPE_ID "?"
+
 
 /* Описание секции перечисления конструкторов класса */
 class_constructors_section:  %empty | "create" identifier_list;
