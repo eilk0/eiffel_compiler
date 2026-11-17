@@ -160,6 +160,8 @@ feature_method_definition: feature_method_header do_end_section
                          | feature_method_header feature_alias do_end_section
                          | feature_method_header feature_method_local_section do_end_section
                          | feature_method_header feature_alias feature_method_local_section do_end_section
+                         | feature_method_header "deferred" "end"
+                         | feature_method_header feature_alias "deferred" "end"
                          ;
 
 feature_alias:
