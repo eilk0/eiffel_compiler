@@ -12,9 +12,9 @@ void yyerror(const char* s);
 
 %token KW_ACROSS KW_AGENT KW_ALIAS "alias" KW_ALL KW_AS "as"
 %token KW_ASSIGN KW_ATTRIBUTE KW_CHECK KW_CLASS "class" KW_CONVERT
-%token KW_CREATE "create" KW_CURRENT KW_DEBUG KW_DEFERRED KW_DO "do"
-%token KW_ELSE KW_ELSEIF KW_END "end" KW_ENSURE KW_EXPANDED
-%token KW_EXPORT "export" KW_EXTERNAL KW_FEATURE "feature" KW_FROM KW_FROZEN
+%token KW_ELSE KW_ELSEIF KW_END "end" KW_ENSURE KW_EXPANDED "expanded"
+%token KW_CREATE "create" KW_CURRENT KW_DEBUG KW_DEFERRED "deferred" KW_DO "do"
+%token KW_EXPORT "export" KW_EXTERNAL KW_FEATURE "feature" KW_FROM KW_FROZEN "frozen"
 %token KW_IF KW_IMPLIES KW_INHERIT "inherit" KW_INSPECT KW_INVARIANT
 %token KW_LIKE KW_LOCAL "local" KW_LOOP KW_NOT KW_NOTE "note"
 %token KW_OBSOLETE KW_OLD KW_ONCE KW_ONLY KW_PRECURSOR "precursor"
@@ -202,9 +202,9 @@ rescue_section:
 feature_method_header: TYPE_ID
                      | TYPE_ID "(" ")"
                      | TYPE_ID "(" variables_definition_list ")"
-                     | TYPE_ID ":" TYPE_ID
-                     | TYPE_ID "(" ")" ":" TYPE_ID
-                     | TYPE_ID "(" variables_definition_list ")" ":" TYPE_ID;
+                     | TYPE_ID ":" type
+                     | TYPE_ID "(" ")" ":" type
+                     | TYPE_ID "(" variables_definition_list ")" ":" type;
 
 /* Секция локальных переменных метода/рутины */
 feature_method_local_section: "local" variables_definition_list;
@@ -214,6 +214,8 @@ feature_method_definition: feature_method_header do_end_section
                          | feature_method_header feature_alias do_end_section
                          | feature_method_header feature_method_local_section do_end_section
                          | feature_method_header feature_alias feature_method_local_section do_end_section
+                         | feature_method_header "deferred" "end"
+                         | feature_method_header feature_alias "deferred" "end"
                          ;
 
 feature_alias:
@@ -225,7 +227,7 @@ variables_definition_list: field_definition
                          | variables_definition_list ";" field_definition;
 
 /* Объявление атрибута/локальной переменной рутины */
-field_definition: TYPE_ID ":" TYPE_ID;
+field_definition: TYPE_ID ":" type;
 
 /* Константный атрибут класса (значение задаётся литералом) */
 constant_definition: TYPE_ID ":" TYPE_ID "=" constant_value;
@@ -247,13 +249,84 @@ feature_list: feature_method_definition
             | feature_list feature_method_definition
             | feature_list field_definition
             | feature_list constant_definition;
+            | "frozen" feature_method_definition
+            | "frozen" field_definition
+            | feature_list "frozen" feature_method_definition
+            | feature_list "frozen" field_definition
+            ;
 
 /* Список идентификаторов произвольной длинны. Через запятую, т.к. используется в указании доступов. */
 identifier_list: TYPE_ID
                | identifier_list "," TYPE_ID;
 
 /* Заголовок объявления класса */
-class_definition_header: "class" TYPE_ID;
+class_definition_header: "class" TYPE_ID  
+            | header_mark "class" TYPE_ID 
+            | "class" TYPE_ID formal_generics
+            | header_mark "class" TYPE_ID formal_generics
+            ;
+
+header_mark:  "frozen"
+            | "deferred"
+            | "expanded"
+            ;
+
+/* Genericity */
+
+/* Формалные параметры */
+formal_generics: "[" formal_generic_list "]"
+            ;
+
+formal_generic_list: formal_generic 
+            | formal_generic_list "," formal_generic
+            ;
+
+formal_generic:
+            frozen_opt formal_generic_name constraint_opt
+            ;
+
+frozen_opt: %empty
+            | KW_FROZEN
+            ;
+
+formal_generic_name: TYPE_ID
+            | "?" TYPE_ID
+            ;
+
+/*пересмотреть create и rename секции в ограничениях формальных параметров */     
+
+constraint_opt: %empty
+            | "-" ">" constraint_type class_constructors_end_section
+            | "-" ">" "{" constraint_type_list "}" class_constructors_end_section
+            ;
+
+constraint_type_list:
+            constraint_type
+            | constraint_type_list "," constraint_type
+            ;
+
+constraint_type:
+            type
+            | type "rename" rename_list "end"
+            ;
+
+class_constructors_end_section: %empty
+            | "create" identifier_list "end" 
+            ;
+
+/* Фактичекие параметры */
+
+actual_generics: "[" type_list "]"
+            ;
+
+type_list: type
+            | type_list "," type
+            ;
+
+type: TYPE_ID
+            | TYPE_ID actual_generics
+            ;
+
 
 /* Описание секции о наследовании в классе */
 class_inheritance_section:  %empty 
@@ -266,8 +339,8 @@ parent_list: parent
                | parent_list ";" parent
                ;
 
-parent: TYPE_ID
-            | TYPE_ID inherit_feature_adaptation
+parent: type
+            | type inherit_feature_adaptation
             ;
 
 /* Адаптация уналедованных features */

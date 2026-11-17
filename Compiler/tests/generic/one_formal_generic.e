@@ -1,0 +1,3 @@
+class ONEGENERIC [ONE]
+
+end
