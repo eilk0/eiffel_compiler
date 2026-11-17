@@ -21,6 +21,7 @@ void yyerror(const char* s);
 %token KW_REDEFINE "redefine" KW_RENAME "rename" KW_REQUIRE KW_RESCUE KW_RESULT
 %token KW_RETRY KW_SELECT "select" KW_SEPARATE KW_THEN KW_TUPLE
 %token KW_UNDEFINE "undefine" KW_UNTIL KW_VARIANT KW_VOID KW_WHEN
+%token OP_ARRAY_INIT_OPEN "<<" OP_ARRAY_INIT_CLOSE ">>"
 
 %token OP_GREATER ">" OP_LESS "<" OP_ASSIGN ":=" OP_EQUAL "=" OP_NE "/="
 %token OP_LE "<=" OP_GE ">=" OP_PLUS "+" OP_MINUS "-" OP_MULT "*"
@@ -121,6 +122,12 @@ array_element_reference: feature_reference "[" expression "]";
 
 feature_reference_with_parameters: feature_reference "(" parameters_list ")";
 
+array_init_list: array_init
+               | array_init_list "," array_init;
+
+array_init: "<<" parameters_list ">>"
+          | "<<" array_init_list ">>";
+
 precursor_call: "precursor"
                 | "precursor" "(" parameters_list ")"
                 | "precursor" "{" TYPE_ID "}"
@@ -135,6 +142,9 @@ create_instruction: "create" TYPE_ID "." TYPE_ID "(" parameters_list ")"
 instruction: feature_reference ":=" expression
            | array_element_reference ":=" expression
            | KW_RESULT ":=" expression
+           | feature_reference ":=" array_init
+           | array_element_reference ":=" array_init
+           | KW_RESULT ":=" array_init
            | create_instruction
            | loop_instruction
            | if_instruction
