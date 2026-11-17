@@ -105,6 +105,12 @@ array_element_reference: feature_reference "[" expression "]";
 
 feature_reference_with_parameters: feature_reference "(" parameters_list ")";
 
+array_init_list: array_init
+               | array_init_list "," array_init;
+
+array_init: "<<" parameters_list ">>"
+          | "<<" array_init_list ">>";
+
 precursor_call: "precursor"
                 | "precursor" "(" parameters_list ")"
                 | "precursor" "{" TYPE_ID "}"
@@ -119,6 +125,9 @@ create_instruction: "create" TYPE_ID "." TYPE_ID "(" parameters_list ")"
 instruction: feature_reference ":=" expression
            | array_element_reference ":=" expression
            | KW_RESULT ":=" expression
+           | feature_reference ":=" array_init
+           | array_element_reference ":=" array_init
+           | KW_RESULT ":=" array_init
            | create_instruction
            | feature_reference_with_parameters 
            | feature_reference
