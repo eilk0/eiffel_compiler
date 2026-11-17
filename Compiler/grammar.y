@@ -12,7 +12,7 @@ void yyerror(const char* s);
 
 %token KW_ACROSS KW_AGENT KW_ALIAS "alias" KW_ALL KW_AS "as"
 %token KW_ASSIGN KW_ATTRIBUTE KW_CHECK KW_CLASS "class" KW_CONVERT
-%token KW_CREATE "create" KW_CURRENT KW_DEBUG KW_DEFERRED "deffered" KW_DO "do"
+%token KW_CREATE "create" KW_CURRENT KW_DEBUG KW_DEFERRED "defered" KW_DO "do"
 %token KW_ELSE KW_ELSEIF KW_END "end" KW_ENSURE KW_EXPANDED "expanded"
 %token KW_EXPORT "export" KW_EXTERNAL KW_FEATURE "feature" KW_FROM KW_FROZEN "frozen"
 %token KW_IF KW_IMPLIES KW_INHERIT "inherit" KW_INSPECT KW_INVARIANT
@@ -196,7 +196,7 @@ class_definition_header: "class" TYPE_ID
             ;
 
 header_mark:  "frozen"
-            | "deffered"
+            | "defered"
             | "expanded"
             ;
 
