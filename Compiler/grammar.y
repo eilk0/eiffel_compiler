@@ -21,6 +21,7 @@ void yyerror(const char* s);
 %token KW_REDEFINE "redefine" KW_RENAME "rename" KW_REQUIRE KW_RESCUE KW_RESULT
 %token KW_RETRY KW_SELECT "select" KW_SEPARATE KW_THEN KW_TUPLE
 %token KW_UNDEFINE "undefine" KW_UNTIL KW_VARIANT KW_VOID KW_WHEN
+%token OP_ARRAY_INIT_OPEN "<<" OP_ARRAY_INIT_CLOSE ">>"
 
 %token OP_GREATER ">" OP_LESS "<" OP_ASSIGN ":=" OP_EQUAL "=" OP_NE "/="
 %token OP_LE "<=" OP_GE ">=" OP_PLUS "+" OP_MINUS "-" OP_MULT "*"

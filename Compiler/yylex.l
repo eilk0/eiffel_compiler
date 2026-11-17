@@ -129,6 +129,8 @@ UTF8_4 [\360-\367][\200-\277][\200-\277][\200-\277]
     /*Operators*/
 ">"	{printToken("OP_GREATER", yytext); return OP_GREATER;}
 "<"	{printToken("OP_LESS", yytext); return OP_LESS;}
+">>"	{printToken("ARRAY_INIT_CLOSE", yytext); return OP_ARRAY_INIT_CLOSE;}
+"<<"	{printToken("ARRAY_INIT_OPEN", yytext); return OP_ARRAY_INIT_OPEN;}
 ":="	{printToken("OP_ASSIGN", yytext); return OP_ASSIGN;}
 "/="	{printToken("OP_NE", yytext); return OP_NE;}
 "<="	{printToken("OP_LE", yytext); return OP_LE;}
