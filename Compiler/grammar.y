@@ -135,6 +135,10 @@ instruction_list: %empty
 
 /* CLASS DESCRIPTION SECTION */
 
+once_end_section: "once" instruction_list "end"
+                | "once" instruction_list rescue_section "end"
+                ;
+
 do_end_section: "do" instruction_list "end"
             | "do" instruction_list rescue_section "end"
             ;
@@ -160,6 +164,10 @@ feature_method_definition: feature_method_header do_end_section
                          | feature_method_header feature_alias do_end_section
                          | feature_method_header feature_method_local_section do_end_section
                          | feature_method_header feature_alias feature_method_local_section do_end_section
+                         | feature_method_header once_end_section
+                         | feature_method_header feature_alias once_end_section
+                         | feature_method_header feature_method_local_section once_end_section
+                         | feature_method_header feature_alias feature_method_local_section once_end_section
                          | feature_method_header "deferred" "end"
                          | feature_method_header feature_alias "deferred" "end"
                          ;
