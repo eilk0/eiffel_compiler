@@ -109,8 +109,7 @@ expression: "(" expression ")"
           
 /* FEATURE KINDS SECTION */
 
-expressions_list: %empty
-               | expression
+expressions_list: expression
                | expressions_list "," expression;
 
 feature_reference: TYPE_ID
@@ -125,7 +124,8 @@ feature_reference_with_parameters: feature_reference "(" expressions_list ")";
 array_init_list: array_init
                | array_init_list "," array_init;
 
-array_init: "<<" expressions_list ">>"
+array_init: "<<" ">>"
+          | "<<" expressions_list ">>"
           | "<<" array_init_list ">>";
 
 precursor_call: "precursor"
