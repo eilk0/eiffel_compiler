@@ -406,12 +406,14 @@ select_section: %empty
 class_constructors_section:  %empty | "create" identifier_list;
 
 /* Описание секции фич класса */
-class_features_section: %empty
-                      | "feature" feature_list
+class_features_section: "feature" feature_list
                       | "feature" "{" identifier_list "}" feature_list;
 
+multiple_class_features_sections: %empty
+                                | multiple_class_features_sections class_features_section;
+
 /* Полное описание объявления класса */
-class_definition: class_definition_header class_inheritance_section class_constructors_section class_features_section "end";
+class_definition: class_definition_header class_inheritance_section class_constructors_section multiple_class_features_sections "end";
 
 
 /* EIFFEL LANGUAGE FILE STRUCTURE */
