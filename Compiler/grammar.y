@@ -129,22 +129,23 @@ array_init: "<<" expressions_list ">>"
           | "<<" array_init_list ">>";
 
 precursor_call: "precursor"
-                | "precursor" "(" expressions_list ")"
-                | "precursor" "{" TYPE_ID "}"
-                | "precursor" "{" TYPE_ID "}" "(" expressions_list ")"
+              | "precursor" "(" expressions_list ")"
+              | "precursor" "{" TYPE_ID "}"
+              | "precursor" "{" TYPE_ID "}" "(" expressions_list ")"
                 ;
 
 
 create_instruction: "create" TYPE_ID "." TYPE_ID "(" expressions_list ")"
                   | "create" TYPE_ID "." TYPE_ID;
 
+/* Значение, которое может быть использовано в инструкции присвоения в правой части. */
+right_side_value: expression | array_init;
+
+                  
 /* Инструкция = команда = стейтмент = одна строчка кода.*/
-instruction: feature_reference ":=" expression
-           | array_element_reference ":=" expression
-           | KW_RESULT ":=" expression
-           | feature_reference ":=" array_init
-           | array_element_reference ":=" array_init
-           | KW_RESULT ":=" array_init
+instruction: feature_reference ":=" right_side_value
+           | array_element_reference ":=" right_side_value
+           | KW_RESULT ":=" right_side_value
            | create_instruction
            | loop_instruction
            | if_instruction
