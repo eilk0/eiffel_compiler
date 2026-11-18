@@ -300,15 +300,11 @@ formal_generic_list: formal_generic
             ;
 
 formal_generic:
-            frozen_opt formal_generic_name constraint_opt
+            frozen_opt TYPE_ID constraint_opt
             ;
 
 frozen_opt: %empty
             | KW_FROZEN
-            ;
-
-formal_generic_name: TYPE_ID
-            | "?" TYPE_ID
             ;
 
 /*пересмотреть create и rename секции в ограничениях формальных параметров */     
