@@ -225,17 +225,16 @@ feature_method_header: TYPE_ID
 feature_method_local_section: "local" variables_definition_list;
 
 /* Полная структура объявления метода/рутины. */
-feature_method_definition: feature_method_header do_end_section
-                         | feature_method_header feature_alias do_end_section
-                         | feature_method_header feature_method_local_section do_end_section
-                         | feature_method_header feature_alias feature_method_local_section do_end_section
-                         | feature_method_header once_end_section
-                         | feature_method_header feature_alias once_end_section
-                         | feature_method_header feature_method_local_section once_end_section
-                         | feature_method_header feature_alias feature_method_local_section once_end_section
+
+feature_method_definition: feature_method_header feature_method_body_section
+                         | feature_method_header feature_alias feature_method_body_section
+                         | feature_method_header feature_method_local_section feature_method_body_section
+                         | feature_method_header feature_alias feature_method_local_section feature_method_body_section
                          | feature_method_header "deferred" "end"
                          | feature_method_header feature_alias "deferred" "end"
                          ;
+
+feature_method_body_section: do_end_section | once_end_section;
 
 feature_alias:
             "alias" TYPE_STRING 
